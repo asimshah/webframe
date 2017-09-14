@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Fastnet event logging with automatic log4net configuration</releaseNotes>
+    <copyright>Copyright ©2015</copyright>
+    <tags>Fastnet</tags>
+    <dependencies>
+      <dependency id="log4net" version="2.0.5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Debug\Fastnet.EventSystem.Logging.pdb" target="lib\net45" />
+  </files>
+</package>

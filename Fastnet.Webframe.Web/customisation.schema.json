@@ -1,0 +1,212 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "accomodation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "minItems": 1,
+        "properties": {
+          "accomodationtype": {
+            "type": "string",
+            "enum": [ "bed", "room", "suite", "flat", "villa", "hut" ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "fullname": {
+            "default": null,
+            "type": "string"
+          },
+          "accomodationclass": {
+            "type": "string",
+            "enum": [ "standard", "superior", "executive", "deluxe" ]
+          },
+          "bookable": {
+            "type": "boolean"
+          },
+          "subItemsSeparatelyBookable": {
+            "type": "boolean",
+            "default": false
+          },
+          "subitems": {
+            "$ref": "#/definitions/accomodation"
+          }
+        }
+      }
+    },
+    "scripts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "title": "JSON Schema for customisation JSON file format",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "Scripts": {
+      "description": "An array of additional scripts to include in the custom bundle",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "XScripts": {
+      "$ref": "#/definitions/scripts"
+    },
+    "CSSFiles": {
+      "description": "An array of css files to include in the custom bundle",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "templateFolder": {
+      "type": "string",
+      "description": "Folder for custom templates. This must be parallel structure to the normal Templates folder but in CustomTemplates."
+    }, //"versions": {
+    "factory": {
+      "default": "None",
+      "description": "This is the name of the factory to use, default is \"None\".",
+      "enum": [ "None", "DonWhillansHut" ],
+      "type": "string"
+    },
+    "legacy": {
+      "properties": {
+        "dataload": {
+          "default": false,
+          "description": "if true and a new database needs to be created, then loads data from a legacy database",
+          "type": "boolean"
+        },
+        "connectionStringName": {
+          "type": "string",
+          "description": "one of the available connectionsStrings in web.config"
+        },
+        "bookingDatabaseName": {
+          "type": "string",
+          "description": "booking database name"
+        },
+        "bookingConnectionStringName": {
+          "type": "string",
+          "description": "one of the available connectionStrings in web.config"
+        },
+        "defaultMemberPassword": {
+          "type": "string",
+          "minLength": 8
+        }
+      }
+    },
+    "bookingApp": {
+      "type": "object",
+      "description": "Settings for the booking app",
+      "additionalProperties": false,
+      "properties": {
+        "rollDayManually": {
+          "type": "boolean",
+          "default": false
+        },
+        "enable": {
+          "type": "boolean",
+          "default": false
+        },
+        "accomodation": {
+          "$ref": "#/definitions/accomodation"
+        },
+        "paymentGateway": {
+          "enable": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "apps": {
+      "description": "",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "Name": {
+            "type": "string",
+            "enum": [ "membership", "booking" ]
+          },
+          "XScripts": {
+            "$ref": "#/definitions/scripts"
+          },
+          "Scripts": {
+            "description": "An array of additional scripts to include in the custom bundle",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "bmc": {
+      "type": "object",
+      "description": "BMC settings - only used by DWH factories",
+      "properties": {
+        "api": {
+          "type": "object",
+          "description": "Bmc membership api settings",
+          "properties": {
+            "enable": {
+              "default": "true",
+              "type": "boolean"
+            },
+            "apiuser": {
+              "type": "string",
+              "description": "normally DWMH",
+              "default": "DWMH"
+            },
+            "apikey": {
+              "type": "string",
+              "description": "access key"
+            },
+            "apiurl": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "paymentGateway": {
+      "type": "string",
+      "description": "Settings for the payment gateway",
+      "enum": [ "SagePay" ]
+    },
+    "sagePay": {
+      "type": "object",
+      "properties": {
+        "vendorName": { "type": "string" },
+        "liveUrl": { "type": "string" },
+        "testUrl": { "type": "string" },
+        "mockUrl": { "type": "string" },
+        "simulatorUrl": { "type": "string" }
+      },
+      "required": ["vendorName", "mockUrl", "liveUrl", "simulatorUrl", "testUrl"]
+    }
+  }
+}

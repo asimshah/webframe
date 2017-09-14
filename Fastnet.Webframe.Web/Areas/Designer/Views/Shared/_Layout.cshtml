@@ -1,0 +1,70 @@
+﻿@using Fastnet.Common
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/designer/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="fastnet-error-panel hide">
+
+    </div>
+    <div class="navbar navbar-inverse ">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Webframe Designer", "Index", "Home", new { area = "designer" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Layout", "Index", "StyleSheet")</li>
+                    <li>@Html.ActionLink("Menus", "Index", "SiteMenu")</li>
+                    <li>@Html.ActionLink("Back", "Index", "Home", new { area = "" }, null)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        <div class="row">
+            <div class="col-xs-12">
+                @RenderBody()
+                <div id="form" class="forms-container">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <hr />
+                <footer>
+                    <p>&copy; @DateTime.Now.Year Webframe</p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/fastnet/utils")
+    @RenderSection("scripts", required: false)
+    @if (ApplicationSettings.Key("ClientSideLog", false) == true)
+    {
+        <script>
+            $(function () {
+                $.fastnet$utilities.EnableClientSideLog();
+            });
+        </script>
+    }
+</body>
+
+</html>

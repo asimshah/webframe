@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="f841d064-68ef-4bad-93ff-366377d4956b" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="83d30240-9a6e-439c-857f-1c1790286ae9" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd4" />
+    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="710185fb-c3d5-4cfe-bda8-603de211d717" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd5" />
+    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="eb238a18-d556-4b9d-a6d6-1bb921ab744b" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd0" />
+    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="82680ef2-ef97-42b1-a8e5-72033d3d30a5" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?disco" />
+    <MetadataFile FileName="item3.xsd" MetadataType="Schema" ID="8de26ad9-30dd-48c0-8867-a42806d20edf" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd3" />
+    <MetadataFile FileName="EventRecordingService.wsdl" MetadataType="Wsdl" ID="d171ba3c-5d60-4535-b8c6-26a6d8158662" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?wsdl" />
+    <MetadataFile FileName="item4.xsd" MetadataType="Schema" ID="d0b2d583-15b6-4efc-9c92-8c4a0c29b9d6" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd1" />
+    <MetadataFile FileName="item5.xsd" MetadataType="Schema" ID="5775aec6-6e07-4995-a7a7-85a5799fd6c6" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Fastnet.Services.Events/EventRecordingService/?xsd=xsd2" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

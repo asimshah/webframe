@@ -1,0 +1,25 @@
+﻿@using Fastnet.Webframe.BookingData
+@{
+    ViewBag.Title = "Booking Admin";
+    ViewBag.BaseUrl = Request.Url.GetLeftPart(UriPartial.Authority) + VirtualPathUtility.ToAbsolute("~/");
+    ViewBag.AppName = BookingGlobals.GetAbodeName() + " Booking System";
+}
+@section styles {
+    @Styles.Render("~/Content/booking/admin/css")
+}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="admin-interaction"></div>
+    </div>
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/booking/admin")
+    @*@Scripts.Render("~/bundles/booking/custom")*@
+    <script>
+        (function ($) {
+            var adminApp = new fastnet.booking.adminApp();
+            adminApp.start();
+        })(jQuery);
+    </script>
+}

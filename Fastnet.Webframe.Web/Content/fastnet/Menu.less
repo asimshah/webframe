@@ -1,0 +1,48 @@
+﻿.default-menu {
+    @base-background-colour: #1b76bc;
+
+    .menu-item {
+        padding: 2px 12px 2px 12px;
+        margin: 8px 12px 8px 12px;
+        line-height: 2.0em;
+        border-radius: 3px;
+        font-size: x-small;
+        color: white;
+        background-color: darken(@base-background-colour, 10%);
+
+        &:hover {
+            background-color: darken(white, 10%);
+            color: darken(@base-background-colour, 10%);
+        }
+    }
+
+    &.vertical {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        .menu-item-panel.level-1 {
+            background-color: lightgray;
+            border-radius: 3px;
+        }
+        .menu-item {
+            padding: 3px;
+            margin: 3px;
+            width: 75%;
+            line-height: 1.0em;
+            font-size: small;
+            color:@base-background-colour;
+            background-color:transparent;
+            a {
+                text-align:left;
+            }
+        }
+    }
+}
+.editable-content {
+    .fastnet-menu.vertical:first-child {
+        margin-bottom:0;
+    }
+    .fastnet-menu.vertical:last-child {
+        margin-top:0;
+    }
+}
+

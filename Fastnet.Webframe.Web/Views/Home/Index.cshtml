@@ -1,0 +1,59 @@
+﻿@using Fastnet.Webframe.Web.Common
+@using Fastnet.Webframe.Web.Models
+@model Fastnet.Webframe.Web.Models.PageModel
+@{
+    ViewBag.Title = "Home";
+    ViewBag.BaseUrl = Request.Url.GetLeftPart(UriPartial.Authority) + VirtualPathUtility.ToAbsolute("~/");
+}
+@section styles {
+    @*@if (Model.CanEditPages)
+        {
+            // I think that I may not need any of the jquery ui css for the tinymce editor
+            // because I am not using any tinymce dialogs. I may be wrong so I am
+            // leaving this commented for now.
+            @Styles.Render("~/Content/editorcss");
+            @Styles.Render("~/Content/dropzonecss");
+        }*@
+    @Styles.Render("~/Content/themes/base/css")
+    @Styles.Render("~/Content/editorcss")
+    @Styles.Render("~/Content/dropzonecss")
+    @*@if (Model.Features.HasFlag(Features.DateCapture))
+    {
+        @Styles.Render("~/Content/datepicker/css");
+    }*@
+    @*@Styles.Render("~/Content/site/css")*@
+    @Styles.Render("~/Content/page/css")
+}
+<div class="MenuPanel"></div>
+<div class="ContentPanel">
+    <div id="leftPanel" class="LeftPanel editable-content"></div>
+    <div id="centrePanel" class="CentrePanel editable-content"></div>
+    <div id="rightPanel" class="RightPanel editable-content"></div>
+    @*<div class="LeftPanel">
+            <div class="editable-content"></div>
+        </div>
+        <div class="CentrePanel">
+            <div class="editable-content"></div>
+        </div>
+        <div class="RightPanel">
+            <div class="editable-content"></div>
+        </div>*@
+</div>
+
+@section scripts {
+    @if (Model.Features.HasFlag(Features.DateCapture))
+    {
+       // @Scripts.Render("~/bundles/datepicker")
+    }
+    @Scripts.Render("~/bundles/main/page")
+    @Scripts.Render("~/bundles/identity")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/main/editor")
+    <script>
+        $(function () {
+            $.fastnet$utilities.AddOptions(@Html.Raw(@Model.Options.ToJson()));
+            $.core$page.Start(@Html.Raw(@Model.ToJson()));
+        });
+    </script>
+}
+
