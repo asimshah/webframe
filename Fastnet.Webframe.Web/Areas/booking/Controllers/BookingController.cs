@@ -220,6 +220,16 @@ namespace Fastnet.Webframe.Web.Areas.booking.Controllers
         [Route("create/{abodeId}")]
         public async Task<dynamic> MakeBooking(long abodeId, bookingRequest request)
         {
+            if(/*true ||*/ this.GetCurrentMember().IsAnonymous)
+            {
+                Log.Write(EventSeverities.Error, $"Booking attempted by anonymous user, details: {request.fromDate} to {request.toDate}, phone {(request.phoneNumber ?? "none" )}");
+                return new
+                {
+                    Success = false,
+                    Error = "Bookings cannot be made by anonymous users",
+                    Code = "AnonymousUser"
+                };
+            }
             // default isolation level is Serializable, meaning no one else can do anything
             string reference = null;
             long bookingId;

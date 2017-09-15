@@ -787,6 +787,9 @@ This is a system error`;
                                 <div>Availability calendar(s) have been updated. It is possible that the booking may succeed on a retry.</div>`;
                 var htmlFailed = `<div>This booking could not be made.</div>
                                   <div>An internal error has occurred.</div>`;
+                var htmlAnonymous = `<div>This booking could not be made.</div>
+                                  <div>Member details were not found. Make sure you are logged in correctly.</div>
+                                  <div>If so, please report this error.</div>`;
                 var request: server.bookingRequest = {
                     choice: model.choice,
                     fromDate: str.toDateString(model.fromDate),
@@ -800,6 +803,38 @@ This is a system error`;
                 var abodeId = this.bookingApp.bookingParameters.currentAbode.id;
                 var createBookingUrl = str.format("bookingapi/create/{0}", abodeId);
                 ajax.Post({ url: createBookingUrl, data: request }).then((r) => {
+                    if (!r.Success) {
+                        if (r.Code === "AnonymousUser") {
+                            var cf = new forms.form(this, {
+                                modal: true,
+                                title: "Booking Failed",
+                                styleClasses: configuration.getFormStyleClasses(),
+                                datepickerOptions: this.dpOptions,
+                                cancelButton: null
+                            }, null);
+                            cf.setContentHtml(htmlAnonymous);
+                            cf.open((ctx: bookDates, f: forms.form, cmd: string, data: any) => {
+                                f.close();
+                                this.step1_vm.reset();
+                                this.step1();
+                            });
+                        }
+                        else {
+                            var cf = new forms.form(this, {
+                                modal: true,
+                                title: "Booking Failed",
+                                styleClasses: configuration.getFormStyleClasses(),
+                                datepickerOptions: this.dpOptions,
+                                cancelButton: null
+                            }, null);
+                            cf.setContentHtml(htmlFailed);
+                            cf.open((ctx: bookDates, f: forms.form, cmd: string, data: any) => {
+                                f.close();
+                                this.step1_vm.reset();
+                                this.step1();
+                            });
+                        }
+                    }
                     if (!r.Success && r.Code === "SystemError") {
                         var cf = new forms.form(this, {
                             modal: true,

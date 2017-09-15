@@ -767,6 +767,7 @@ var fastnet;
                 var _this = this;
                 var htmlAvailabilityLost = "<div>This booking could not be made.</div>\n                                  <div>The most probable reason is that another booking has just been made that overlaps with these dates.</div>\n                                <div>Availability calendar(s) have been updated. It is possible that the booking may succeed on a retry.</div>";
                 var htmlFailed = "<div>This booking could not be made.</div>\n                                  <div>An internal error has occurred.</div>";
+                var htmlAnonymous = "<div>This booking could not be made.</div>\n                                  <div>Member details were not found. Make sure you are logged in correctly.</div>\n                                  <div>If so, please report this error.</div>";
                 var request = {
                     choice: model.choice,
                     fromDate: str.toDateString(model.fromDate),
@@ -779,6 +780,38 @@ var fastnet;
                 var abodeId = this.bookingApp.bookingParameters.currentAbode.id;
                 var createBookingUrl = str.format("bookingapi/create/{0}", abodeId);
                 ajax.Post({ url: createBookingUrl, data: request }).then(function (r) {
+                    if (!r.Success) {
+                        if (r.Code === "AnonymousUser") {
+                            var cf = new forms.form(_this, {
+                                modal: true,
+                                title: "Booking Failed",
+                                styleClasses: configuration.getFormStyleClasses(),
+                                datepickerOptions: _this.dpOptions,
+                                cancelButton: null
+                            }, null);
+                            cf.setContentHtml(htmlAnonymous);
+                            cf.open(function (ctx, f, cmd, data) {
+                                f.close();
+                                _this.step1_vm.reset();
+                                _this.step1();
+                            });
+                        }
+                        else {
+                            var cf = new forms.form(_this, {
+                                modal: true,
+                                title: "Booking Failed",
+                                styleClasses: configuration.getFormStyleClasses(),
+                                datepickerOptions: _this.dpOptions,
+                                cancelButton: null
+                            }, null);
+                            cf.setContentHtml(htmlFailed);
+                            cf.open(function (ctx, f, cmd, data) {
+                                f.close();
+                                _this.step1_vm.reset();
+                                _this.step1();
+                            });
+                        }
+                    }
                     if (!r.Success && r.Code === "SystemError") {
                         var cf = new forms.form(_this, {
                             modal: true,

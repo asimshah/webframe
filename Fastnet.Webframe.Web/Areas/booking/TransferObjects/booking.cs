@@ -19,6 +19,8 @@ namespace Fastnet.Webframe.Web.Areas.booking
         public string memberName { get; set; }
         public string memberEmailAddress { get; set; }
         public string memberPhoneNumber { get; set; }
+        public string memberFirstName { get; set; }
+        public string memberLastName { get; set; }
         public string from { get; set; }
         public string to { get; set; }
         public string description { get; set; }
@@ -68,7 +70,9 @@ namespace Fastnet.Webframe.Web.Areas.booking
             // could add firstName, lastName here
             this.memberName = m.Fullname;
             this.memberEmailAddress = m.EmailAddress;
-            this.memberPhoneNumber = m.PhoneNumber;         
+            this.memberPhoneNumber = m.PhoneNumber;
+            this.memberFirstName = m.FirstName;
+            this.memberLastName = m.LastName;
         }
         //private string GetAccomodationDescription(Booking b)
         //{

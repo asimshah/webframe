@@ -51,6 +51,8 @@ namespace Fastnet.Webframe.Web.Areas.booking
                 memberName = booking.memberName,
                 memberEmailAddress = booking.memberEmailAddress,
                 memberPhoneNumber = booking.memberPhoneNumber,
+                memberFirstName = booking.memberFirstName,
+                memberLastName = booking.memberLastName,
                 reference = booking.reference,
                 from = booking.from,
                 to = DateTime.Parse(booking.to).AddDays(1).ToDefault(),
