@@ -9,10 +9,12 @@ import { DOCUMENT } from '@angular/platform-browser';
 })
 export class HomeComponent implements OnInit {
     ngOnInit() {
-        let headElement: HTMLHeadElement = document.getElementsByTagName("head")[0];
-        let customLink = document.createElement("link");
-        customLink.rel = "stylesheet";
-        customLink.href = "/css/custom.css";
-        headElement.appendChild(customLink);
+        if ( document !== undefined) {
+            let headElement: HTMLHeadElement = document.getElementsByTagName("head")[0];
+            let customLink = document.createElement("link");
+            customLink.rel = "stylesheet";
+            customLink.href = "/css/custom.css";
+            headElement.appendChild(customLink);
+        }
     }
 }

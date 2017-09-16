@@ -13,6 +13,8 @@ using Fastnet.Webframe.IdentityData2;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
+using Fastnet.Webframe.Web2.Services;
 
 namespace Fastnet.Webframe.Web2
 {
@@ -35,6 +37,12 @@ namespace Fastnet.Webframe.Web2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddTransient<IEmailSender, EmailSender>();
             services.AddMvc();
         }
 
