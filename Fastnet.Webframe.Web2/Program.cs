@@ -7,18 +7,24 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Fastnet.Core.Web.Logging;
 
-namespace Fastnet_Webframe_Web2
+namespace Fastnet.Webframe.Web2
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            TelemetryConfiguration.Active.DisableTelemetry = true;
+            TelemetryDebugWriter.IsTracingDisabled = true;
             BuildWebHost(args).Run();
         }
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .ConfigureLogging(lb => lb.AddWebRollingFile())
                 .UseStartup<Startup>()
                 .Build();
     }

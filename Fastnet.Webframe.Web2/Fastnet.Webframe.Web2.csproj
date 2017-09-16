@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.163" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
   </ItemGroup>
 
@@ -17,7 +18,24 @@
 
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
+    <Compile Remove="archive\**" />
+    <Content Remove="archive\**" />
     <Content Remove="ClientApp\**" />
+    <EmbeddedResource Remove="archive\**" />
+    <None Remove="archive\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="data\sitedb.mdf" />
+    <Content Include="data\sitedb_log.ldf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fastnet.Webframe.IdentityData2\Fastnet.Webframe.IdentityData2.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="logs\" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

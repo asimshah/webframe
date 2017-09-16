@@ -1,0 +1,65 @@
+﻿$default-backgroundColour: #1b76bc;
+
+$default-sitepanel-width: 840px;
+
+$default-bannerpanel-backgroundColour: $default-backgroundColour;
+$default-bannerpanel-foregroundColour: white;
+$default-bannerpanel-height: 88px;
+
+$default-menupanel-backgroundColour: lighten($default-backgroundColour, 10%);
+
+$default-leftpanel-width: 210px;
+
+.SitePanel {
+    height: 100%;
+    margin: 0 auto;
+    width: $default-sitepanel-width;
+    font-size: 10.5pt;
+    font-family: Verdana;
+    //background-color: black;
+    display:flex;
+    flex-direction: column;
+    .BannerPanel {
+        height: $default-bannerpanel-height;
+        background-color: $default-bannerpanel-backgroundColour;
+        color: $default-bannerpanel-foregroundColour;
+        width: 100%;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+    .MenuPanel {
+        height: 24px; // remove??
+        background-color: $default-menupanel-backgroundColour;
+        text-align: right;
+        width: 100%;
+    }
+    .ContentPanel {
+        width: 100%;
+        background-color: lightcoral;
+        height: 100%;
+        display: flex;
+        .LeftPanel {
+            background-color: burlywood;
+            height: 100%;
+            width: $default-leftpanel-width;
+            padding-left: 2px;
+            padding-right: 20px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            font-size: smaller;
+        }
+        .CentrePanel {
+            height: 100%;
+            width: 100%;
+            background-color: white;
+            padding: 2px;
+        }
+        .RightPanel {
+            background-color: darkkhaki;
+            height: 100%;
+            width: 100px;
+            padding: 2px;
+            display: none;
+        }
+    }
+}

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fastnet_Webframe_Web2.Controllers
+namespace Fastnet.Webframe.Web2.Controllers
 {
     public class HomeController : Controller
     {

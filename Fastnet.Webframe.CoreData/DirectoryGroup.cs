@@ -39,23 +39,28 @@ namespace Fastnet.Webframe.CoreData
         {
             if (tf)
             {
-                Permission = Permission.Set(CoreData.Permission.ViewPages);
+                Permission |= Permission.ViewPages;
+                //Permission = Permission.Set(Permission.ViewPages);
             }
             else
             {
-                Permission = Permission.Set(CoreData.Permission.EditPages);
+                Permission |= Permission.EditPages;
+                //Permission = Permission.Set(Permission.EditPages);
             }
         }
         public void SetEdit(bool tf)
         {
             if (tf)
             {
-                Permission = Permission.Set(CoreData.Permission.EditPages);
-                Permission = Permission.Set(CoreData.Permission.ViewPages);
+                Permission |= Permission.EditPages;
+                Permission |= Permission.ViewPages;
+                //Permission = Permission.Set(Permission.EditPages);
+                //Permission = Permission.Set(Permission.ViewPages);
             }
             else
             {
-                Permission = Permission.Unset(CoreData.Permission.EditPages);
+                Permission &= ~Permission.EditPages;
+                //Permission = Permission.Unset(Permission.EditPages);
             }
         }
         public void RecordChanges(string actionBy, RestrictionAction.EditingActionTypes actionType)
