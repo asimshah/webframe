@@ -25,7 +25,7 @@ namespace Fastnet.Webframe.CoreData2
         public DbSet<DirectoryGroup> DirectoryGroups { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<MemberBase> Members { get; set; }
-        public DbSet<Member> StdMembers { get; set; }
+        //public DbSet<Member> StdMembers { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<PageMarkup> PageMarkups { get; set; }
         public DbSet<PagePage> PagePages { get; set; }

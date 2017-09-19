@@ -158,9 +158,16 @@ namespace Fastnet.Webframe.Web2
             var pageCount = coreDataContext.Pages.Count();
             Debugger.Break();
         }
-
+        private void DebugSomeCoreDataStats(CoreDataContext ctx)
+        {
+            log.LogInformation($"page Count: {ctx.Pages.Count()}");
+            log.LogInformation($"directory Count: {ctx.Directories.Count()}");
+            log.LogInformation($"group Count: {ctx.Groups.Count()}");
+            log.LogInformation($"member Count: {ctx.Members.Count()}");
+        }
         private void NormalizeUserRecords(ApplicationDbContext appDb)
         {
+            // add to roles??
             try
             {
                 foreach (var user in appDb.Users.ToArray())

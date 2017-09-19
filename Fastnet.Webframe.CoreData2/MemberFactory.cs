@@ -46,7 +46,7 @@ namespace Fastnet.Webframe.CoreData2
         }
         protected virtual MemberBase CreateMemberInstance()
         {
-            return new Member();
+            return new MemberBase();
         }
         protected virtual void Fill(MemberBase member, string id, string emailAddress, string firstName, string lastName)
         {
@@ -69,7 +69,7 @@ namespace Fastnet.Webframe.CoreData2
         }
         public virtual MemberBase Find(CoreDataContext ctx, string id)
         {
-            return ctx.Members.Find(id) as Member;
+            return ctx.Members.Find(id);// as Member;
         }
         public async virtual Task<ExpandoObject> ValidateRegistration(dynamic data)
         {
