@@ -21,7 +21,7 @@ namespace Fastnet.Webframe.BookingData2
     }
     public class Accomodation : Hierarchy<Accomodation>
     {
-        private ICollection<Booking> bookings;
+        //private ICollection<Booking> bookings;
         //private ICollection<Accomodation> subAccomodationSet;
         //private ICollection<Availability> availabilities;
         public long AccomodationId { get; set; }
@@ -39,7 +39,7 @@ namespace Fastnet.Webframe.BookingData2
         public ICollection<AccomodationExtra> Extras { get; set; }
         public ICollection<Accomodation> SubAccomodation { get; set; }
         public ICollection<Availability> Availabilities { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<BookingAccomodation> BookingAccomodations { get; set; }
         public override Accomodation GetParent()
         {
             return this.ParentAccomodation;

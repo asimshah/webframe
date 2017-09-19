@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -18,18 +19,23 @@ namespace Fastnet.Webframe.BookingData2
     {
         public Period()
         {
-            Interval = new LongSpan();
+            //Interval = new LongSpan();
         }
         public long PeriodId { get; set; }
+        public long ParentPeriod_PeriodId { get; set; }
+        [ForeignKey("ParentPeriod_PeriodId")]
         public Period ParentPeriod { get; set; }
-        //[MaxLength(64)]
-        //public string Name { get; set; }
-        //public string Description { get; set; }
         public PeriodType PeriodType { get; set; }
+        public long PriceStructure_PriceStructureId { get; set; }
+        [ForeignKey("PriceStructure_PriceStructureId")]
+        public PriceStructure PriceStructure { get; set; }
         public DateTime? StartDate { get; set; } // must be non-null if PeriodType == Fixed
         public DateTime? EndDate { get; set; } // endless if null, if PeriodType == fixed
         public DaysOfTheWeek DaysOfTheWeek { get; set; } // if PeriodType == DaysInWeek
-        public LongSpan Interval { get; set; } // if PeriodType == Rolling, if LongSpan is all zeroes then thsi is an indefinite period
+        internal int Interval_Days { get; set; }
+        internal int Interval_Months { get; set; }
+        internal int Interval_Years { get; set; }
+
         public bool Includes(DateTime day)
         {
             bool result = false;
@@ -79,7 +85,7 @@ namespace Fastnet.Webframe.BookingData2
         public DateTime GetRollingEndDate(DateTime relativeTo)
         {
             Debug.Assert(PeriodType == PeriodType.Rolling);
-            if(Interval.Years == 0 && Interval.Months == 0 && Interval.Days == 0)
+            if (Interval.Years == 0 && Interval.Months == 0 && Interval.Days == 0)
             {
                 return DateTime.MaxValue;
             }
@@ -91,6 +97,19 @@ namespace Fastnet.Webframe.BookingData2
             TimeSpan ts = this.GetEndDate() - this.GetStartDate();
             return ts;
         }
-        public virtual ICollection<Period> Subperiods { get; set; }
+        public ICollection<Period> Subperiods { get; set; }
+        [NotMapped]
+        public LongSpan Interval // if PeriodType == Rolling, if LongSpan is all zeroes then thsi is an indefinite period
+        {
+            get
+            {
+                return new LongSpan
+                {
+                    Days = this.Interval_Days,
+                    Months = this.Interval_Months,
+                    Years = this.Interval_Years
+                };
+            }
+        }
     }
 }

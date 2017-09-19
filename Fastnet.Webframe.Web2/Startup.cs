@@ -24,6 +24,8 @@ using Fastnet.Webframe.CoreData2;
 //using Fastnet.Webframe.Web2.Common;
 using Microsoft.Extensions.Options;
 using Fastnet.Webframe.Common2;
+using System.Collections.Generic;
+using Fastnet.Webframe.BookingData2;
 
 namespace Fastnet.Webframe.Web2
 {
@@ -90,27 +92,30 @@ namespace Fastnet.Webframe.Web2
             });
 
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddTransient<IMemberFactory>((sp) =>
-            {
-                var options = sp.GetRequiredService<IOptions<CustomisationOptions>>();
-                var coreDataContext = sp.GetRequiredService<CoreDataContext>();
-                var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-                switch (options.Value.factory)
-                {
-                    case "DonWhillansHut":
-                        return new DWHMemberFactory(loggerFactory.CreateLogger<DWHMemberFactory>(),  options, coreDataContext);
-                    default:
-                        return new MemberFactory(loggerFactory.CreateLogger<MemberFactory>(), options, coreDataContext);
-                }
-            });
+            services.AddWebframeServices();
+            //services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //services.AddTransient<IMemberFactory>((sp) =>
+            //{
+            //    var options = sp.GetRequiredService<IOptions<CustomisationOptions>>();
+            //    var coreDataContext = sp.GetRequiredService<CoreDataContext>();
+            //    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+            //    switch (options.Value.factory)
+            //    {
+            //        case "DonWhillansHut":
+            //            return new DWHMemberFactory(loggerFactory.CreateLogger<DWHMemberFactory>(),  options, coreDataContext);
+            //        default:
+            //            return new MemberFactory(loggerFactory.CreateLogger<MemberFactory>(), options, coreDataContext);
+            //    }
+            //});
 
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<CustomisationOptions> options, ApplicationDbContext appDb, CoreDataContext coreDataContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<CustomisationOptions> options,
+            ApplicationDbContext appDb, CoreDataContext coreDataContext, BookingDataContext bookingDataContext)
         {
             if (env.IsDevelopment())
             {
@@ -148,20 +153,29 @@ namespace Fastnet.Webframe.Web2
             if(options.Value.Factory == FactoryName.DonWhillansHut)
             {
                 DWHMember.ResetAnonymous(coreDataContext);
+                DebugSomeBookingDataStats(bookingDataContext);
             }
-            DebugSomeCoreDataStats(coreDataContext);
-
+            DebugSomeCoreDataStats(coreDataContext, options.Value);
+            
         }
 
-        private void DebugSomeCoreDataStats(CoreDataContext ctx)
+        private void DebugSomeBookingDataStats(BookingDataContext ctx)
+        {
+            log.LogInformation($"booking Count: {ctx.Bookings.Count()}");
+            log.LogInformation($"emails Count: {ctx.Emails.Count()}");
+            log.LogInformation($"entry code Count: {ctx.EntryCodes.Count()}");
+        }
+
+        private void DebugSomeCoreDataStats(CoreDataContext ctx, CustomisationOptions options)
         {
             log.LogInformation($"page Count: {ctx.Pages.Count()}");
             log.LogInformation($"directory Count: {ctx.Directories.Count()}");
             log.LogInformation($"group Count: {ctx.Groups.Count()}");
             log.LogInformation($"member Count: {ctx.Members.Count()}");
-            foreach(var member in ctx.DWHMembers)
+            var members = options.Factory == FactoryName.DonWhillansHut ? ctx.DWHMembers as IEnumerable<Member> : ctx.Members;
+            foreach(var member in members.OrderBy(m => m.LastName).ThenBy(m => m.FirstName))
             {
-                log.LogInformation($"member: {member.FirstName}, {member.LastName}");
+                log.LogInformation($"member: {member.FirstName}, {member.LastName}, {member.EmailAddress}");
             }
         }
         private void NormalizeUserRecords(ApplicationDbContext appDb)

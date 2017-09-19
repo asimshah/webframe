@@ -10,15 +10,11 @@ namespace Fastnet.Webframe.BookingData2
 {
     public class PriceStructure
     {
-        private ICollection<Period> periods;
+        //private ICollection<Period> periods;
         public long PriceStructureId { get; set; }
         [Required]
         public string Name { get; set; }
-        public virtual ICollection<Period> Periods
-        {
-            get { return periods ?? (periods = new HashSet<Period>()); }
-            set { periods = value; }
-        }
+        public ICollection<Period> Periods { get; set; }
     }
     public class Price
     {

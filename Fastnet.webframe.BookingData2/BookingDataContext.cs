@@ -17,6 +17,7 @@ namespace Fastnet.Webframe.BookingData2
         public DbSet<Period> Periods { get; set; }
         public DbSet<Price> Prices { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingAccomodation> BookingAccomodations { get; set; }
         public DbSet<EntryCode> EntryCodes { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
         public DbSet<DWHParameter> DWHParameters { get; set; }
@@ -33,6 +34,19 @@ namespace Fastnet.Webframe.BookingData2
             modelBuilder.Entity<Accomodation>()
                 .HasIndex(c => c.Name)
                 .IsUnique();
+            modelBuilder.Entity<BookingAccomodation>()
+                .HasKey(c => new { c.Booking_BookingId, c.Accomodation_AccomodationId });
+
+            modelBuilder.Entity<BookingAccomodation>()
+                .HasOne(x => x.Accomodation)
+                .WithMany(x => x.BookingAccomodations)
+                .HasForeignKey(x => x.Accomodation_AccomodationId);
+
+            modelBuilder.Entity<BookingAccomodation>()
+                .HasOne(x => x.Booking)
+                .WithMany(x => x.BookingAccomodations)
+                .HasForeignKey(x => x.Booking_BookingId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

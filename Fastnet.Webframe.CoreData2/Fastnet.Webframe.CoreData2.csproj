@@ -13,6 +13,7 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Fastnet.webframe.BookingData2\Fastnet.Webframe.BookingData2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.Common\Fastnet.Webframe.Common2.csproj" />
   </ItemGroup>
 </Project>

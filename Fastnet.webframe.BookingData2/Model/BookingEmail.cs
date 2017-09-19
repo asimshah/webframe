@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace Fastnet.Webframe.BookingData2
         Failed,
         FailedRetryable
     }
+    [Table("BookingEmails")]
     public class BookingEmail
     {        
         public long BookingEmailId { get; set; }

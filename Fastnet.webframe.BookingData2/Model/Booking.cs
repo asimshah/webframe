@@ -12,8 +12,8 @@ namespace Fastnet.Webframe.BookingData2
 
     public class Booking
     {
-        private ICollection<Accomodation> accomodationSet;
-        private ICollection<BookingEmail> emails;
+        //private ICollection<Accomodation> accomodationSet;
+        //private ICollection<BookingEmail> emails;
         public long BookingId { get; set; }
         public bookingStatus Status { get; set; }
         [MaxLength(32)]
@@ -32,16 +32,8 @@ namespace Fastnet.Webframe.BookingData2
         [MaxLength(128)]
         public string EntryInformation { get; set; }
         public bool Under18sInParty { get; set; }
-        public virtual ICollection<Accomodation> AccomodationCollection
-        {
-            get { return accomodationSet ?? (accomodationSet = new HashSet<Accomodation>()); }
-            set { accomodationSet = value; }
-        }
-        public virtual ICollection<BookingEmail> Emails
-        {
-            get { return emails ?? (emails = new HashSet<BookingEmail>()); }
-            set { emails = value; }
-        }
+        public ICollection<BookingAccomodation> BookingAccomodations { get; set; }
+        public ICollection<BookingEmail> Emails { get; set; }
         public void AddHistory(string name, string text)
         {
             var today = DateTime.Today;// BookingGlobals.GetToday();
@@ -52,27 +44,17 @@ namespace Fastnet.Webframe.BookingData2
         }
         public void SetPaid(BookingDataContext ctx, string memberFullname, bool paid, long abodeId = 1)
         {
-            //bookingStatus oldStatus = this.Status;
-            //this.Status = bookingStatus.Confirmed;
             this.IsPaid = paid;
             this.AddHistory(memberFullname, string.Format("Mark as {0}", paid ? "paid" : "not paid"));
-            //return oldStatus;
-            //var bst = Factory.GetBookingStateTransition(ctx, abodeId);
-            //if (booking.Status != oldStatus)
-            //{
-            //    booking.StatusLastChanged = DateTime.Now;
-            //    bst.ChangeState(booking, oldStatus);
-            //}
         }
-        //public string GetAccomodationDescription(Booking b)
         public string GetAccomodationDescription()
         {
-            var byGroup = this.AccomodationCollection.GroupBy(x => x.Type, x => x, (k, g) => new { type = k, list = g });
+            //var byGroup = this.AccomodationCollection.GroupBy(x => x.Type, x => x, (k, g) => new { type = k, list = g });
+            var byGroup = this.BookingAccomodations.Select(x => x.Accomodation).GroupBy(x => x.Type, x => x, (k, g) => new { type = k, list = g });
             List<string> lines = new List<string>();
             foreach (var typeItem in byGroup)
             {
                 int count = typeItem.list.Count();
-                //int itemCapacity = typeItem.list.Select(x => x.c).Sum();
                 if (typeItem.type == AccomodationType.Bed)
                 {
                     lines.Add(string.Format("{0} {1}{2}", count, typeItem.type, count > 1 ? "s" : ""));

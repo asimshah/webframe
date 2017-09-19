@@ -1,6 +1,7 @@
 ﻿//using Fastnet.Common;
 //using Fastnet.EventSystem;
 //using Fastnet.Webframe.BookingData;
+using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
 using Microsoft.Extensions.Logging;
@@ -124,7 +125,7 @@ namespace Fastnet.Webframe.CoreData2
             }
         }
 
-        public DWHMemberFactory(ILogger log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext) : base(log, options, coreDataContext)
+        public DWHMemberFactory(ILogger log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext, BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
         {
             EnableBMCApi = this.options.bmc.api.enable;// Settings.bmc.api.enable;
         }
