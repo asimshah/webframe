@@ -70,7 +70,7 @@ namespace Fastnet.Webframe.CoreData2
         }
         public bool IsMemberOf(MemberBase member, Group group)
         {
-            return group.SelfAndDescendants.Any(x => x.Members.Contains(member));
+            return group.SelfAndDescendants.Any(x => x.GroupMembers.Select(gm => gm.Member).Contains(member));
             //return group.Members.Contains(this);
         }
         private void TraceAccess(string fmt, params object[] args)

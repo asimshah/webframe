@@ -6,7 +6,6 @@
         public long UploadFileId { get; set; }
         public int ChunkNumber { get; set; }
         public string Base64String { get; set; }
-
         public UploadFile UploadFile { get; set; }
     }
 }

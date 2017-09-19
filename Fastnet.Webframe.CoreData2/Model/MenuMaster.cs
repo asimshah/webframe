@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fastnet.Webframe.CoreData2
 {
@@ -9,6 +10,8 @@ namespace Fastnet.Webframe.CoreData2
         public bool IsDisabled { get; set; }
         public string ClassName { get; set; }
         public PanelNames PanelName { get; set; }
+        public long Page_PageId { get; set; }
+        [ForeignKey("Page_PageId")]
         public Page Page { get; set; }
         public ICollection<Menu> Menus { get; set; }
         public string GetDescriptor()

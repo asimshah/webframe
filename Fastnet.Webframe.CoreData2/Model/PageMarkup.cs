@@ -5,11 +5,10 @@ namespace Fastnet.Webframe.CoreData2
 {
     public partial class PageMarkup
     {
-        [Key, ForeignKey("Page")]
+        [Key]
         public long PageId { get; set; }
         public System.DateTimeOffset CreatedOn { get; set; }
         public string CreatedBy { get; set; }
-
         public System.DateTimeOffset? ModifiedOn { get; set; }
         public string ModifiedBy { get; set; }
         public byte[] Data { get; set; }
@@ -23,8 +22,7 @@ namespace Fastnet.Webframe.CoreData2
         public byte[] MiddleThumbNail { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-
-        public virtual Page Page { get; set; }
+        public Page Page { get; set; }
         [NotMapped]
         public System.DateTime LastModifiedOn
         {

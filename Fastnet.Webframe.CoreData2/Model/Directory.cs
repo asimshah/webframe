@@ -8,7 +8,6 @@ namespace Fastnet.Webframe.CoreData2
 {
     public partial class Directory : Hierarchy<Directory>
     {
-
         public long DirectoryId { get; set; }
         [StringLength(1024, MinimumLength = 4)]
         public string Name { get; set; }

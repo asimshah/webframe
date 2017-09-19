@@ -14,6 +14,7 @@ using Fastnet.Webframe.Web2.Models;
 using Fastnet.Webframe.Web2.Models.AccountViewModels;
 using Fastnet.Webframe.Web2.Services;
 using Fastnet.Webframe.IdentityData2;
+using System.Diagnostics;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
@@ -51,7 +52,6 @@ namespace Fastnet.Webframe.Web2.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -461,11 +461,5 @@ namespace Fastnet.Webframe.Web2.Controllers
         }
 
         #endregion
-        private void xxx()
-        {
-            string fred;
-
-
-        }
     }
 }

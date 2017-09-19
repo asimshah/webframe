@@ -43,9 +43,9 @@ namespace Fastnet.Webframe.CoreData2
     }
     public partial class DirectoryGroup
     {
-        [Key, Column(Order = 0)]
+        //[Key, Column(Order = 0)]
         public long DirectoryId { get; set; }
-        [Key, Column(Order = 1)]
+        //[Key, Column(Order = 1)]
         public long GroupId { get; set; }        
         public Directory Directory { get; set; }
         public Group Group { get; set; }

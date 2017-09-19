@@ -13,7 +13,6 @@ namespace Fastnet.Webframe.CoreData2
     [Table("Members")]
     public abstract partial class MemberBase
     {
-
         // I do not use the Email Confirmation scheme that ias part of the Asp.Net Identity system
         // because the UserManager.GenerateEmailConfirmationTokenAsync method produces a ridiculously
         // long string!
@@ -45,7 +44,7 @@ namespace Fastnet.Webframe.CoreData2
         public bool IsAnonymous { get; set; }
         public MemberCreationMethod CreationMethod { get; set; }
         //
-        public ICollection<Group> Groups { get; set; }
+        public ICollection<GroupMember> GroupMembers { get; set; }
         [NotMapped]
         public string Fullname
         {
@@ -61,7 +60,6 @@ namespace Fastnet.Webframe.CoreData2
             }
         }
         //
-
         public static string HashPassword(string password)
         {
             byte[] salt;
@@ -127,10 +125,6 @@ namespace Fastnet.Webframe.CoreData2
 
             return byteArraysEqual(buffer3, buffer4);
         }
-
-
-
-
         //public abstract dynamic GetMinimumDetails();
         public virtual ExpandoObject GetMinimumDetails()
         {
@@ -168,7 +162,7 @@ namespace Fastnet.Webframe.CoreData2
             details.CreationDate = this.CreationDate;
             details.LastLoginDate = this.LastLoginDate;
             details.Status = getStatus();
-            details.Groups = this.Groups.OrderBy(x => x.Name).ToArray().Where(g => !g.Type.HasFlag(GroupTypes.SystemDefinedMembers))
+            details.Groups = this.GroupMembers.Select(x => x.Group).OrderBy(x => x.Name).ToArray().Where(g => !g.Type.HasFlag(GroupTypes.SystemDefinedMembers))
                 .Select(g => new { Name = g.Shortenedpath });
             return details;
         }
@@ -183,6 +177,14 @@ namespace Fastnet.Webframe.CoreData2
             result.Success = true;
             result.Error = "";
             return await Task.FromResult(result);
+        }
+
+        protected void Update(string newEmailAddress, string newFirstName, string newLastName, bool newDisabled)
+        {
+            EmailAddress = newEmailAddress;
+            FirstName = newFirstName;
+            LastName = newLastName;
+            Disabled = newDisabled;
         }
         public void RecordChanges(string actionBy = null, MemberAction.MemberActionTypes actionType = MemberAction.MemberActionTypes.Modification)
         {
@@ -252,19 +254,12 @@ namespace Fastnet.Webframe.CoreData2
             //    }
             //}
         }
-        protected void Update(string newEmailAddress, string newFirstName, string newLastName, bool newDisabled)
-        {
-            EmailAddress = newEmailAddress;
-            FirstName = newFirstName;
-            LastName = newLastName;
-            Disabled = newDisabled;
-        }
         private IEnumerable<Group> GetAllGroups()
         {
             // this returns a flat list of all groups this member is in 
             // including parent groups all the way to the root
             List<Group> list = new List<Group>();
-            foreach (var g in this.Groups)
+            foreach (var g in this.GroupMembers.Select(x => x.Group))
             {
                 foreach (var pg in g.SelfAndParents)
                 {
@@ -272,10 +267,6 @@ namespace Fastnet.Webframe.CoreData2
                 }
             }
             return list;
-        }
-
-
-
-        
+        }        
     }
 }

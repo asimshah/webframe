@@ -34,7 +34,6 @@ namespace Fastnet.Webframe.CoreData
     [Table("Members")]
     public abstract partial class MemberBase
     {
-
         // I do not use the Email Confirmation scheme that ias part of the Asp.Net Identity system
         // because the UserManager.GenerateEmailConfirmationTokenAsync method produces a ridiculously
         // long string!
@@ -65,8 +64,8 @@ namespace Fastnet.Webframe.CoreData
         public bool IsAdministrator { get; set; }
         public bool IsAnonymous { get; set; }
         public MemberCreationMethod CreationMethod { get; set; }
-        //
 
+        //
         private ICollection<Group> groups;
         public virtual ICollection<Group> Groups
         {

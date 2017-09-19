@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Fastnet.Core.Web" Version="1.0.163" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,10 +32,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fastnet.Webframe.Common\Fastnet.Webframe.Common2.csproj" />
+    <ProjectReference Include="..\Fastnet.Webframe.CoreData2\Fastnet.Webframe.CoreData2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.IdentityData2\Fastnet.Webframe.IdentityData2.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Common\" />
     <Folder Include="logs\" />
     <Folder Include="Models\" />
   </ItemGroup>
@@ -68,5 +72,7 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

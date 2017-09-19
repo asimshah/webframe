@@ -9,10 +9,6 @@ namespace Fastnet.Webframe.CoreData2
 {
     public partial class Page
     {
-        //private ICollection<Document> documents;
-        //private ICollection<Page> forwardLinks;
-        //private ICollection<MenuMaster> menuMasters;
-        //
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public long PageId { get; set; }
         public string Name { get; set; }
@@ -23,9 +19,9 @@ namespace Fastnet.Webframe.CoreData2
         public PageMarkup PageMarkup { get; set; }
         public Directory Directory { get; set; }
         public ICollection<MenuMaster> MenuMasters { get; set; }
-        public ICollection<Document> Documents { get; set; } // this page hyperlinks to these document
-        public ICollection<Page> ForwardLinks { get; set; }// this page hyperlinks to these document
-        public ICollection<Page> BackLinks { get; set; } // this page is hyperlinked from these pages
+        public ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these document
+        public ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these document
+        public ICollection<PagePage> BackLinks { get; set; } // this page is hyperlinked from these pages
         [NotMapped]
         public string Url
         {
@@ -171,6 +167,19 @@ namespace Fastnet.Webframe.CoreData2
 
             return pm == null ? null : new PageContent { HtmlStyles = pm.HtmlStyles, HtmlText = pm.HtmlText, HtmlTextLength = pm.HtmlTextLength };
         }
-
+    }
+    public class PageDocument
+    {
+        public long PageId { get; set; }
+        public long DocumentId { get; set; }
+        public Page Page { get; set; }
+        public Document Document { get; set; }
+    }
+    public class PagePage
+    {
+        public long FromPageId { get; set; }
+        public long ToPageId { get; set; }
+        public Page FromPage { get; set; }
+        public Page ToPage { get; set; }
     }
 }

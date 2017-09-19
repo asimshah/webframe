@@ -6,10 +6,17 @@ using System.Linq;
 
 namespace Fastnet.Webframe.CoreData2
 {
+    public class GroupMember
+    {
+        public long GroupId { get; set; }
+        [MaxLength(128)]
+        public string MemberId { get; set; }
+        public Group Group { get; set; }
+        public MemberBase Member { get; set; }
+    }
     public partial class Group : Hierarchy<Group>
     {
         public long GroupId { get; set; }
-        [ForeignKey("ParentGroup")]
         public long? ParentGroupId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,10 +25,11 @@ namespace Fastnet.Webframe.CoreData2
         public GroupTypes Type { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
+        //[ForeignKey("ParentGroup")]
         public Group ParentGroup { get; set; }
         public ICollection<Group> Children { get; set; }
         public ICollection<DirectoryGroup> DirectoryGroups { get; set; }
-        public ICollection<MemberBase> Members { get; set; }
+        public ICollection<GroupMember> GroupMembers { get; set; }
         public override Group GetParent()
         {
             return this.ParentGroup;

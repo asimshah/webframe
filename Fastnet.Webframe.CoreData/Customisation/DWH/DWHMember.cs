@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace Fastnet.Webframe.CoreData
 {
-
     public partial class DWHMember : MemberBase
     {
         [MaxLength(128)]

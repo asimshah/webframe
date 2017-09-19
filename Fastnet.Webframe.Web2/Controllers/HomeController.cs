@@ -19,5 +19,9 @@ namespace Fastnet.Webframe.Web2.Controllers
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
             return View();
         }
+        public IActionResult AccessFailed()
+        {
+            return View();
+        }
     }
 }

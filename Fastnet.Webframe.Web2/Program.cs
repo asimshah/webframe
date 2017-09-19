@@ -24,6 +24,10 @@ namespace Fastnet.Webframe.Web2
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(x =>
+            {
+                x.AddJsonFile("customisation.json", optional: true, reloadOnChange: false);
+            })
             .ConfigureLogging(lb => lb.AddWebRollingFile())
                 .UseStartup<Startup>()
                 .Build();
