@@ -18,7 +18,25 @@ namespace Fastnet.Webframe.Common2
         {
             public BMCApi api { get; set; }
         }
-        public string factory { get; set; }
+
+        private FactoryName _name;
+        public FactoryName Factory
+        {
+            get
+            {
+                return _name;
+            }
+        }
+        private string _factory;
+        public string factory
+        {
+            get { return _factory; }
+            set
+            {
+                _factory = value;
+                _name = (FactoryName)Enum.Parse(typeof(FactoryName), _factory, true);
+            }
+        }
         public BMCOptions bmc { get; set; }
     }
 }

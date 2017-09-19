@@ -1,14 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Dynamic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Fastnet.Webframe.CoreData2
 {
-    public partial class DWHMember : MemberBase
+    public partial class DWHMember : Member
     {
+        public static void ResetAnonymous(CoreDataContext ctx)
+        {
+            var replacement = ctx.DWHMembers.SingleOrDefault(x => x.IsAnonymous);
+            if (replacement == null)
+            {
+                try
+                {
+                    var anonymous = ctx.Members.SingleOrDefault(x => x.IsAnonymous);
+                    if(anonymous != null)
+                    {
+                        var gmList = anonymous.GroupMembers.ToArray();
+                        ctx.GroupMembers.RemoveRange(gmList);
+                        ctx.Members.Remove(anonymous);
+                        ctx.SaveChanges();
+                    }
+                    replacement = new DWHMember
+                    {
+                        Id = "zzzzzzzz-zzzz-zzzz-zzzz-zzzzzzzzzzzz",
+                        LastName = "Anonymous",
+                        CreationDate = DateTime.Now,
+                        IsAnonymous = true,
+                        CreationMethod = MemberCreationMethod.SystemGenerated
+                    };
+                    var anonymousGroup = ctx.GetSystemGroup(SystemGroups.Anonymous);
+                    var gm = new GroupMember
+                    {
+                        Group = anonymousGroup,
+                        Member = replacement
+                    };
+                    ctx.DWHMembers.Add(replacement);
+                    ctx.GroupMembers.Add(gm);
+                    ctx.SaveChanges();
+                }
+                catch (Exception)
+                {
+                    Debugger.Break();
+                    //throw;
+                }
+            }
+        }
         [MaxLength(128)]
         public string BMCMembership { get; set; }
         public DateTime? BMCMembershipExpiresOn { get; set; }

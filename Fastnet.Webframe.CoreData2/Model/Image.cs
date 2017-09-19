@@ -17,8 +17,9 @@ namespace Fastnet.Webframe.CoreData2
         public int Width { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-        [ForeignKey("Directory_DirectoryId")]
+
         public long Directory_DirectoryId { get; set; }
+        [ForeignKey("Directory_DirectoryId")]
         public Directory Directory { get; set; }
         [NotMapped]
         public string MimeType

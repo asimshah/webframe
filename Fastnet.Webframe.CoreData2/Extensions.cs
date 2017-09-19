@@ -5,9 +5,9 @@ namespace Fastnet.Webframe.CoreData2
 {
     public static partial class Extensions
     {
-        public static MemberBase GetAnonymousMember(this CoreDataContext coreDataContext)
+        public static Member GetAnonymousMember(this CoreDataContext coreDataContext)
         {
-            return coreDataContext.Members.OfType<MemberBase>().Single(x => x.IsAnonymous);
+            return coreDataContext.Members.OfType<Member>().Single(x => x.IsAnonymous);
         }
         public static Group GetSystemGroup(this CoreDataContext coreDataContext, SystemGroups sg)
         {

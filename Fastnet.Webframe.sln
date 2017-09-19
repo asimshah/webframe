@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fastnet.Webframe.CoreData2"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fastnet.Webframe.Common2", "Fastnet.Webframe.Common\Fastnet.Webframe.Common2.csproj", "{D943ED99-32A0-4F75-B736-A96D3DCABBB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fastnet.Webframe.BookingData2", "Fastnet.webframe.BookingData2\Fastnet.Webframe.BookingData2.csproj", "{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,18 @@ Global
 		{D943ED99-32A0-4F75-B736-A96D3DCABBB6}.xdebug|Any CPU.Build.0 = Debug|Any CPU
 		{D943ED99-32A0-4F75-B736-A96D3DCABBB6}.xdebug|x86.ActiveCfg = Debug|Any CPU
 		{D943ED99-32A0-4F75-B736-A96D3DCABBB6}.xdebug|x86.Build.0 = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Debug|x86.Build.0 = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Release|x86.ActiveCfg = Release|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.Release|x86.Build.0 = Release|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.xdebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.xdebug|Any CPU.Build.0 = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.xdebug|x86.ActiveCfg = Debug|Any CPU
+		{00ECCB83-0A5F-4F1B-8475-83A255F81EF2}.xdebug|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

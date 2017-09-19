@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Fastnet.Webframe.Common2;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fastnet.Webframe.CoreData2

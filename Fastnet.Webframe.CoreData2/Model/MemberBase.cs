@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Fastnet.Webframe.CoreData2
 {
     [Table("Members")]
-    public partial class MemberBase
+    public partial class Member
     {
         // I do not use the Email Confirmation scheme that ias part of the Asp.Net Identity system
         // because the UserManager.GenerateEmailConfirmationTokenAsync method produces a ridiculously
@@ -50,7 +50,7 @@ namespace Fastnet.Webframe.CoreData2
         {
             get { return string.Format("{0} {1}", this.FirstName, this.LastName).Trim(); }
         }
-        public static MemberBase Anonymous
+        public static Member Anonymous
         {
             get
             {

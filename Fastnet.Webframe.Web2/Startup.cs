@@ -106,15 +106,7 @@ namespace Fastnet.Webframe.Web2
                 }
             });
 
-
             services.AddMvc();
-            //services.AddMvc(config =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-            //    config.Filters.Add(new AuthorizeFilter(policy));
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,8 +129,6 @@ namespace Fastnet.Webframe.Web2
 
             app.UseAuthentication();
 
-
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -155,15 +145,24 @@ namespace Fastnet.Webframe.Web2
                 NormalizeUserRecords(appDb);
                 log.LogInformation($"Application db user records normalised");
             }
-            var pageCount = coreDataContext.Pages.Count();
-            Debugger.Break();
+            if(options.Value.Factory == FactoryName.DonWhillansHut)
+            {
+                DWHMember.ResetAnonymous(coreDataContext);
+            }
+            DebugSomeCoreDataStats(coreDataContext);
+
         }
+
         private void DebugSomeCoreDataStats(CoreDataContext ctx)
         {
             log.LogInformation($"page Count: {ctx.Pages.Count()}");
             log.LogInformation($"directory Count: {ctx.Directories.Count()}");
             log.LogInformation($"group Count: {ctx.Groups.Count()}");
             log.LogInformation($"member Count: {ctx.Members.Count()}");
+            foreach(var member in ctx.DWHMembers)
+            {
+                log.LogInformation($"member: {member.FirstName}, {member.LastName}");
+            }
         }
         private void NormalizeUserRecords(ApplicationDbContext appDb)
         {

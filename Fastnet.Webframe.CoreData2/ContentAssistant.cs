@@ -17,25 +17,25 @@ namespace Fastnet.Webframe.CoreData2
             this.coreDataContext = coreDataContext;
         }
 
-        public AccessResult GetAccessResult(MemberBase member, Image image)
+        public AccessResult GetAccessResult(Member member, Image image)
         {
             TraceAccess("Access: member {0}, {1}", member.Fullname, image.Url);
             Directory dir = image.Directory;
             return GetAccessResult(member, dir);
         }
-        public AccessResult GetAccessResult(MemberBase member, Document doc)
+        public AccessResult GetAccessResult(Member member, Document doc)
         {
             TraceAccess("Access: member {0}, {1}", member.Fullname, doc.Url);
             Directory dir = doc.Directory;
             return GetAccessResult(member, dir);
         }
-        public AccessResult GetAccessResult(MemberBase member, Page page)
+        public AccessResult GetAccessResult(Member member, Page page)
         {
             TraceAccess("Access: member {0}, {1}", member.Fullname, page.Url);
             Directory dir = page.Directory;
             return GetAccessResult(member, dir);
         }
-        public Page FindLandingPage(MemberBase member)
+        public Page FindLandingPage(Member member)
         {
             Func<AccessResult, bool> canAccess = (ar) =>
             {
@@ -68,7 +68,7 @@ namespace Fastnet.Webframe.CoreData2
 
             return result;
         }
-        public bool IsMemberOf(MemberBase member, Group group)
+        public bool IsMemberOf(Member member, Group group)
         {
             return group.SelfAndDescendants.Any(x => x.GroupMembers.Select(gm => gm.Member).Contains(member));
             //return group.Members.Contains(this);
@@ -81,7 +81,7 @@ namespace Fastnet.Webframe.CoreData2
                 log.LogTrace(fmt, args);
             }
         }
-        private AccessResult GetAccessResult(MemberBase member, Directory dir)
+        private AccessResult GetAccessResult(Member member, Directory dir)
         {
             AccessResult ar = AccessResult.Rejected;
             TraceAccess("Access: member {0}, directory {1}", member.Fullname, dir.DisplayName);
@@ -112,7 +112,7 @@ namespace Fastnet.Webframe.CoreData2
             TraceAccess("Access: member {0}, directory {1}, access result: {2}", member.Fullname, dir.DisplayName, ar.ToString());
             return ar;
         }
-        private double FindWeight(MemberBase member, Page p)
+        private double FindWeight(Member member, Page p)
         {
             double result = -1.0;
             Directory dir = p.Directory;

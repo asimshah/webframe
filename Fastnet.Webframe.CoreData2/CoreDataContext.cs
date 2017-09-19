@@ -24,8 +24,8 @@ namespace Fastnet.Webframe.CoreData2
         public DbSet<GroupMember> GroupMembers { get; set; }
         public DbSet<DirectoryGroup> DirectoryGroups { get; set; }
         public DbSet<Image> Images { get; set; }
-        public DbSet<MemberBase> Members { get; set; }
-        //public DbSet<Member> StdMembers { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<DWHMember> DWHMembers { get; set; }
         public DbSet<Page> Pages { get; set; }
         public DbSet<PageMarkup> PageMarkups { get; set; }
         public DbSet<PagePage> PagePages { get; set; }
@@ -46,6 +46,11 @@ namespace Fastnet.Webframe.CoreData2
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("std");
+            if (this.customisation.Factory != FactoryName.DonWhillansHut)
+            {
+                modelBuilder.Ignore<DWHMember>();
+            }
+
             modelBuilder.Entity<DirectoryGroup>()
                 .HasKey(c => new { c.DirectoryId, c.GroupId });
             modelBuilder.Entity<GroupMember>()

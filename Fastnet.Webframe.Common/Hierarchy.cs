@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Fastnet.Webframe.CoreData2
+namespace Fastnet.Webframe.Common2
 {
     public abstract class Hierarchy<T> where T : Hierarchy<T>
     {

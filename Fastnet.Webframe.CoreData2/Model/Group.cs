@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fastnet.Webframe.Common2;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,13 +7,14 @@ using System.Linq;
 
 namespace Fastnet.Webframe.CoreData2
 {
+    [Table("GroupMember")]
     public class GroupMember
     {
         public long GroupId { get; set; }
         [MaxLength(128)]
         public string MemberId { get; set; }
         public Group Group { get; set; }
-        public MemberBase Member { get; set; }
+        public Member Member { get; set; }
     }
     public partial class Group : Hierarchy<Group>
     {

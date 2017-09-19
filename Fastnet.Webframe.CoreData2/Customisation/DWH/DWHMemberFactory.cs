@@ -128,11 +128,11 @@ namespace Fastnet.Webframe.CoreData2
         {
             EnableBMCApi = this.options.bmc.api.enable;// Settings.bmc.api.enable;
         }
-        protected override MemberBase CreateMemberInstance()
+        protected override Member CreateMemberInstance()
         {
             return new DWHMember();
         }
-        public override MemberBase CreateNew(string id, dynamic data, object additionalData)
+        public override Member CreateNew(string id, dynamic data, object additionalData)
         {
             dynamic vr = additionalData;
             DWHMember m = CreateMemberInstance() as DWHMember;
@@ -149,11 +149,11 @@ namespace Fastnet.Webframe.CoreData2
             }
             return m;
         }
-        public override MemberBase Find(CoreDataContext ctx, string id)
+        public override Member Find(CoreDataContext ctx, string id)
         {
             return ctx.Members.Find(id) as DWHMember;
         }
-        public override void AssignGroups(MemberBase m)
+        public override void AssignGroups(Member m)
         {
             //string addToGroup = null;
             //string removeFromGroup = null;

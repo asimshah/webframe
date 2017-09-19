@@ -44,11 +44,11 @@ namespace Fastnet.Webframe.CoreData2
             this.options = options.Value;
             this.coreDataContext = coreDataContext;
         }
-        protected virtual MemberBase CreateMemberInstance()
+        protected virtual Member CreateMemberInstance()
         {
-            return new MemberBase();
+            return new Member();
         }
-        protected virtual void Fill(MemberBase member, string id, string emailAddress, string firstName, string lastName)
+        protected virtual void Fill(Member member, string id, string emailAddress, string firstName, string lastName)
         {
             member.Id = id;
             member.EmailAddress = emailAddress;
@@ -56,9 +56,9 @@ namespace Fastnet.Webframe.CoreData2
             member.LastName = lastName;
             member.CreationDate = DateTime.UtcNow;
         }
-        public virtual MemberBase CreateNew(string id, dynamic data, object additionalData)
+        public virtual Member CreateNew(string id, dynamic data, object additionalData)
         {
-            MemberBase member = CreateMemberInstance();
+            Member member = CreateMemberInstance();
 
             string emailAddress = data.emailAddress;
             //string password = data.password;
@@ -67,7 +67,7 @@ namespace Fastnet.Webframe.CoreData2
             Fill(member, id, emailAddress, firstName, lastName);
             return member;
         }
-        public virtual MemberBase Find(CoreDataContext ctx, string id)
+        public virtual Member Find(CoreDataContext ctx, string id)
         {
             return ctx.Members.Find(id);// as Member;
         }
@@ -78,7 +78,7 @@ namespace Fastnet.Webframe.CoreData2
             result.Error = "";
             return await Task.FromResult(result);
         }
-        public virtual void AssignGroups(MemberBase member)
+        public virtual void AssignGroups(Member member)
         {
             var allMembers = coreDataContext.GetSystemGroup(SystemGroups.AllMembers);
             if (allMembers.GroupMembers.Select(g => g.Member).SingleOrDefault(x => x.Id == member.Id) == null)
