@@ -110,23 +110,25 @@ namespace Fastnet.Webframe.CoreData2
     }
     public class DWHMemberFactory : MemberFactory
     {
-        private bool enableBMCApi;
+        //private bool enableBMCApi;
 
-        public bool EnableBMCApi
-        {
-            get
-            {
-                return enableBMCApi;
-            }
+        //public bool EnableBMCApi
+        //{
+        //    get
+        //    {
+        //        return enableBMCApi;
+        //    }
 
-            set
-            {
-                enableBMCApi = value;
-            }
-        }
-
+        //    set
+        //    {
+        //        enableBMCApi = value;
+        //    }
+        //}
+        private readonly bool EnableBMCApi;
+        private readonly BookingDataContext bookingDataContext;
         public DWHMemberFactory(ILogger log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext, BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
         {
+            this.bookingDataContext = bookingDataContext;
             EnableBMCApi = this.options.bmc.api.enable;// Settings.bmc.api.enable;
         }
         protected override Member CreateMemberInstance()
@@ -156,26 +158,25 @@ namespace Fastnet.Webframe.CoreData2
         }
         public override void AssignGroups(Member m)
         {
-            //string addToGroup = null;
-            //string removeFromGroup = null;
-            //DWHMember member = m as DWHMember;
-            //base.AssignGroups(member);
-            //using (var bctx = new BookingDataContext())
-            //{
-            //    var para = bctx.Parameters.OfType<DWHParameter>().Single();
-            //    addToGroup = member.BMCMembershipIsValid ? para.BMCMembers : para.NonBMCMembers;
-            //    removeFromGroup = member.BMCMembershipIsValid ? para.NonBMCMembers : para.BMCMembers;
-            //}
-            //Group add = Group.GetGroup(addToGroup);
-            //Group remove = Group.GetGroup(removeFromGroup);
-            //if (add.Members.SingleOrDefault(x => x.Id == member.Id) == null)
-            //{
-            //    add.Members.Add(member);
-            //}
-            //if (remove.Members.SingleOrDefault(x => x.Id == member.Id) != null)
-            //{
-            //    remove.Members.Remove(member);
-            //}
+            string addToGroup = null;
+            string removeFromGroup = null;
+            DWHMember member = m as DWHMember;
+            base.AssignGroups(member);
+            var para = bookingDataContext.Parameters.OfType<DWHParameter>().Single();
+            addToGroup = member.BMCMembershipIsValid ? para.BMCMembers : para.NonBMCMembers;
+            removeFromGroup = member.BMCMembershipIsValid ? para.NonBMCMembers : para.BMCMembers;
+            Group add = coreDataContext.GetGroup(addToGroup);// Group.GetGroup(addToGroup);
+            Group remove = coreDataContext.GetGroup(removeFromGroup);// Group.GetGroup(removeFromGroup);
+            if (add.GroupMembers.Select(x => x.Member).SingleOrDefault(x => x.Id == member.Id) == null)
+            {
+                add.GroupMembers.Add(new GroupMember { Group = add, Member = member });
+                //add.Members.Add(member);
+            }
+            if (remove.GroupMembers.Select(x => x.Member).SingleOrDefault(x => x.Id == member.Id) != null)
+            {
+                var gm = remove.GroupMembers.Single(x => x.MemberId == member.Id);
+                remove.GroupMembers.Remove(gm);
+            }
         }
         public string ExtractBmcMembership(dynamic data)
         {

@@ -50,15 +50,15 @@ namespace Fastnet.Webframe.CoreData2
         {
             get { return string.Format("{0} {1}", this.FirstName, this.LastName).Trim(); }
         }
-        public static Member Anonymous
-        {
-            get
-            {
-                // use cts.GetAnonymousMember() instead
-                //CoreDataContext ctx = Core.GetDataContext();
-                return null;// ctx.Members.OfType<Member>().Single(x => x.IsAnonymous);
-            }
-        }
+        //public static Member Anonymous
+        //{
+        //    get
+        //    {
+        //        // use cts.GetAnonymousMember() instead
+        //        //CoreDataContext ctx = Core.GetDataContext();
+        //        return null;// ctx.Members.OfType<Member>().Single(x => x.IsAnonymous);
+        //    }
+        //}
         //
         public static string HashPassword(string password)
         {

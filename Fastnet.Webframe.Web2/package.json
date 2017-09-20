@@ -20,6 +20,7 @@
     "@ngtools/webpack": "1.5.0",
     "@types/webpack-env": "1.13.0",
     "angular2-template-loader": "0.6.2",
+
     "aspnet-prerendering": "^3.0.1",
     "aspnet-webpack": "^2.0.1",
     "awesome-typescript-loader": "3.2.1",
@@ -60,6 +61,7 @@
     "karma-jasmine": "1.1.0",
     "karma-webpack": "2.0.3",
     "node-sass": "^4.5.3",
-    "sass-loader": "^6.0.6"
+    "sass-loader": "^6.0.6",
+    "angular-router-loader": "^0.6.0"
   }
 }

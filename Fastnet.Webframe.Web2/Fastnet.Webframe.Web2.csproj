@@ -27,6 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\app\components\booking\booking.module.ts" />
+    <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.component.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.module.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="data\sitedb.mdf" />
     <Content Include="data\sitedb_log.ldf" />
   </ItemGroup>
@@ -38,8 +46,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\app\components\cms\" />
+    <Folder Include="ClientApp\app\components\designer\" />
     <Folder Include="logs\" />
     <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\webframelogo-16.16.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.routing.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

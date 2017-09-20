@@ -19,7 +19,8 @@ namespace Fastnet.Webframe.Web2
         {
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));            
+            services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.AddTransient<ContentAssistant>();
             var customisation = provider.GetService<IOptions<CustomisationOptions>>();
             switch(customisation.Value.Factory)
             {

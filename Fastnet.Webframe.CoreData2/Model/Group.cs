@@ -27,8 +27,9 @@ namespace Fastnet.Webframe.CoreData2
         public GroupTypes Type { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-        //[ForeignKey("ParentGroup")]
+        [ForeignKey("ParentGroupId")]
         public Group ParentGroup { get; set; }
+        [InverseProperty("ParentGroup")]
         public ICollection<Group> Children { get; set; }
         public ICollection<DirectoryGroup> DirectoryGroups { get; set; }
         public ICollection<GroupMember> GroupMembers { get; set; }

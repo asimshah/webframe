@@ -52,6 +52,7 @@ namespace Fastnet.Webframe.Web2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.Configure<WebframeOptions>(Configuration.GetSection("WebframeOptions"));
             services.Configure<CustomisationOptions>(Configuration.GetSection("CustomisationOptions"));
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
@@ -173,10 +174,10 @@ namespace Fastnet.Webframe.Web2
             log.LogInformation($"group Count: {ctx.Groups.Count()}");
             log.LogInformation($"member Count: {ctx.Members.Count()}");
             var members = options.Factory == FactoryName.DonWhillansHut ? ctx.DWHMembers as IEnumerable<Member> : ctx.Members;
-            foreach(var member in members.OrderBy(m => m.LastName).ThenBy(m => m.FirstName))
-            {
-                log.LogInformation($"member: {member.FirstName}, {member.LastName}, {member.EmailAddress}");
-            }
+            //foreach(var member in members.OrderBy(m => m.LastName).ThenBy(m => m.FirstName))
+            //{
+            //    log.LogInformation($"member: {member.FirstName}, {member.LastName}, {member.EmailAddress}");
+            //}
         }
         private void NormalizeUserRecords(ApplicationDbContext appDb)
         {

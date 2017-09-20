@@ -50,7 +50,7 @@ namespace Fastnet.Webframe.CoreData2
         public Directory Directory { get; set; }
         public Group Group { get; set; }
         //[Mapped]
-        internal Permission Permission { get; set; }
+        public Permission Permission { get; set; }
         [NotMapped]
         public bool ViewAllowed { get { return Permission.HasFlag(Permission.ViewPages) || Permission.HasFlag(Permission.EditPages); } }
         [NotMapped]

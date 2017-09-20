@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,8 +44,22 @@ namespace Fastnet.Webframe.CoreData2
             };
             Page result = null;
             //CoreDataContext DataContext = Core.GetDataContext();
-            var lps = coreDataContext.Pages.Where(x => x.IsLandingPage).ToArray();
+            var lps = coreDataContext.Pages
+                .Include(x => x.Directory)
+                    .ThenInclude(x => x.DirectoryGroups)
+                        .ThenInclude(x => x.Group)
+                            .ThenInclude(x => x.GroupMembers)
+                                .ThenInclude(x => x.Member)
+                .Include(x => x.Directory)
+                    .ThenInclude(x => x.DirectoryGroups)
+                        .ThenInclude(x => x.Group)
+                            .ThenInclude(x => x.Children)
+                                .ThenInclude(x => x.GroupMembers)
+                                    .ThenInclude(x => x.Member)
+                //.AsNoTracking()
+                .Where(x => x.IsLandingPage).ToArray();
             TraceAccess("Access: defined landing page(s) {0}", string.Join(", ", lps.Select(x => x.Url).ToArray()));
+
             var pages = lps.Where(x => canAccess(GetAccessResult(member, x))).ToArray();
             TraceAccess("Access: member {0} can access landing page(s) {1}", member.Fullname, string.Join(", ", pages.Select(x => x.Url).ToArray()));
             if (pages.Count() > 1)
@@ -70,7 +85,8 @@ namespace Fastnet.Webframe.CoreData2
         }
         public bool IsMemberOf(Member member, Group group)
         {
-            return group.SelfAndDescendants.Any(x => x.GroupMembers.Select(gm => gm.Member).Contains(member));
+            var result = group.SelfAndDescendants.Any(x => x.GroupMembers.Select(gm => gm.Member).Contains(member));
+            return result;
             //return group.Members.Contains(this);
         }
         private void TraceAccess(string fmt, params object[] args)
@@ -78,8 +94,9 @@ namespace Fastnet.Webframe.CoreData2
             bool trace = false;// ApplicationSettings.Key("Trace:Access", false);
             if (trace)
             {
-                log.LogTrace(fmt, args);
+                log.LogDebug(fmt, args);
             }
+
         }
         private AccessResult GetAccessResult(Member member, Directory dir)
         {

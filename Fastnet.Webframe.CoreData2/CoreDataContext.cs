@@ -1,6 +1,7 @@
 ﻿using Fastnet.Webframe.Common2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.ComponentModel;
@@ -53,6 +54,15 @@ namespace Fastnet.Webframe.CoreData2
 
             modelBuilder.Entity<DirectoryGroup>()
                 .HasKey(c => new { c.DirectoryId, c.GroupId });
+            modelBuilder.Entity<DirectoryGroup>()
+                .HasOne(x => x.Directory)
+                .WithMany(x => x.DirectoryGroups)
+                .HasForeignKey(x => x.DirectoryId);
+            modelBuilder.Entity<DirectoryGroup>()
+                .HasOne(x => x.Group)
+                .WithMany(x => x.DirectoryGroups)
+                .HasForeignKey(x => x.GroupId);
+
             modelBuilder.Entity<GroupMember>()
                 .HasKey(c => new { c.GroupId, c.MemberId });
             modelBuilder.Entity<GroupMember>()
