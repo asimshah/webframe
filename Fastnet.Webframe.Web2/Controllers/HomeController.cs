@@ -131,7 +131,12 @@ namespace Fastnet.Webframe.Web2.Controllers
             //SetCurrentPage(page);
             return View();
         }
-
+        //[Route("permissiondenied/{message?}")]
+        //public ActionResult PermissionDenied(string message)
+        //{
+        //    ViewBag.Message = message;
+        //    return View();
+        //}
         public IActionResult Error()
         {
             ViewData["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;

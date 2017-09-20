@@ -27,11 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\app\app-routing.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
+    <None Remove="ClientApp\app\components\routeguards\member-guard.service.ts" />
+    <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,12 +60,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\app\app-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\routeguards\admin-guard.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\routeguards\member-guard.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

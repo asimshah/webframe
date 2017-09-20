@@ -5,32 +5,41 @@ import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 
 import { AppComponent } from './components/app/app.component';
-//import { NavMenuComponent } from './components/navmenu/navmenu.component';
+import { AppRoutingModule } from './app-routing.module';
+
 import { HomeComponent } from './components/home/home.component';
-//import { MembershipComponent } from './components/membership/membership.component';
-//import { BookingComponent } from './components/booking/booking.component';
-//import { FetchDataComponent } from './components/fetchdata/fetchdata.component';
-//import { CounterComponent } from './components/counter/counter.component';
+//import { MemberGuard } from './components/routeguards/member.guard';
+import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
+
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
+        PermissionDeniedComponent
     ],
     imports: [
         CommonModule,
         HttpModule,
         FormsModule,
-        RouterModule.forRoot([
-            { path: '', redirectTo: 'home', pathMatch: 'full' },
-            { path: 'home', component: HomeComponent },
-            { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule' },
-            { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule' },
-            { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule' },
-            { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule' },
-            { path: '**', redirectTo: 'home' }
-        ], { enableTracing: true})
+        AppRoutingModule
+        //RouterModule.forRoot([
+        //    { path: '', redirectTo: 'home', pathMatch: 'full' },
+        //    { path: 'home', component: HomeComponent },
+        //    { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule' },
+        //    { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule' },
+        //    { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule' },
+        //    { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule' },
+        //    //{ path: 'permissiondenied', component: PermissionComponent},
+        //    { path: '**', redirectTo: 'home' }
+        //], { enableTracing: true })
+    ],
+    providers: [
+        //appRoutingProviders,
+       // MemberGuard
     ]
 })
+
+
 export class AppModuleShared {
 }

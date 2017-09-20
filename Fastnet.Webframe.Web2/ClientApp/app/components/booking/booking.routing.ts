@@ -7,4 +7,4 @@ const routes: Routes = [
     { path: '', component: BookingComponent }
 ];
 
-export const routing: ModuleWithProviders = RouterModule.forChild(routes);
+export const bookingRouting: ModuleWithProviders = RouterModule.forChild(routes);
