@@ -1,3 +1,27 @@
 <div class='app-container'>
-    <router-outlet></router-outlet>
+    <div >
+        <router-outlet></router-outlet>
+    </div>
+    <modal-dialog id="test-modal">
+        <div class="modal-dialog">
+            <div class="modal-dialog-body test-dialog">
+                <div class="modal-dialog-title">Test Form</div>
+                <div class="test-content">
+                    <div>
+                        <label>Test label</label>
+                        <input type="checkbox" checked="checked" />
+                    </div>
+                    <div class="field">
+                        <label class="col1" for="testcheck">Test check</label>
+                        <div class="col2">
+                            <input id="testcheck" type="checkbox" checked="checked" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-dialog-buttons">
+                    <button class="small close-dialog" (click)="closeTestDialog()">Close</button>
+                </div>
+            </div>
+        </div>
+    </modal-dialog>
 </div>

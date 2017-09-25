@@ -3,6 +3,6 @@
     public enum MarkupType
     {
         Html,
-        DocX
+        DocX = 2
     }
 }

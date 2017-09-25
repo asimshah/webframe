@@ -10,6 +10,10 @@ $default-menupanel-backgroundColour: lighten($default-backgroundColour, 10%);
 
 $default-leftpanel-width: 210px;
 
+:host {
+    height: 100%;
+}
+
 .SitePanel {
     height: 100%;
     margin: 0 auto;

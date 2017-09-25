@@ -51,6 +51,10 @@ namespace Fastnet.Webframe.CoreData2
             {
                 modelBuilder.Ignore<DWHMember>();
             }
+            modelBuilder.Entity<Directory>()
+                .HasOne(x => x.ParentDirectory)
+                .WithMany(x => x.SubDirectories)
+                .HasForeignKey(x => x.ParentDirectoryId);
 
             modelBuilder.Entity<DirectoryGroup>()
                 .HasKey(c => new { c.DirectoryId, c.GroupId });

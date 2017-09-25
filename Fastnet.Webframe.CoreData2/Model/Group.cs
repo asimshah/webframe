@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Fastnet.Webframe.CoreData2
@@ -39,7 +40,32 @@ namespace Fastnet.Webframe.CoreData2
         }
         public override IEnumerable<Group> GetChildren()
         {
-            return Children;
+            try
+            {
+                return Children;
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+
+        }
+        [NotMapped]
+        public IEnumerable<Member> Members
+        {
+            get
+            {
+                if (this.GroupMembers == null)
+                {
+                    throw new Exception($"{this.Name} [{this.GroupId}] GroupMembers not available - not loaded?");
+                }
+                if (this.GroupMembers.Any(dg => dg.Member == null))
+                {
+                    throw new Exception($"{this.Name} [{this.GroupId}] at least one GroupMembers has a null Member - not loaded?");
+                }
+                return this.GroupMembers.Select(x => x.Member);
+            }
         }
         [NotMapped]
         public string Fullpath

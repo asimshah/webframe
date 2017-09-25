@@ -12,7 +12,7 @@ namespace Fastnet.Webframe.CoreData2
         public long DirectoryId { get; set; }
         [StringLength(1024, MinimumLength = 4)]
         public string Name { get; set; }
-        [ForeignKey("ParentDirectory")]
+        //[ForeignKey("ParentDirectory")]
         public long? ParentDirectoryId { get; set; }
         public bool Deleted { get; set; }
         public long? OriginalFolderId { get; set; }
@@ -41,6 +41,22 @@ namespace Fastnet.Webframe.CoreData2
         public override IEnumerable<Directory> GetChildren()
         {
             return this.SubDirectories;
+        }
+        [NotMapped]
+        public IEnumerable<Group> Groups
+        {
+            get
+            {
+                if(this.DirectoryGroups == null)
+                {
+                    throw new Exception($"{this.FullName} [{this.DirectoryId}] DirectoryGroups not available - not loaded?");
+                }
+                if(this.DirectoryGroups.Any(dg => dg.Group == null))
+                {
+                    throw new Exception($"{this.FullName} [{this.DirectoryId}] at least one DirectoryGroup has a null Group - not loaded?");
+                }
+                return this.DirectoryGroups.Select(x => x.Group);
+            }
         }
         private string getPath()
         {

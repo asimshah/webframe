@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Fastnet.Webframe.Common2
 {
@@ -36,6 +37,15 @@ namespace Fastnet.Webframe.Common2
         {
             get
             {
+                try
+                {
+                    var children = this.GetChildren();
+                }
+                catch (System.Exception)
+                {
+                    Debugger.Break();
+                    throw;
+                }
                 foreach (T child in this.GetChildren())
                 {
                     yield return child;

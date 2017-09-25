@@ -1,0 +1,131 @@
+﻿@import '../../styles/_variables.scss';
+
+modal-dialog {
+    /* modals are hidden by default */
+    display: none;
+
+    .modal-dialog {
+        all: initial; // because bootstrap is present - I need to take the time to remove bootstrap
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        //font-size: 5vw;
+        /* modal container fixed across whole screen */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        /* z-index must be higher than .modal-background */
+        z-index: 1000;
+        /* enables scrolling for tall modals */
+        overflow: auto;
+
+        button {
+            border: none;
+            border-radius: 3px;
+            background-color: $alt-background-colour;
+            color: $main-background-colour;
+            padding-left: $std-padding * 2;
+            padding-right: $std-padding * 2;
+            padding-top: $std-padding;
+            padding-bottom: $std-padding;
+            /*margin-right: $std-padding;*/
+            outline: none;
+            //font-family: 'Segoe UI';
+            &.small {
+                padding-top: $std-padding / 2.0;
+                padding-bottom: $std-padding / 2.0;
+                padding-left: $std-padding;
+                padding-right: $std-padding;
+                margin-bottom: 0;
+                font-size: smaller;
+            }
+
+            &[disabled] {
+                background-color: $disabled-colour;
+            }
+
+            &:not([disabled]):hover {
+                background-color: lighten($alt-background-colour, 5%);
+            }
+        }
+
+        .modal-dialog-body {
+            /*padding: 0.75em;*/
+            background-color: $main-background-colour;
+            /* margin exposes part of the modal background */
+            margin: 4em auto;
+            border-radius: 3px;
+            border: 3px solid $alt-background-colour;
+            /*border-bottom-style: none;*/
+
+
+            .modal-dialog-title {
+                font-size: larger;
+                border-top-left-radius: inherit;
+                border-top-right-radius: inherit;
+                padding: 0.25em;
+                border-bottom: 1px solid $alt-background-colour;
+                //margin-bottom: 0.25em;
+            }
+
+            div:nth-child(2) {
+                background-color: lightgray;
+                padding: 0.25em;
+                padding-bottom: 3em;
+            }
+
+            .modal-dialog-buttons {
+                padding: 0.25em;
+                padding-bottom: 0;
+                display: flex;
+                justify-content: flex-end;
+                background-color: $alt-background-colour;
+                button {
+                    min-width: 100px;
+                    background-color: white; /*$alt-foreground-colour;*/
+                    margin-left: 0.25em;
+                    color: $alt-background-colour;
+
+                    &:hover {
+                        background-color: $alt-background-colour;
+                        color: white;
+                    }
+                }
+            }
+        }
+    }
+
+    .modal-dialog-background {
+        /* modal background fixed across whole screen */
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        /* semi-transparent black  */
+        background-color: #000;
+        opacity: 0.75;
+        /* z-index must be below .modal and above everything else  */
+        z-index: 900;
+    }
+}
+
+@media all and (max-width: 748px) {
+    modal-dialog {
+        .modal-dialog {
+            font-size: 5vw;
+
+
+            .modal-dialog-body {
+                margin: 2em auto;
+            }
+        }
+    }
+}
+
+
+
+body.modal-dialog-open {
+    /* body overflow is hidden to hide main scrollbar when modal window is open */
+    overflow: hidden;
+}

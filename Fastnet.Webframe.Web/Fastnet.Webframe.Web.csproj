@@ -935,42 +935,51 @@
     <Content Include="Content\Main\DefaultCSS\BannerPanel.min.css">
       <DependentUpon>BannerPanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\bannerpanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\BrowserPanel.css">
       <DependentUpon>BrowserPanel.less</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\browserpanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\CentrePanel.css">
       <DependentUpon>CentrePanel.less</DependentUpon>
     </Content>
     <Content Include="Content\Main\DefaultCSS\CentrePanel.min.css">
       <DependentUpon>CentrePanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\centrepanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\ContentPanel.css">
       <DependentUpon>ContentPanel.less</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\contentpanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\LeftPanel.css">
       <DependentUpon>LeftPanel.less</DependentUpon>
     </Content>
     <Content Include="Content\Main\DefaultCSS\LeftPanel.min.css">
       <DependentUpon>LeftPanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\leftpanel.user.css" />
+    <Content Include="Content\Main\DefaultCSS\menu.user.css" />
     <Content Include="Content\Main\DefaultCSS\MenuPanel.css">
       <DependentUpon>MenuPanel.less</DependentUpon>
     </Content>
     <Content Include="Content\Main\DefaultCSS\MenuPanel.min.css">
       <DependentUpon>MenuPanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\menupanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\RightPanel.css">
       <DependentUpon>RightPanel.less</DependentUpon>
     </Content>
     <Content Include="Content\Main\DefaultCSS\RightPanel.min.css">
       <DependentUpon>RightPanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\rightpanel.user.css" />
     <Content Include="Content\Main\DefaultCSS\SitePanel.css">
       <DependentUpon>SitePanel.less</DependentUpon>
     </Content>
     <Content Include="Content\Main\DefaultCSS\SitePanel.min.css">
       <DependentUpon>SitePanel.css</DependentUpon>
     </Content>
+    <Content Include="Content\Main\DefaultCSS\sitepanel.user.css" />
     <Content Include="Content\Main\Identity.css">
       <DependentUpon>identity.less</DependentUpon>
     </Content>
@@ -1232,6 +1241,15 @@
     <Content Include="Areas\booking\Views\Home\Success.cshtml" />
     <Content Include="Areas\booking\Views\Home\Failed.cshtml" />
     <None Include="compilerconfig.json" />
+    <Content Include="Content\Main\CustomLess\BannerPanel.less" />
+    <Content Include="Content\Main\CustomLess\BrowserPanel.less" />
+    <Content Include="Content\Main\CustomLess\CentrePanel.less" />
+    <Content Include="Content\Main\CustomLess\ContentPanel.less" />
+    <Content Include="Content\Main\CustomLess\LeftPanel.less" />
+    <Content Include="Content\Main\CustomLess\menu.less" />
+    <Content Include="Content\Main\CustomLess\MenuPanel.less" />
+    <Content Include="Content\Main\CustomLess\RightPanel.less" />
+    <Content Include="Content\Main\CustomLess\SitePanel.less" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\i18n\defaults-bg_BG.js" />
     <Content Include="Scripts\i18n\defaults-bg_BG.min.js" />
@@ -1667,7 +1685,6 @@
     <Folder Include="Areas\booking\Scripts\typings\" />
     <Folder Include="Areas\cms\Common\" />
     <Folder Include="Areas\cms\Models\" />
-    <Folder Include="Content\Main\CustomLess\" />
     <Folder Include="Scripts\collections\" />
     <Folder Include="Scripts\main\Archive\" />
   </ItemGroup>
@@ -1814,7 +1831,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties test_1json__JSONSchema="customisation.schema.json" customisation_1dwh_1json__JSONSchema="customisation.schema.json" />
+      <UserProperties customisation_1dwh_1json__JSONSchema="customisation.schema.json" test_1json__JSONSchema="customisation.schema.json" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

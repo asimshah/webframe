@@ -27,6 +27,7 @@ namespace Fastnet.Webframe.Mvc
             string id = (string)(Session["current-member"] ?? null);
             return id == null ? Member.Anonymous : Core.GetDataContext().Members.Single(m => m.Id == id);
         }
+
     }
     public class VerifySessionAttribute : ActionFilterAttribute
     {

@@ -26,6 +26,7 @@ using Microsoft.Extensions.Options;
 using Fastnet.Webframe.Common2;
 using System.Collections.Generic;
 using Fastnet.Webframe.BookingData2;
+using Microsoft.AspNetCore.ResponseCaching;
 
 namespace Fastnet.Webframe.Web2
 {
@@ -51,6 +52,7 @@ namespace Fastnet.Webframe.Web2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCaching();
             services.AddOptions();
             services.Configure<WebframeOptions>(Configuration.GetSection("WebframeOptions"));
             services.Configure<CustomisationOptions>(Configuration.GetSection("CustomisationOptions"));
@@ -116,6 +118,7 @@ namespace Fastnet.Webframe.Web2
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<CustomisationOptions> options,
+            IServiceProvider serviceProvider,
             ApplicationDbContext appDb, CoreDataContext coreDataContext, BookingDataContext bookingDataContext)
         {
             if (env.IsDevelopment())
@@ -130,6 +133,7 @@ namespace Fastnet.Webframe.Web2
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseResponseCaching();
 
             app.UseStaticFiles();
 
@@ -149,15 +153,58 @@ namespace Fastnet.Webframe.Web2
             {
                 log.LogInformation($"Application db user records need normalisation");
                 NormalizeUserRecords(appDb);
+                
                 log.LogInformation($"Application db user records normalised");
             }
-            if(options.Value.Factory == FactoryName.DonWhillansHut)
+            CreateRolesForUsers(coreDataContext, serviceProvider);
+            if (options.Value.Factory == FactoryName.DonWhillansHut)
             {
                 DWHMember.ResetAnonymous(coreDataContext);
                 DebugSomeBookingDataStats(bookingDataContext);
             }
             DebugSomeCoreDataStats(coreDataContext, options.Value);
             
+        }
+
+        private void CreateRolesForUsers(CoreDataContext coreDataContext, IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var groups = coreDataContext.Groups.Include(x => x.GroupMembers)
+                .ThenInclude(x => x.Member)
+                .ToArray();
+            foreach(var group in groups)
+            {
+                if (!group.Type.HasFlag(GroupTypes.SystemDefinedMembers))
+                {
+                    var members = group.GroupMembers.Select(x => x.Member);
+                    if (!roleManager.RoleExistsAsync(group.Name).Result)
+                    {
+                        var role = new IdentityRole(group.Name);
+                        var roleResult = roleManager.CreateAsync(role).Result;
+                        if (!roleResult.Succeeded)
+                        {
+                            foreach (var error in roleResult.Errors)
+                            {
+                                log.LogError($"{error.Description}");
+                            }
+                        }
+                        else
+                        {
+                            log.LogInformation($"Role {group.Name} created");
+                        }
+                    }
+                    foreach (var m in members)
+                    {
+                        var user = userManager.FindByIdAsync(m.Id).Result;
+                        if (!userManager.IsInRoleAsync(user, group.Name).Result)
+                        {
+                            var x = userManager.AddToRoleAsync(user, group.Name).Result;
+                            log.LogInformation($"{user.Email} added to role {group.Name}");
+                        }
+                    }
+                }
+            }
         }
 
         private void DebugSomeBookingDataStats(BookingDataContext ctx)
