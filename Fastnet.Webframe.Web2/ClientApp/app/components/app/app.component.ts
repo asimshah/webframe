@@ -5,7 +5,7 @@ import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 @Component({
     selector: 'app',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
+    styleUrls: ['../../styles/webframe.scss', './app.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {

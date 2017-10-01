@@ -40,6 +40,7 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
         //        return el;
         //    };
         //}
+        console.log("ModalDialogComponent: ngOnInit()");
         let modal = this;
         if (!this.id) {
             console.error("modal must have an id");

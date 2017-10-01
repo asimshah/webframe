@@ -35,22 +35,29 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> GetPage(long id)
         {
             var m = GetCurrentMember();
-            Page page = await coreDataContext.Pages.SingleAsync(x => x.PageId == id);
-            AccessResult ar = await contentAssistant.GetAccessResultAsync(m, page);
-            if (ar == AccessResult.Rejected)
+            Page page = await coreDataContext.Pages.SingleOrDefaultAsync(x => x.PageId == id);
+            if (page != null)
             {
-                return ErrorResult("AccessDenied");
+                AccessResult ar = await contentAssistant.GetAccessResultAsync(m, page);
+                if (ar == AccessResult.Rejected)
+                {
+                    return ErrorDataResult("AccessDenied");
+                }
+                PageHtmlInformation info = null;
+                if (page.MarkupType == MarkupType.DocX)
+                {
+                    info = await contentAssistant.PrepareDocXPage(page);
+                }
+                else if (page.MarkupType == MarkupType.Html)
+                {
+                    info = await contentAssistant.PrepareHTMLPage(page);
+                }
+                return CacheableSuccessDataResult(info, page.PageMarkup.LastModifiedOn, m.Id);
             }
-            PageHtmlInformation info = null;
-            if (page.MarkupType == MarkupType.DocX)
+            else
             {
-                info = await contentAssistant.PrepareDocXPage(page);
+                return ErrorDataResult("PageNotFound");
             }
-            else if (page.MarkupType == MarkupType.Html)
-            {
-                info = await contentAssistant.PrepareHTMLPage(page);
-            }
-            return CacheableSuccessResult(info, page.PageMarkup.LastModifiedOn, m.Id);
         }
         [HttpGet("get/pagekeys/{centrePageId?}")]
         public async Task<IActionResult> GetPageKeys(long? centrePageId = null)
@@ -65,9 +72,29 @@ namespace Fastnet.Webframe.Web2.Controllers
             else
             {
                 page = await coreDataContext.Pages.FindAsync(centrePageId);
+
+            }
+            if (page == null)
+            {
+                return ErrorDataResult("PageNotFound");
             }
             var result = await contentAssistant.GetPageKeys(page);
-            return new DataResult { Success = true, Data = result };
+            return SuccessDataResult(result);
+        }
+        [HttpGet("~/image/{id}")]
+        public async Task<IActionResult> GetImage(long id)
+        {
+            Image image = await coreDataContext.Images.FindAsync(id);
+            MemoryStream ms = new MemoryStream(image.Data);
+            var r = File(ms, image.MimeType);
+            return CacheableResult(r, image.CreatedOn);
+            //return CacheableSuccessResult(r, image.CreatedOn);
+            //HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
+            //response.Content = new StreamContent(ms);
+            //response.Content.Headers.ContentType = new MediaTypeHeaderValue(image.MimeType);
+            //CacheControlHeaderValue cchv = new CacheControlHeaderValue { Public = true, MaxAge = TimeSpan.FromDays(30) };
+            //response.Headers.CacheControl = cchv;
+            //return response;
         }
         [HttpGet("logaction")]
         public IActionResult LogAction()

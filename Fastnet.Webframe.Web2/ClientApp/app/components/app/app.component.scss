@@ -8,9 +8,6 @@ html {
     padding: 0;
 }
 body {
-    overflow: hidden;
-    /*margin: 4px;
-    background-color: darkorchid;*/
     position: absolute;
     top: 0;
     bottom: 0;
@@ -28,58 +25,4 @@ body {
         height: 100%;
     }
 }
-/*#test-modal {
-    $dialog-border-width: 0.25em;
 
-    .modal-dialog-title {
-        padding: $dialog-border-width;
-        background-color: $alt-foreground-colour;
-        color: $alt-background-colour;
-    }
-
-    .modal-dialog-buttons {
-        button {
-            width: 120px;
-        }
-    }
-
-    .test-dialog {
-        max-width: 600px;
-        border: 2px solid  $alt-background-colour;
-    }
-
-    .test-content {
-        padding-top: 0.25em;
-        padding-right: 0.25em;
-        padding-left: 2em;
-        padding-right: 2em;
-
-        label {
-            width: 200px;
-        }
-
-        .field {
-
-            label {
-                width: 200px;
-
-                &.disabled {
-                    color: gray;
-                }
-            }
-
-            display: flex;
-        }
-
-        .col1, .col2 {
-            margin-right: 0.25em;
-        }
-
-        .col1 {
-        }
-
-        .col2 {
-            flex: 1;
-        }
-    }
-}*/

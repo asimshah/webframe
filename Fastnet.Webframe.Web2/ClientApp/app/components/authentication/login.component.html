@@ -1,0 +1,43 @@
+﻿<div class="login-form webframe-form">
+    <div class="header">Login</div>
+    <div class="sub-header">Enter your email address and password</div>
+    <form #loginForm="ngForm">
+        <div class="form-body">
+            <label for="email-address">Email Address</label>
+            <input tabindex="1" type="email" id="email-address" name="emailAddress" required email [(ngModel)]="model.emailAddress" #emailAddress="ngModel" (input)="onEmailAddressChange(loginForm.form.controls.emailAddress)" />
+            <div class="error-message" *ngIf="!emailAddressIsValid">{{getEmailAddressError(emailAddress)}}</div>
+            <!--<div class="error-message" *ngIf="!emailAddressIsValid && emailAddress.errors.required">An email address is required</div>
+            <div class="error-message" *ngIf="!emailAddressIsValid && emailAddress.errors.email">This is not a valid email address</div>-->
+            <label for="password">Password</label>
+            <input tabindex="2" type="password" id="password" name="password" required [(ngModel)]="model.password" #password="ngModel" (input)="onPasswordChange(loginForm.form.controls.password)" />
+            <div class="error-message" *ngIf="!passwordIsValid && password?.errors?.required">A password is required</div>
+        </div>
+        <div class="login-result" *ngIf="loginFailed" >{{failureReason}}</div>
+        <div class="sub-footer">If you do not have a password, use "Register" below to create one.</div>
+        <div class="sub-footer">If you have forgotten your password, enter your email address above and then use "Reset Password" below to receive an email with a password creation link.</div>
+        <div class="form-buttons">
+            <button tabindex="0" class="link-button" [disabled]="!hasEmailAddress()" (click)="onResetPassword()" >Reset Password</button>
+            <button tabindex="0" class="link-button" (click)="onRegister()" >Register</button>
+            <span class="filler"></span>
+            <button tabindex="3" class="button default" [disabled]="!loginForm.valid" (click)="onLogin()">Login</button>
+            <button tabindex="4" class="button" (click)="onCancel()">Cancel</button>
+        </div>
+    </form>
+    <!--<div>
+        <div><span>emailAddressIsValid: </span><span>{{emailAddressIsValid}}</span></div>
+        <div><span>hasEmailAddress(): </span><span>{{hasEmailAddress()}}</span></div>
+    </div>-->
+</div>
+<modal-dialog id="login-modal">
+    <div *ngIf="loginModel" class="modal-dialog">
+        <div class="modal-dialog-body login-dialog">
+            <div class="modal-dialog-title">Login Message</div>
+            <div class="message-content">
+                <span>{{loginModel.message}}</span>
+            </div>
+            <div class="modal-dialog-buttons">
+                <button class="close-dialog" (click)="closeMessageDialog()">Close</button>
+            </div>
+        </div>
+    </div>
+</modal-dialog>

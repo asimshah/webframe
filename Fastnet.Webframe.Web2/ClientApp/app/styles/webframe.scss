@@ -1,0 +1,83 @@
+﻿$default-backgroundColour: #1b76bc;
+$max-sitepanel-width: 840px;
+$default-bannerpanel-backgroundColour: $default-backgroundColour;
+$default-bannerpanel-foregroundColour: white;
+$default-bannerpanel-height: 88px;
+$default-menupanel-backgroundColour: lighten($default-backgroundColour, 10%);
+$default-leftpanel-width: 210px;
+
+.SitePanel {
+    margin: 0 auto;
+    font-family: verdana;
+    font-size: 10.5pt;
+    width: auto;
+    max-width: $max-sitepanel-width;
+    display: flex;
+    flex-direction: column;
+
+    .BannerPanel {
+        height: $default-bannerpanel-height;
+        background-color: $default-bannerpanel-backgroundColour;
+        color: $default-bannerpanel-foregroundColour;
+        width: 100%;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    .MenuPanel {
+        height: 24px; // remove when menu stuff is working
+        background-color: $default-menupanel-backgroundColour;
+        text-align: right;
+        width: 100%;
+    }
+
+    .ContentPanel {
+        width: 100%;
+        //background-color: lightcoral; /*** TEMP */
+        height: 100%;
+        display: flex;
+        /*padding: 2px;*/
+        .LeftPanel {
+            //background-color: burlywood; /*** TEMP */
+            height: 100%;
+            width: $default-leftpanel-width;
+            padding-left: 2px;
+            padding-right: 20px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            font-size: smaller;
+        }
+
+        .CentrePanel {
+            height: 100%;
+            width: 100%;
+            //background-color: white; /*** TEMP */
+            padding: 2px;
+        }
+
+        .RightPanel {
+            //background-color: darkkhaki; /*** TEMP */
+            height: 100%;
+            width: 100px;
+            padding: 2px;
+            display: none;
+        }
+    }
+}
+
+@media all and (max-width: 748px) {
+    .SitePanel .BannerPanel {
+        background-color: #9C898B;
+        background-image: none;
+        background-position: center;
+        Height: 55px;
+        Width: 100%;
+    }
+
+    .SitePanel .ContentPanel .CentrePanel {
+        width: 90%;
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 15px;
+    }
+}

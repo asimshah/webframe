@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.170" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.172" />
     <PackageReference Include="HtmlAgilityPack" Version="1.5.5" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
@@ -30,17 +30,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\custom.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\app\app-routing.module.ts" />
+    <None Remove="ClientApp\app\components\authentication\login.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
     <None Remove="ClientApp\app\components\home\home-routing.module.ts" />
     <None Remove="ClientApp\app\components\home\home.module.ts" />
+    <None Remove="ClientApp\app\components\home\page.service.ts" />
+    <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
+    <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
+    <None Remove="ClientApp\app\components\shared\base.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,23 +68,30 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\custom.css" />
     <None Include="wwwroot\webframelogo-16.16.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\authentication.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\login.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\home-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\home.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\page.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\page\page.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\admin-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\base.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

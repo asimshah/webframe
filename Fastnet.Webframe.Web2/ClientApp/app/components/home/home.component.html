@@ -1,10 +1,18 @@
-<div class="SitePanel">
-    <div class="BannerPanel"></div>
+<div class="SitePanel" (click)="onSitePanelClick($event)">
+    <div class="BannerPanel">
+        <webframe-page class="page-component" [pageId]="this.getBannerPageId()"></webframe-page>
+    </div>
     <div class="MenuPanel"></div>
     <div class="ContentPanel">
-        <div class="LeftPanel"></div>
-        <div class="CentrePanel"></div>
-        <div class="RightPanel"></div>
+        <div class="LeftPanel">
+            <webframe-page class="page-component" [pageId]="this.getLeftPageId()" ></webframe-page>
+        </div>
+        <div class="CentrePanel">
+            <webframe-page class="page-component" [pageId]="this.getCentrePageId()"></webframe-page>
+        </div>
+        <div class="RightPanel">
+            <webframe-page class="page-component" [pageId]="this.getRightPageId()"></webframe-page>
+        </div>
     </div>
 </div>
 

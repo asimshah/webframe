@@ -8,14 +8,19 @@ import { AppComponent } from './components/app/app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 import { HomeComponent } from './components/home/home.component';
+import { PageComponent} from './components/page/page.component';
+import { LoginComponent } from './components/authentication/login.component';
 import { ModalDialogComponent } from './components/modaldialog/modal-dialog.component';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
+
 
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
+        PageComponent,
+        LoginComponent,
         PermissionDeniedComponent,
         ModalDialogComponent
     ],
@@ -26,7 +31,7 @@ import { PermissionDeniedComponent } from './components/routeguards/permissionde
         AppRoutingModule
     ],
     providers: [
-
+        
     ]
 })
 

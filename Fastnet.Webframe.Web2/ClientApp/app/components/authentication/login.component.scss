@@ -1,0 +1,26 @@
+﻿@import "../../styles/_variables.scss";
+@import "../../styles/forms";
+.login-form {
+    max-width: 480px;
+    margin: 0 auto;
+
+    .form-body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login-result {
+        margin-top: 10px;
+        color: $error-colour;
+        font-size: smaller;
+        font-style: italic;
+    }
+
+}
+.login-dialog {
+    width: 80%;
+
+    .message-content {
+        margin: 20px;
+    }
+}

@@ -2,14 +2,20 @@
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
+import { PageService } from './components/home/page.service';
+import { LoginComponent } from './components/authentication/login.component';
+
 import { AdminGuard } from './components/routeguards/admin-guard.service';
 import { MemberGuard } from './components/routeguards/member-guard.service';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
 import { ModalDialogService } from './components/modaldialog/modal-dialog.service';
+import { AuthenticationService } from './components/authentication/authentication.service';
+
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
+    { path: 'login', component: LoginComponent },
     //{ path: 'webframe', loadChildren: './components/home/home.module#HomeModule' },
     { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
@@ -23,12 +29,12 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forRoot(
             appRoutes,
-            { enableTracing: true}
+            { enableTracing: false}
         )
     ],
     exports: [
         RouterModule
     ],
-    providers: [AdminGuard, MemberGuard, ModalDialogService],
+    providers: [AdminGuard, MemberGuard, AuthenticationService, ModalDialogService, PageService],
 })
 export class AppRoutingModule { }

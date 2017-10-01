@@ -1,8 +1,5 @@
-.SitePanel {
-    margin: 0 auto;
-    font-family: verdana;
-    font-size: 10.5pt;
-    width: 840px;
+﻿.SitePanel {
+    font-size: 100%;
 
     .BannerPanel {
         background: url("/image/22");
@@ -17,10 +14,6 @@
             color: white;
             vertical-align: top;
         }
-    }
-
-    .MenuPanel {
-        background-color: #6D769D;
     }
 
     .ContentPanel {
@@ -100,7 +93,7 @@
         }
 
         .CentrePanel {
-            width: 90%;
+            width: 530px;
             margin-left: 0px;
             margin-right: 10px;
             margin-top: 15px;
@@ -116,17 +109,20 @@
 }
 
 @media all and (max-width:748px) {
-    .BannerPanel {
+    .SitePanel .BannerPanel {
         background-color: #9C898B;
         background-image: none;
         background-position: center;
         Height: 55px;
         Width: 100%;
     }
-    .CentrePanel {
+    .SitePanel .ContentPanel .CentrePanel {
         width: 90%;
         margin-left: 10px;
         margin-right: 10px;
         margin-top: 15px;
+    }
+    .SitePanel .ContentPanel .RightPanel {
+        display: none;
     }
 }

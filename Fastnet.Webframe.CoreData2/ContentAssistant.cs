@@ -311,12 +311,15 @@ namespace Fastnet.Webframe.CoreData2
                 TraceAccess("Access: member {0}, selected landing page {1}", member.Fullname, string.Format("{0} weight {1:#0.00}", heaviest.First().Page.Url, heaviest.First().Weight));
                 result = heaviest.First().Page;
             }
-            else
+            else if(pages.Count() == 1)
             {
                 result = pages.First();
                 TraceAccess("Access: member {0}, selected landing page {1}", member.Fullname, result.Url);
             }
-
+            else
+            {
+                TraceAccess("Access: member {0}, no landing page found", member.Fullname);
+            }
             return result;
         }
         public async Task<PageKeys> GetPageKeys(Page centrePage)
