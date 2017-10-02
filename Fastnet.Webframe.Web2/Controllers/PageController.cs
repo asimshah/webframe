@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using Fastnet.Core.Web.Controllers;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -30,27 +31,40 @@ namespace Fastnet.Webframe.Web2.Controllers
             this.log = logger;
             this.environment = environment;
             this.contentAssistant = contentAssistant;
+            coreDataContext.ChangeTracker.AutoDetectChangesEnabled = false;
+
         }
         [HttpGet("get/page/{id}")]
         public async Task<IActionResult> GetPage(long id)
         {
+
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             var m = GetCurrentMember();
-            Page page = await coreDataContext.Pages.SingleOrDefaultAsync(x => x.PageId == id);
+            Page page = await coreDataContext.Pages.Include(x => x.PageMarkup).SingleOrDefaultAsync(x => x.PageId == id);
+            //log.LogInformation($"get/page/{id} in {sw.ElapsedMilliseconds} ms (after read)");
             if (page != null)
             {
-                AccessResult ar = await contentAssistant.GetAccessResultAsync(m, page);
-                if (ar == AccessResult.Rejected)
-                {
-                    return ErrorDataResult("AccessDenied");
-                }
+                var etagStatus = IsEtagUnchanged(page.PageMarkup.LastModifiedOn, m.Id);
                 PageHtmlInformation info = null;
-                if (page.MarkupType == MarkupType.DocX)
+                if (!etagStatus.IsUnchanged)
                 {
-                    info = await contentAssistant.PrepareDocXPage(page);
-                }
-                else if (page.MarkupType == MarkupType.Html)
-                {
-                    info = await contentAssistant.PrepareHTMLPage(page);
+                    AccessResult ar = await contentAssistant.GetAccessResultAsync(m, page);
+                    //log.LogInformation($"get/page/{id} in {sw.ElapsedMilliseconds} ms (after access check)");
+                    if (ar == AccessResult.Rejected)
+                    {
+                        return ErrorDataResult("AccessDenied");
+                    }
+                    //PageHtmlInformation info = null;
+                    if (page.MarkupType == MarkupType.DocX)
+                    {
+                        info = await contentAssistant.PrepareDocXPage(page);
+                    }
+                    else if (page.MarkupType == MarkupType.Html)
+                    {
+                        info = await contentAssistant.PrepareHTMLPage(page);
+                    }
+                    log.LogInformation($"get/page/{id} in {sw.ElapsedMilliseconds} ms");
                 }
                 return CacheableSuccessDataResult(info, page.PageMarkup.LastModifiedOn, m.Id);
             }
@@ -96,6 +110,17 @@ namespace Fastnet.Webframe.Web2.Controllers
             //response.Headers.CacheControl = cchv;
             //return response;
         }
+        [HttpGet("get/menus")]
+        public async Task<IActionResult> GetMenus()
+        {
+            // entity MenuMaster is ignored. q.v. MenuMaster in CoreData
+            List<MenuDetails> menuList = new List<MenuDetails>();
+            long? parentMenuId = null;
+            List<object> etagParams = new List<object>();
+            await LoadMenusForParent(menuList, parentMenuId, 0, etagParams);
+            return CacheableSuccessDataResult(menuList, this.GetCurrentMember().Id, etagParams);
+        }
+
         [HttpGet("logaction")]
         public IActionResult LogAction()
         {
@@ -124,7 +149,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 var groups = dir.Groups;
                 log.LogInformation($"{dir.FullName} [{dir.DirectoryId}] has {groups.Count()} groups");
             }
-            catch(Exception xe)
+            catch (Exception xe)
             {
                 log.LogError($"{dir.FullName} [{dir.DirectoryId}] exception; { xe.Message}");
             }
@@ -139,7 +164,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 log.LogError($"{dir.FullName} [{dir.DirectoryId}] exception; { xe.Message}");
             }
             await coreDataContext.LoadParentsAsync(dir);
-            while(dir.ParentDirectory != null)
+            while (dir.ParentDirectory != null)
             {
                 log.LogInformation($"{dir.Name} [{dir.DirectoryId}] parent is {dir.ParentDirectory.Name} [{dir.ParentDirectory.DirectoryId}]");
                 dir = dir.ParentDirectory;
@@ -176,6 +201,37 @@ namespace Fastnet.Webframe.Web2.Controllers
                 log.LogInformation($"{image.Name} [{image.ImageId}] result is {result.ToString()}");
             }
             return new EmptyResult();
+        }
+
+        private async Task LoadMenusForParent(List<MenuDetails> menuList, long? parentMenuId, int level, List<object> etagParams)
+        {
+
+            var menus = await coreDataContext.Menus.Include(x => x.Submenus)
+                .Where(x => x.ParentMenu_Id == parentMenuId)
+                .OrderBy(x => x.Index)
+                .ToArrayAsync();
+            foreach (var m in menus)
+            {
+                var md = new MenuDetails
+                {
+                    Level = level,
+                    Index = m.Index,
+                    Text = m.Text,
+                    Url = m.Url,
+                    SubMenus = new List<MenuDetails>()
+                };
+                menuList.Add(md);
+                etagParams.Add(level);
+                etagParams.Add(m.Index);
+                etagParams.Add(m.Text);
+                etagParams.Add(m.Url);
+                // add to menu result
+                if (m.Submenus.Count() != 0)
+                {
+                    await LoadMenusForParent(md.SubMenus, m.ParentMenu_Id, level + 1, etagParams);
+                }
+            }
+
         }
     }
 }

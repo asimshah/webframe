@@ -51,6 +51,7 @@ namespace Fastnet.Webframe.CoreData2
             }
 
         }
+        
         [NotMapped]
         public IEnumerable<Member> Members
         {

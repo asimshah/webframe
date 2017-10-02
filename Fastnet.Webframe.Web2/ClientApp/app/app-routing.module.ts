@@ -2,7 +2,7 @@
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
-import { PageService } from './components/home/page.service';
+import { PageService } from './components/shared/page.service';
 import { LoginComponent } from './components/authentication/login.component';
 
 import { AdminGuard } from './components/routeguards/admin-guard.service';
@@ -29,7 +29,7 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forRoot(
             appRoutes,
-            { enableTracing: false}
+            { enableTracing: true}
         )
     ],
     exports: [

@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fastnet.Webframe.CoreData2
 {
+    // this entity was required in an earlier version of webframe which allowed
+    // menus to be created in specific panels
+    // for V5 (onwards?) I have parked this feature (and not implemented the code) as it has never been used
+    // so menus are only put in the menu panel
+    // I might remove this table in time ...
     public partial class MenuMaster
     {
         public long Id { get; set; }

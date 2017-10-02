@@ -3,7 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Subscription } from 'rxjs/Subscription';
 
-import { PageKeys, PageService } from './page.service';
+import { PageKeys, PageService } from '../shared/page.service';
 
 @Component({
     selector: 'home',
@@ -27,11 +27,13 @@ export class HomeComponent implements OnInit {
         //}
     }
     ngOnInit() {
-        if (document !== undefined) {
-            this.loadCustomCss();
-            this.navigatedHere();
-        }
-        if(this.canQueryPages) {
+        //if (document !== undefined) {
+        //    this.loadCustomCss();
+        //    this.navigatedHere();
+        //}
+        this.loadCustomCss();
+        this.navigatedHere();
+        if (this.canQueryPages) {
             if (this.routerSub === null) {
                 this.router.events.subscribe((evt) => {
                     console.log("home component router event occurred");
@@ -51,69 +53,77 @@ export class HomeComponent implements OnInit {
         // means that custom.css rules are overridden by the webframe rules built into the app
         // which is the reverse of what I require.
         // so I load it here at run time and put it in the right place (after all the other rules)
-        let headElement: HTMLHeadElement = document.getElementsByTagName("head")[0];
-        let customLink = document.createElement("link");
-        customLink.rel = "stylesheet";
-        customLink.href = "/css/custom.css";
-        headElement.appendChild(customLink);
+        try {
+            let headElement: HTMLHeadElement = document.getElementsByTagName("head")[0];
+            let customLink = document.createElement("link");
+            customLink.rel = "stylesheet";
+            customLink.href = "/css/custom.css";
+            headElement.appendChild(customLink);
+        } catch (e) {
+            console.log("cutsom css not loaded")
+        }
     }
+    private async loadPages(pageId?: number) {
+        this.current = await this.pageService.getPageKeys(pageId);
+        //await this.loadMenus();
+    }
+
     private async navigatedHere() {
         console.log("user navigated here to homecomponent")
-        this.current = await this.pageService.getPageKeys();
+        await this.loadPages();
         console.log(JSON.stringify(this.current));
+
     }
-    private async onSitePanelClick(e: Event) {
-        console.log(`sitepanel click`);
+    onSitePanelClick(e: Event) {
+        console.log(`sitepanel click1 ${e.currentTarget}, ${e.target}`);
         let target = e.target;
         let elem: Element = target as Element;
-        if (elem.localName === 'a') { 
+        console.log(`sitepanel click2 ${elem.outerHTML}`);
+        let aTag = elem.closest("a");
+        if (aTag != null) {
+            console.log(`sitepanel click3 ${aTag.outerHTML}`);
             let localUrl = `${window.location.protocol}//${window.location.host}`;
-            let link = elem as HTMLAnchorElement;
+            let link = aTag as HTMLAnchorElement;
             console.log(`a tag clicked, href = ${link.href} [${localUrl}]`);
             if (link.href.startsWith(localUrl)) {
-                e.preventDefault();
+                
                 let path = link.href.substr(localUrl.length + 1);
                 console.log(`local href = ${path}`);
                 let parts = path.split("/");
                 if (parts[0] === "page") {
+                    e.preventDefault();
                     let targetPageId = parseInt(parts[1]);
-                    this.current = await this.pageService.getPageKeys(targetPageId);
+                    this.loadPages(targetPageId);
+                } else {
+                    console.log(`navigate to ${link.href}`);
+                    this.router.navigateByUrl(link.href)
                 }
-
-            } 
+            }
 
         }
     }
-    private getBannerPageId(): number | undefined {
+    getBannerPageId(): number | undefined {
         if (this.current != null) {
             return this.current.bannerPanelPageId;
         }
         return;
     }
-    private getLeftPageId(): number | undefined {
+    getLeftPageId(): number | undefined {
         if (this.current != null) {
             return this.current.leftPanelPageId;
         }
         return;
     }
-    private getRightPageId(): number | undefined {
+    getRightPageId(): number | undefined {
         if (this.current != null) {
             return this.current.rightPanelPageId;
         }
         return;
     }
-    private getCentrePageId(): number | undefined {
+    getCentrePageId(): number | undefined {
         if (this.current != null) {
             return this.current.centrePanelPageId;
         }
         return;
-    }
-    private RunningInNode(): boolean {
-        let r = false;
-        try {
-            r = window === undefined;
-            console.log(`running in node = ${r}`);
-        } catch (x) { };
-        return r;
     }
 }

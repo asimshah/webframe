@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.172" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.179" />
     <PackageReference Include="HtmlAgilityPack" Version="1.5.5" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
@@ -39,8 +39,7 @@
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
-    <None Remove="ClientApp\app\components\home\home-routing.module.ts" />
-    <None Remove="ClientApp\app\components\home\home.module.ts" />
+    <None Remove="ClientApp\app\components\home\menu.component.ts" />
     <None Remove="ClientApp\app\components\home\page.service.ts" />
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
@@ -80,9 +79,8 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\home-routing.module.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\home.module.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\page.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\menu.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.module.ts" />

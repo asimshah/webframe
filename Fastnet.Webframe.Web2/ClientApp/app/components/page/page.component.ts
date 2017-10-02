@@ -1,7 +1,7 @@
 ﻿import { Component, Input } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { PageService, PageHtmlInformation } from '../home/page.service';
+import { PageService, PageHtmlInformation } from '../shared/page.service';
 
 @Component({
     selector: 'webframe-page',

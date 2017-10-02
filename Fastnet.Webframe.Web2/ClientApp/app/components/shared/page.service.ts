@@ -9,12 +9,18 @@ export class PageKeys {
     leftPanelPageId?: number;
     rightPanelPageId?: number;
 }
-
 export class PageHtmlInformation {
     pageId: number;
     location: string;
     htmlText: string;
     htmlStyles: any[];
+}
+export class MenuDetails {
+    level: number;
+    index: number;
+    text: string;
+    url: string
+    subMenus: MenuDetails[]
 }
 
 @Injectable()
@@ -22,6 +28,11 @@ export class PageService extends BaseService {
     constructor(http: Http) {
         super(http);
         console.log("PageService constructor");
+    }
+    public async getMenus(): Promise<MenuDetails[]> {
+        let query = "/pageapi/get/menus";
+        let result = await this.query(query);
+        return new Promise<MenuDetails[]>(resolve => resolve(result.data as MenuDetails[]));
     }
     public async getPageKeys(id?: number): Promise<PageKeys | null> {
         let query = "/pageapi/get/pagekeys";

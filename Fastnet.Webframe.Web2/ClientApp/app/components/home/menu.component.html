@@ -1,0 +1,7 @@
+﻿<div class="menu-list">
+    <div *ngFor="let m of menus" class="menu-item" >
+        <a href="{{m.url}}"  (click)="onMenuItemClick($event, m)"  >
+            <span class="menu-text" >{{m.text}} </span>
+        </a>
+    </div>
+</div>

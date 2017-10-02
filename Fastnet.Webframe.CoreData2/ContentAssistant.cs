@@ -258,8 +258,12 @@ namespace Fastnet.Webframe.CoreData2
         {
             this.log = logger;
             this.coreDataContext = coreDataContext;
+            this.coreDataContext.ChangeTracker.AutoDetectChangesEnabled = false;
             this.environment = environment;
             ContentAssistant.contentRoot = environment.ContentRootPath;
+            coreDataContext.Groups.ToArray();
+            coreDataContext.DirectoryGroups.ToArray();
+            coreDataContext.Directories.ToArray();
         }
         public async Task<AccessResult> GetAccessResultAsync(Member member, Image image)
         {
@@ -280,12 +284,18 @@ namespace Fastnet.Webframe.CoreData2
         }
         public async Task<AccessResult> GetAccessResultAsync(Member member, Page page)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             TraceAccess("Access: member {0}, {1}", member.Fullname, page.Url);
             //await LoadRelatedEntities(page);
             //coreDataContext.Directories.Where(d => d.DirectoryId == page.DirectoryId).Load();
             await coreDataContext.Entry(page).Reference(x => x.Directory).LoadAsync();
+            //log.LogInformation($"GetAccessResultAsync() for page {page.PageId} is {sw.ElapsedMilliseconds} ms (after loadAsync)");
             Directory dir = page.Directory;
-            return await GetAccessResultAsync(member, dir);
+            //log.LogInformation($"checking access for page {page.PageId}, member {member.Fullname}, dir {dir.FullName} ");
+            var ar =  await GetAccessResultAsync(member, dir);
+            //log.LogInformation($"GetAccessResultAsync() for page {page.PageId} is {sw.ElapsedMilliseconds} ms");
+            return ar;
         }
         public async Task<Page> FindLandingPageAsync(Member member)
         {
@@ -372,12 +382,57 @@ namespace Fastnet.Webframe.CoreData2
             var location = page.Directory.DisplayName;
             return new PageHtmlInformation { PageId = page.PageId, Location = location, HtmlText = htmlText, HtmlStyles = null };
         }
-        public bool IsMemberOf(Member member, Group group)
+        //public bool IsMemberOf(Member member, Group group)
+        //{
+
+        //    coreDataContext.LoadGroupMembersAsync(group).Wait();
+        //    var temp = group.SelfAndDescendants.ToArray();
+        //    //var result = group.SelfAndDescendants.Any(x => x.Members.Contains(member));
+        //    var result = temp.Any(x => x.Members.Contains(member));
+        //    return result;
+        //}
+        //public bool IsMemberOf2(Member member, Group group)
+        //{
+        //    coreDataContext.LoadGroupMembersAsync(group).Wait();
+        //    var temp = group.SelfAndDescendants.SelectMany(x => x.Members.Select(m => m.Id)).Distinct().OrderByDescending(x => x);
+        //    //var result = group.SelfAndDescendants.Any(x => x.Members.Contains(member));
+        //    var result = temp.Contains(member.Id, StringComparer.CurrentCultureIgnoreCase);
+        //    return result;
+        //}
+        public bool IsMemberOf3(Member member, Group group)
         {
-            coreDataContext.LoadGroupMembersAsync(group).Wait();
-            var temp = group.SelfAndDescendants.ToArray();
-            var result = group.SelfAndDescendants.Any(x => x.Members.Contains(member));
-            return result;
+            var allgroups = GetGroupAndDescendants(group);
+            //log.LogInformation($"IsMemberOf3 {sw.ElapsedMilliseconds} (after GetGroupAndDescendants)");
+            foreach (var g in allgroups)
+            {
+                //coreDataContext.Entry(g).Collection(x => x.GroupMembers).Load();
+                var temp = coreDataContext.Groups
+                    .Include(x => x.GroupMembers)
+                        .ThenInclude(x => x.Member)
+                    .Where(x => x.GroupId == g.GroupId).ToArray();
+                //var query = coreDataContext.GroupMembers.Include(x => x.Member).Where(x => x.GroupId == g.GroupId).ToArray();
+                if (g.Members.Contains(member))
+                {
+                    return true;
+                }
+            }
+            //log.LogInformation($"IsMemberOf3 {sw.ElapsedMilliseconds}");
+            return false;
+        }
+        private IEnumerable<Group> GetGroupAndDescendants(Group group)
+        {
+            List<Group> list = new List<Group>();
+            void addGroupPlusDescendents(Group current)
+            {
+                list.Add(current);
+                coreDataContext.Entry(current).Collection(x => x.Children).Load();
+                foreach(var cg in current.Children)
+                {
+                    addGroupPlusDescendents(cg);
+                }
+            }
+            addGroupPlusDescendents(group);
+            return list;
         }
         private void TraceAccess(string fmt, params object[] args)
         {
@@ -390,35 +445,43 @@ namespace Fastnet.Webframe.CoreData2
         }
         private async Task<AccessResult> GetAccessResultAsync(Member member, Directory dir)
         {
+            //Stopwatch sw = new Stopwatch(); sw.Start();
             await coreDataContext.LoadGroups(dir);
+            //log.LogInformation($"{dir.FullName} loadgroups in {sw.ElapsedMilliseconds}");
             AccessResult ar = AccessResult.Rejected;
-            TraceAccess("Access: member {0}, directory {1}", member.Fullname, dir.DisplayName);
+            //TraceAccess("Access: member {0}, directory {1}", member.Fullname, dir.DisplayName);
             if(dir.Groups.Count() == 0)
             {
                 TraceAccess("Access: member {0}, directory {1}, no direct restrictions (going to parent ...)", member.Fullname, dir.DisplayName);
                 await coreDataContext.LoadParentsAsync(dir);
                 dir = dir.ParentDirectory;
                 ar = await GetAccessResultAsync(member, dir);
+                //Debugger.Break();
             }
-            TraceAccess("Access: member {0}, directory {1}, direct restriction group(s): {2}", member.Fullname, dir.DisplayName, string.Join(", ", dir.Groups.Select(x => x.Fullpath).ToArray()));
-            var groupsWhereIsMember = dir.DirectoryGroups.Where(x => IsMemberOf(member, x.Group)).Select(x => new { x.Group, x.Permission });
-            if (groupsWhereIsMember.Count() > 0)
+            //TraceAccess("Access: member {0}, directory {1}, direct restriction group(s): {2}", member.Fullname, dir.DisplayName, string.Join(", ", dir.Groups.Select(x => x.Fullpath).ToArray()));
+            else
             {
-                TraceAccess("Access: member {0}, directory {1}, member of group(s): {2}", member.Fullname, dir.DisplayName, string.Join(", ", groupsWhereIsMember.Select(x => x.Group.Fullpath).ToArray()));
-                if (groupsWhereIsMember.Any(x => x.Permission.HasFlag(Permission.EditPages)))
+                var groupsWhereIsMember = dir.DirectoryGroups.Where(x => IsMemberOf3(member, x.Group)).Select(x => new { x.Group, x.Permission });
+                //log.LogInformation($"{dir.FullName} {sw.ElapsedMilliseconds} (after groupsWhereIsMember)");
+                if (groupsWhereIsMember.Count() > 0)
                 {
-                    TraceAccess("Access: member {0}, directory {1}, edit allowed for group(s): {2} ", member.Fullname, dir.DisplayName,
-                        string.Join(", ", groupsWhereIsMember.Where(x => x.Permission.HasFlag(Permission.EditPages)).Select(x => x.Group.Fullpath).ToArray()));
-                    ar = AccessResult.EditAllowed;
-                }
-                else if(groupsWhereIsMember.Any(x => x.Permission.HasFlag(Permission.ViewPages)))
-                {
-                    TraceAccess("Access: member {0}, directory {1}, view allowed for group(s): {2} ", member.Fullname, dir.DisplayName,
-                        string.Join(", ", groupsWhereIsMember.Where(x => x.Permission.HasFlag(Permission.ViewPages)).Select(x => x.Group.Fullpath).ToArray()));
-                    ar = AccessResult.ViewAllowed;
-                }
+                    //TraceAccess("Access: member {0}, directory {1}, member of group(s): {2}", member.Fullname, dir.DisplayName, string.Join(", ", groupsWhereIsMember.Select(x => x.Group.Fullpath).ToArray()));
+                    if (groupsWhereIsMember.Any(x => x.Permission.HasFlag(Permission.EditPages)))
+                    {
+                        //TraceAccess("Access: member {0}, directory {1}, edit allowed for group(s): {2} ", member.Fullname, dir.DisplayName,
+                        //    string.Join(", ", groupsWhereIsMember.Where(x => x.Permission.HasFlag(Permission.EditPages)).Select(x => x.Group.Fullpath).ToArray()));
+                        ar = AccessResult.EditAllowed;
+                    }
+                    else if (groupsWhereIsMember.Any(x => x.Permission.HasFlag(Permission.ViewPages)))
+                    {
+                        //TraceAccess("Access: member {0}, directory {1}, view allowed for group(s): {2} ", member.Fullname, dir.DisplayName,
+                        //    string.Join(", ", groupsWhereIsMember.Where(x => x.Permission.HasFlag(Permission.ViewPages)).Select(x => x.Group.Fullpath).ToArray()));
+                        ar = AccessResult.ViewAllowed;
+                    }
+                    //log.LogInformation($"{dir.FullName} {sw.ElapsedMilliseconds} (after groupsWhereIsMember count > 0)");
+                } 
             }
-            TraceAccess("Access: member {0}, directory {1}, access result: {2}", member.Fullname, dir.DisplayName, ar.ToString());
+            //TraceAccess("Access: member {0}, directory {1}, access result: {2}", member.Fullname, dir.DisplayName, ar.ToString());
             return ar;
         }
         private double FindWeight(Member member, Page p)
@@ -427,7 +490,7 @@ namespace Fastnet.Webframe.CoreData2
             Directory dir = p.Directory;
             foreach (var d in dir.SelfAndParents)
             {
-                var dgs = d.DirectoryGroups.Where(x => IsMemberOf(member, x.Group));
+                var dgs = d.DirectoryGroups.Where(x => IsMemberOf3(member, x.Group));
                 if (dgs.Count() > 0)
                 {
                     result = dgs.Average(x => x.Group.Weight);

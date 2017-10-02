@@ -25,10 +25,30 @@ $default-leftpanel-width: 210px;
     }
 
     .MenuPanel {
-        height: 24px; // remove when menu stuff is working
-        background-color: $default-menupanel-backgroundColour;
+        //height: 24px; // remove when menu stuff is working
+        //background-color: $default-menupanel-backgroundColour;
         text-align: right;
         width: 100%;
+
+        .menu-list {
+            display: flex;
+            //justify-content: flex-end;  !!reminder
+            .menu-item {
+                padding: 2px 12px 2px 12px;
+                margin: 8px 12px 8px 12px;
+                line-height: 2.0em;
+                border-radius: 3px;
+                font-size: x-small;
+                //color: white;
+                background-color: #155a85;// #405370;
+
+                a {
+                    span {
+                        color: white;
+                    }
+                }
+            }
+        }
     }
 
     .ContentPanel {

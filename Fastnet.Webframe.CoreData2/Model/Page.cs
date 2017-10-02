@@ -18,7 +18,8 @@ namespace Fastnet.Webframe.CoreData2
         public bool IsLandingPage { get; set; }
         public PageMarkup PageMarkup { get; set; }
         public Directory Directory { get; set; }
-        public ICollection<MenuMaster> MenuMasters { get; set; }
+        //public ICollection<MenuMaster> MenuMasters { get; set; }
+        public ICollection<Menu> Menus { get; set; }
         public ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these document
         public ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these document
         public ICollection<PagePage> BackLinks { get; set; } // this page is hyperlinked from these pages

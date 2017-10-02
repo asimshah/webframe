@@ -18,7 +18,7 @@ namespace Fastnet.Webframe.CoreData2
         private CustomisationOptions customisation;
         public DbSet<Directory> Directories { get; set; }
         public DbSet<Menu> Menus { get; set; }
-        public DbSet<MenuMaster> MenuMasters { get; set; }
+        //public DbSet<MenuMaster> MenuMasters { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<FileChunk> FileChunks { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -51,6 +51,16 @@ namespace Fastnet.Webframe.CoreData2
             {
                 modelBuilder.Ignore<DWHMember>();
             }
+            modelBuilder.Entity<Menu>()
+                .HasOne(x => x.ParentMenu)
+                .WithMany(x => x.Submenus)
+                .HasForeignKey(x => x.ParentMenu_Id);
+            //modelBuilder.Entity<Menu>()
+            //    .HasOne(x => x.MenuMaster)
+            //    .WithMany(x => x.Menus)
+            //    .HasForeignKey(x => x.MenuMaster_Id);
+
+
             modelBuilder.Entity<Directory>()
                 .HasOne(x => x.ParentDirectory)
                 .WithMany(x => x.SubDirectories)
@@ -82,6 +92,11 @@ namespace Fastnet.Webframe.CoreData2
                 .HasOne(p => p.PageMarkup)
                 .WithOne(pm => pm.Page)
                 .HasForeignKey<PageMarkup>(pm => pm.PageId);
+            modelBuilder.Entity<Page>()
+                .HasMany(x => x.Menus)
+                .WithOne(x => x.Page)
+                .HasForeignKey(x => x.Page_PageId);
+
             modelBuilder.Entity<PageDocument>()
                 .HasKey(c => new { c.PageId, c.DocumentId });
             modelBuilder.Entity<PageDocument>()
