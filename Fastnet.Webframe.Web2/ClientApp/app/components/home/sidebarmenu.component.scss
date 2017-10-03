@@ -1,0 +1,39 @@
+﻿:host {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
+.sidebar-menu {
+    text-align: right;
+    margin-right: 16px;
+    margin-top: 16px;
+
+    .fa-bars {
+        font-size: 32px;
+    }
+
+    .menu-list {
+        margin-left: 16px;
+        background-color: black;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+
+        .menu-item {
+            border-radius: 3px;
+            padding: 5px;
+            cursor: pointer;
+
+            &:hover {
+                color: black;
+                background-color: white;
+            }
+        }
+
+        &.hidemenulist {
+            display: none;
+        }
+    }
+}

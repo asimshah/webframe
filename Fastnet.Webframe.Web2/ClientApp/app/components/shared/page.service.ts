@@ -27,7 +27,17 @@ export class MenuDetails {
 export class PageService extends BaseService {
     constructor(http: Http) {
         super(http);
-        console.log("PageService constructor");
+        //console.log("PageService constructor");
+    }
+    public async getDefaultBanner(): Promise<number | null> {
+        let query = `/pageapi/get/default/banner/pageId`;
+        let result = await this.query(query);
+        if (!result.success) {
+            return new Promise<null>(resolve => resolve(null));
+        }
+        else {
+            return new Promise<number>(resolve => resolve(<number>result.data));
+        }
     }
     public async getMenus(): Promise<MenuDetails[]> {
         let query = "/pageapi/get/menus";

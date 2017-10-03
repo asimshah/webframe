@@ -8,6 +8,6 @@ import { Component } from '@angular/core';
 })
 export class MembershipComponent {
     constructor() {
-        console.log("hello, hello2");
+        //console.log("hello, hello2");
     }
 }

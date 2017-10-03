@@ -37,7 +37,6 @@ namespace Fastnet.Webframe.Web2.Controllers
         [HttpGet("get/page/{id}")]
         public async Task<IActionResult> GetPage(long id)
         {
-
             Stopwatch sw = new Stopwatch();
             sw.Start();
             var m = GetCurrentMember();
@@ -67,6 +66,19 @@ namespace Fastnet.Webframe.Web2.Controllers
                     log.LogInformation($"get/page/{id} in {sw.ElapsedMilliseconds} ms");
                 }
                 return CacheableSuccessDataResult(info, page.PageMarkup.LastModifiedOn, m.Id);
+            }
+            else
+            {
+                return ErrorDataResult("PageNotFound");
+            }
+        }
+        [HttpGet("get/default/banner/pageId")]
+        public async Task<IActionResult> GetDefaultBannerPage()
+        {
+            var page = await contentAssistant.FindDefaultBannerPage();            
+            if(page != null)
+            {
+                return SuccessDataResult(page.PageId);
             }
             else
             {
@@ -114,11 +126,18 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> GetMenus()
         {
             // entity MenuMaster is ignored. q.v. MenuMaster in CoreData
+            //if (IsAuthenticated)
+            //{
+            //    var m = GetCurrentMember();
+            //    var user = await userManager.GetUserAsync(User);
+            //    log.LogInformation($"GetCurrentMember() returns {m.Fullname}, userManager returns {user.UserName}");
+            //}
             List<MenuDetails> menuList = new List<MenuDetails>();
             long? parentMenuId = null;
             List<object> etagParams = new List<object>();
             await LoadMenusForParent(menuList, parentMenuId, 0, etagParams);
             return CacheableSuccessDataResult(menuList, this.GetCurrentMember().Id, etagParams);
+            //return SuccessDataResult(menuList);
         }
 
         [HttpGet("logaction")]
@@ -205,30 +224,97 @@ namespace Fastnet.Webframe.Web2.Controllers
 
         private async Task LoadMenusForParent(List<MenuDetails> menuList, long? parentMenuId, int level, List<object> etagParams)
         {
+            bool canAccessLoginOut(string loweredurl)
+            {
+                var m = GetCurrentMember();
+                if (loweredurl == "login")
+                {
+                    var anonymous = coreDataContext.GetSystemGroup(SystemGroups.Anonymous);
+                    return contentAssistant.IsMemberOf(m, anonymous);
+                }
+                if (loweredurl == "logout")
+                {
+                    var allMembers = coreDataContext.GetSystemGroup(SystemGroups.AllMembers);
+                    return contentAssistant.IsMemberOf(m, allMembers);
+                }
+                return false;
+            }
+            bool canAccessBuiltinApps(string loweredurl)
+            {
+                bool result = false;
+                var m = GetCurrentMember();
+                switch (loweredurl)
+                {
+                    case "cms":
+                    case "membership":
+                        var admins = coreDataContext.GetSystemGroup(SystemGroups.Administrators);
+                        result = contentAssistant.IsMemberOf(m, admins);
+                        break;
+                        //return Group.Administrators.Members.Contains(m);
+                    case "designer":
+                        var designers = coreDataContext.GetSystemGroup(SystemGroups.Designers);
+                        result = contentAssistant.IsMemberOf(m, designers);
+                        break;
+                }
+                return result;
+            }
+            bool canAccess(Menu m)
+            {
+                bool result = false;
+                if(m.Url == null)
+                {
+                    result = true;
+                }
+                else
+                {
+                    var loweredUrl = m.Url.ToLower();
+                    if(loweredUrl.StartsWith("/"))
+                    {
+                        loweredUrl = loweredUrl.Substring(1);
+                    }
+                    switch(loweredUrl)
+                    {
+                        default:
+                            result = true;
+                            break;
+                        case "cms":
+                        case "designer":
+                        case "membership":
+                            return canAccessBuiltinApps(loweredUrl);
+                        case "login":
+                        case "logout":
+                            return canAccessLoginOut(loweredUrl);
+                    }
+                }
+                return result;
 
+            }
             var menus = await coreDataContext.Menus.Include(x => x.Submenus)
                 .Where(x => x.ParentMenu_Id == parentMenuId)
                 .OrderBy(x => x.Index)
                 .ToArrayAsync();
             foreach (var m in menus)
             {
-                var md = new MenuDetails
+                if (canAccess(m))
                 {
-                    Level = level,
-                    Index = m.Index,
-                    Text = m.Text,
-                    Url = m.Url,
-                    SubMenus = new List<MenuDetails>()
-                };
-                menuList.Add(md);
-                etagParams.Add(level);
-                etagParams.Add(m.Index);
-                etagParams.Add(m.Text);
-                etagParams.Add(m.Url);
-                // add to menu result
-                if (m.Submenus.Count() != 0)
-                {
-                    await LoadMenusForParent(md.SubMenus, m.ParentMenu_Id, level + 1, etagParams);
+                    var md = new MenuDetails
+                    {
+                        Level = level,
+                        Index = m.Index,
+                        Text = m.Text,
+                        Url = m.Url,
+                        SubMenus = new List<MenuDetails>()
+                    };
+                    menuList.Add(md);
+                    etagParams.Add(level);
+                    etagParams.Add(m.Index);
+                    etagParams.Add(m.Text);
+                    etagParams.Add(m.Url);
+                    // add to menu result
+                    if (m.Submenus.Count() != 0)
+                    {
+                        await LoadMenusForParent(md.SubMenus, m.ParentMenu_Id, level + 1, etagParams);
+                    }
                 }
             }
 

@@ -33,7 +33,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]Credentials credentials)
         {
-            await Task.Delay(3);
+            //await Task.Delay(3);
             this.log.LogInformation($"login with {credentials.emailAddress}, {credentials.password}");
             var user = await userManager.FindByEmailAsync(credentials.emailAddress);
             if(user == null)
@@ -73,6 +73,18 @@ namespace Fastnet.Webframe.Web2.Controllers
                 }
             }
             return ErrorDataResult("SystemError");
+        }
+        [HttpGet("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            this.log.LogInformation($"logout requested");
+            if (IsAuthenticated)
+            {
+                var user = await userManager.GetUserAsync(User);
+                await signInManager.SignOutAsync();
+                await userManager.UpdateSecurityStampAsync(user);
+            }
+            return SuccessDataResult(null);
         }
     }
 }

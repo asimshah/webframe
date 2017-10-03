@@ -18,7 +18,7 @@ export enum LoginResult {
 export class AuthenticationService extends BaseService {
     constructor(http: Http) {
         super(http);
-        console.log("AuthenticationService constructor");
+        //console.log("AuthenticationService constructor");
     }
     public async login(credentials: Credentials): Promise<LoginResult> {
         let lr: LoginResult = LoginResult.Unknown;
@@ -43,5 +43,8 @@ export class AuthenticationService extends BaseService {
             lr = LoginResult.Succeeded;
         }
         return new Promise<LoginResult>(resolve => resolve(lr));
+    }
+    public async logout(): Promise<void> {
+        let result = await this.query("user/logout");
     }
 }

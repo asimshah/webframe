@@ -20,16 +20,16 @@ export class PageComponent {
     }
         
     constructor(private pageService: PageService, private sanitizer : DomSanitizer) {
-        console.log("PageComponent constructor");
+        //console.log("PageComponent constructor");
         this.pageId = null;
     }
     onPageIdChanged() {
         // I don't understand how pageId is undefined at the start (given that it is is initialised to null)
         if (this.pageId === null || this.pageId === undefined) {
-            console.log("pageId is null");
+            //console.log("pageId is null");
         } else
         {
-            console.log(`need to query for page ${this.pageId}`);
+            //console.log(`need to query for page ${this.pageId}`);
             this.loadPage();
         }
     }

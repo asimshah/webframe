@@ -334,25 +334,13 @@ namespace Fastnet.Webframe.CoreData2
         }
         public async Task<PageKeys> GetPageKeys(Page centrePage)
         {
-            async Task<Page> findSidePage(Page cp, PageType pt)
-            {
-                foreach (var dir in cp.Directory.SelfAndParents)
-                {
-                    await coreDataContext.Entry(dir).Collection(x => x.Pages).LoadAsync();
-                    var sidepage = dir.Pages.SingleOrDefault(p => p.Type == pt);
-                    if (sidepage != null)
-                    {
-                        return sidepage;
-                    }
-                }
-                return null;
-            }
+
             Debug.Assert(centrePage.Type == PageType.Centre);
             await coreDataContext.Entry(centrePage).Reference(x => x.Directory).LoadAsync();
             await coreDataContext.LoadParentsAsync(centrePage.Directory);
-            var bannerPage = await findSidePage(centrePage, PageType.Banner);
-            var leftPage = await findSidePage(centrePage, PageType.Left);
-            var rightPage = await findSidePage(centrePage, PageType.Right);
+            var bannerPage = await FindSidePage(centrePage, PageType.Banner);
+            var leftPage = await FindSidePage(centrePage, PageType.Left);
+            var rightPage = await FindSidePage(centrePage, PageType.Right);
             var result = new PageKeys
             {
                 CentrePanelPageId = centrePage.PageId,
@@ -361,6 +349,13 @@ namespace Fastnet.Webframe.CoreData2
                 RightPanelPageId = rightPage?.PageId
             };
             return result;
+        }
+        public async Task<Page> FindDefaultBannerPage()
+        {
+            var anonymous = coreDataContext.GetAnonymousMember();
+            var landingPage = await FindLandingPageAsync(anonymous);
+            var bannerPage = await FindSidePage(landingPage, PageType.Banner);
+            return bannerPage;
         }
         public async Task<PageHtmlInformation> PrepareDocXPage(Page page)
         {
@@ -382,6 +377,19 @@ namespace Fastnet.Webframe.CoreData2
             var location = page.Directory.DisplayName;
             return new PageHtmlInformation { PageId = page.PageId, Location = location, HtmlText = htmlText, HtmlStyles = null };
         }
+        private async Task<Page> FindSidePage(Page cp, PageType pt)
+        {
+            foreach (var dir in cp.Directory.SelfAndParents)
+            {
+                await coreDataContext.Entry(dir).Collection(x => x.Pages).LoadAsync();
+                var sidepage = dir.Pages.SingleOrDefault(p => p.Type == pt);
+                if (sidepage != null)
+                {
+                    return sidepage;
+                }
+            }
+            return null;
+        }
         //public bool IsMemberOf(Member member, Group group)
         //{
 
@@ -399,7 +407,7 @@ namespace Fastnet.Webframe.CoreData2
         //    var result = temp.Contains(member.Id, StringComparer.CurrentCultureIgnoreCase);
         //    return result;
         //}
-        public bool IsMemberOf3(Member member, Group group)
+        public bool IsMemberOf(Member member, Group group)
         {
             var allgroups = GetGroupAndDescendants(group);
             //log.LogInformation($"IsMemberOf3 {sw.ElapsedMilliseconds} (after GetGroupAndDescendants)");
@@ -461,7 +469,7 @@ namespace Fastnet.Webframe.CoreData2
             //TraceAccess("Access: member {0}, directory {1}, direct restriction group(s): {2}", member.Fullname, dir.DisplayName, string.Join(", ", dir.Groups.Select(x => x.Fullpath).ToArray()));
             else
             {
-                var groupsWhereIsMember = dir.DirectoryGroups.Where(x => IsMemberOf3(member, x.Group)).Select(x => new { x.Group, x.Permission });
+                var groupsWhereIsMember = dir.DirectoryGroups.Where(x => IsMemberOf(member, x.Group)).Select(x => new { x.Group, x.Permission });
                 //log.LogInformation($"{dir.FullName} {sw.ElapsedMilliseconds} (after groupsWhereIsMember)");
                 if (groupsWhereIsMember.Count() > 0)
                 {
@@ -490,7 +498,7 @@ namespace Fastnet.Webframe.CoreData2
             Directory dir = p.Directory;
             foreach (var d in dir.SelfAndParents)
             {
-                var dgs = d.DirectoryGroups.Where(x => IsMemberOf3(member, x.Group));
+                var dgs = d.DirectoryGroups.Where(x => IsMemberOf(member, x.Group));
                 if (dgs.Count() > 0)
                 {
                     result = dgs.Average(x => x.Group.Weight);

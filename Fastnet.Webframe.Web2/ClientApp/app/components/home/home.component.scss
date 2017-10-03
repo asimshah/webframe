@@ -6,3 +6,22 @@ $default-sitepanel-width: 840px;
     height: 100%;
 }
 
+.BannerPanel {
+    position: relative; // allows child elements to be positioned absolutely
+    webframe-sidebarmenu {
+        display: none;
+    }
+}
+
+@media all and (max-width: 748px) {
+    .BannerPanel {
+        webframe-sidebarmenu {
+            display: block;
+        }
+    }
+    .SitePanel {
+        .MenuPanel {
+            display: none;
+        }
+    }
+}

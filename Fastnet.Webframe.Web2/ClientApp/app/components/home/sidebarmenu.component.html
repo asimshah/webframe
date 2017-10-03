@@ -1,0 +1,11 @@
+﻿<div class="sidebar-menu" (click)="$event.stopPropagation()">
+    <div class="sidebar-icon" >
+        <div class="sidebar-toggle"(click)="toggleMenus($event)">
+            <!--<span class='sr-only'>Toggle navigation</span>-->
+            <span class='fa fa-bars'></span>
+        </div>
+    </div>
+    <div class="menu-list"  [ngClass]="{hidemenulist: hideMenus}"  >
+        <div *ngFor="let m of menus" class="menu-item" (click)="menuItemClick(m)">{{m.text}}</div>
+    </div>
+</div>

@@ -12,7 +12,7 @@ export class PermissionDeniedComponent {
     private sub: any;
     constructor(private route: ActivatedRoute, private router: Router) {
         //let text = JSON.stringify(activatedRoute);
-        console.log(`PermissionComponent`);
+        //console.log(`PermissionComponent`);
         this.allowLogin = false;
     }
     ngOnInit() {
@@ -25,7 +25,7 @@ export class PermissionDeniedComponent {
                     this.allowLogin = true;
                 }
             }
-            console.log(`PermissionDeniedComponent received ${this.msg}, allowLogin ${this.allowLogin}`);
+           // console.log(`PermissionDeniedComponent received ${this.msg}, allowLogin ${this.allowLogin}`);
         });
     }
     onGoback(): void {

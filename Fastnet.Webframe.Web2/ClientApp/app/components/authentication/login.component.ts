@@ -1,9 +1,10 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmailValidator, FormControl } from '@angular/forms';
 
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
 import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
+import { PageKeys, PageService } from '../shared/page.service';
 
 class LoginModel {
     message: string;
@@ -14,7 +15,8 @@ class LoginModel {
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+    public bannerPageId: number | null;
     public loginModel: LoginModel;
     public model: Credentials;
     public emailAddressIsValid: boolean = true;
@@ -23,12 +25,20 @@ export class LoginComponent {
     public failureReason: string;
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
-        private dialogService: ModalDialogService
+        private dialogService: ModalDialogService,
+        private pageService: PageService
     ) {
         this.model = new Credentials();
     }
+    async ngOnInit() {
+        this.bannerPageId = await this.pageService.getDefaultBanner();
+        //console.log(`banner page id is ${this.bannerPageId}`);
+    }
+    getPageId() {               
+        return this.bannerPageId;
+    }
     async onLogin(): Promise<void> {
-        console.log(`credentails are ${this.model.emailAddress} and ${this.model.password}`);
+        //console.log(`credentails are ${this.model.emailAddress} and ${this.model.password}`);
         let lr = await this.authenticationService.login(this.model);
         switch (lr) {
             case LoginResult.Succeeded:
@@ -53,6 +63,9 @@ export class LoginComponent {
                 this.failureReason = "System error - please report this";
                 this.loginFailed = true;
                 break;
+        }
+        if (!this.loginFailed) {
+            this.router.navigate(['home']);
         }
     }
     onResetPassword() {

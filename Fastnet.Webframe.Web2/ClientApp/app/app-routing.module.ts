@@ -2,6 +2,7 @@
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
+import { PageNotFoundComponent } from './components/home/pagenotfound.component';
 import { PageService } from './components/shared/page.service';
 import { LoginComponent } from './components/authentication/login.component';
 
@@ -15,13 +16,16 @@ import { AuthenticationService } from './components/authentication/authenticatio
 const appRoutes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
+    { path: 'logout', component: HomeComponent },
+    { path: 'page/:id', component: HomeComponent},
     { path: 'login', component: LoginComponent },
     //{ path: 'webframe', loadChildren: './components/home/home.module#HomeModule' },
     { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },
     { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule', canLoad: [AdminGuard] },
-    { path: 'permissiondenied/:msg/:allowLogin', component: PermissionDeniedComponent},
+    { path: 'permissiondenied/:msg/:allowLogin', component: PermissionDeniedComponent },
+    { path: 'pagenotfound', component: PageNotFoundComponent },
     { path: '**', redirectTo: 'home' }
 ];
 
@@ -29,7 +33,7 @@ const appRoutes: Routes = [
     imports: [
         RouterModule.forRoot(
             appRoutes,
-            { enableTracing: true}
+            { enableTracing: false}
         )
     ],
     exports: [

@@ -12,6 +12,7 @@ import { PageNotFoundComponent } from './components/home/pagenotfound.component'
 import { EditorComponent } from './components/home/editor/editor.component';
 import { PageComponent } from './components/page/page.component';
 import { MenuComponent } from './components/home/menu.component';
+import { SidebarMenuComponent } from './components/home/sidebarmenu.component';
 import { LoginComponent } from './components/authentication/login.component';
 import { ModalDialogComponent } from './components/modaldialog/modal-dialog.component';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
@@ -25,6 +26,7 @@ import { PermissionDeniedComponent } from './components/routeguards/permissionde
         PageNotFoundComponent,
         PageComponent,
         MenuComponent,
+        SidebarMenuComponent,
         EditorComponent,
         LoginComponent,
         PermissionDeniedComponent,
