@@ -1,4 +1,75 @@
-﻿<div>
-    <div>This is the membership app</div>
-    <router-outlet></router-outlet>
+﻿<div class="SitePanel">
+    <div class="BannerPanel">
+        <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
+    </div>
+    <div class="mode-commands">
+        <button (click)="setMode(false)">Members</button><button (click)="setMode(true)">Groups</button><button (click)="goBack()">Back</button></div>
+    <div class="membership-app-panel" [ngClass]="{hidden: groupMode}">
+        <div class="left-panel">
+            <div class="member-index">
+                <div class="search-group ">
+                    <div><button title="Add a New Member" (click)="addNewMember()"><span class="fa fa-plus"></span></button></div>
+                    <input type="text" placeholder="Search ..." [(ngModel)]="searchText" (input)="diagSearchText()" />
+                    <span><button [ngClass]="{'not-visible': searchText.length === 0}" (click)="clearSearchText()"><span class="fa fa-remove"></span></button></span>
+                    <span><button (click)="searchForMembers()"><span class="fa fa-search"></span></button></span>
+                </div>
+                <div class="address-book">
+                    <div class="address-book-tabs">
+                        <button *ngFor="let item of tabs" [ngClass]="{selected: item.selected}" (click)="selectTab(item)">{{item.name}}</button>
+                    </div>
+                    <div class="address-book-list">names here</div>
+                </div>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="fastnet-form member-properties">
+                <div class="header">
+                    <div class="main">Main header</div>
+                    <div class="sub">Sub header</div>
+                </div>
+                <form  #memberForm="ngForm" >
+                    <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validationResult]="getValidationResult('firstName')" (validate)="onFirstNameValidate($event)"></text-input>
+                    <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validationResult]="getValidationResult('lastName')" (validate)="onLastNameValidate($event)"></text-input>
+                    <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled" ></bool-input>
+                    <enum-input label="choices" [items]="choiceValues" ></enum-input>
+                    <div class="enum-input layout-horizontal">
+                        <div class="enum-label">Choice</div>
+                        <div class="enum-group">                            
+                            <label>
+                                <input type="radio" name="enum1" [value]="0" [(ngModel)]="member.choice" />
+                                <span>First</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="enum1" [value]="1" [(ngModel)]="member.choice" />
+                                <span>Second</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="enum1" [value]="2" [(ngModel)]="member.choice" />
+                                <span>Third</span>
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                <div class="footer">
+                    <div class="text-help">some help text</div>
+                </div>
+                <div class="commands">
+                    <button class="link">Alpha</button>
+                    <button class="secondary" (click)="onBetaButton()">beta</button>
+                    <span class="filler"></span>
+                    <button disabled >Login</button>
+                    <button class="cancel" >Cancel</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="group-app-panel hidden" [ngClass]="{hidden: !groupMode}">
+        <div class="left-panel"></div>
+        <div class="right-panel">
+            <div>This is the group app</div>
+        </div>
+    </div>
+    
+    <!--<router-outlet></router-outlet>-->
 </div>

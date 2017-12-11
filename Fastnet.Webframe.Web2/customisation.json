@@ -1,51 +1,51 @@
 ﻿{
   "CustomisationOptions": {
-    "factory": "DonWhillansHut",
-    "legacy": {
-      "legacyDatabaseName": "dwh-002",
-      "bookingDatabaseName": "dwh-booking-002",
-      "connectionStringName": "LegacyData",
-      "dataload": true,
-      "bookingConnectionStringName": "LegacyBooking",
-      "defaultMemberPassword": "abcdefgh"
-    },
+    "factory": "None",
+    //"legacy": {
+    //  "legacyDatabaseName": "dwh-002",
+    //  "bookingDatabaseName": "dwh-booking-002",
+    //  "connectionStringName": "LegacyData",
+    //  "dataload": true,
+    //  "bookingConnectionStringName": "LegacyBooking",
+    //  "defaultMemberPassword": "abcdefgh"
+    //},
 
-    "templateFolder": "DWH",
-    "XScripts": [
-      {
-        "path": "~/bundles/identity",
-        "files": [ "~/Scripts/dwh/dwh.js" ]
-      }
-    ],
-    "CSSFiles": [ "~/Content/DWH/custom.css" ],
-    "Scripts": [ "~/Scripts/dwh/dwh.js" ],
-    "apps": [
-      {
-        "Name": "membership",
-        "Scripts": [ "~/Areas/membership/scripts/dwh/dwh.js" ]
-      },
-      {
-        "Name": "booking",
-        "XScripts": [
-          {
-            "path": "~/bundles/booking",
-            "files": [
-              "~/Areas/booking/scripts/dwh/dwhBookingCommon.js",
-              "~/Areas/booking/scripts/dwh/dwhRequestCustomiser.js"
-            ]
-          },
-          {
-            "path": "~/bundles/booking/admin",
-            "files": [
-              "~/Areas/booking/scripts/dwh/dwhBookingCommon.js",
-              "~/Areas/booking/scripts/dwh/dwhAdminViewModels.js",
-              "~/Areas/booking/scripts/dwh/dwhBookingAdmin.js"
-            ]
-          }
-        ],
-        "Scripts": [ "~/Areas/booking/scripts/dwh/dwhbookingModels.js", "~/Areas/booking/scripts/dwh/dwhRequestCustomiser.js" ]
-      }
-    ],
+    //"templateFolder": "DWH",
+    //"XScripts": [
+    //  {
+    //    "path": "~/bundles/identity",
+    //    "files": [ "~/Scripts/dwh/dwh.js" ]
+    //  }
+    //],
+    //"CSSFiles": [ "~/Content/DWH/custom.css" ],
+    //"Scripts": [ "~/Scripts/dwh/dwh.js" ],
+    //"apps": [
+    //  {
+    //    "Name": "membership",
+    //    "Scripts": [ "~/Areas/membership/scripts/dwh/dwh.js" ]
+    //  },
+    //  {
+    //    "Name": "booking",
+    //    "XScripts": [
+    //      {
+    //        "path": "~/bundles/booking",
+    //        "files": [
+    //          "~/Areas/booking/scripts/dwh/dwhBookingCommon.js",
+    //          "~/Areas/booking/scripts/dwh/dwhRequestCustomiser.js"
+    //        ]
+    //      },
+    //      {
+    //        "path": "~/bundles/booking/admin",
+    //        "files": [
+    //          "~/Areas/booking/scripts/dwh/dwhBookingCommon.js",
+    //          "~/Areas/booking/scripts/dwh/dwhAdminViewModels.js",
+    //          "~/Areas/booking/scripts/dwh/dwhBookingAdmin.js"
+    //        ]
+    //      }
+    //    ],
+    //    "Scripts": [ "~/Areas/booking/scripts/dwh/dwhbookingModels.js", "~/Areas/booking/scripts/dwh/dwhRequestCustomiser.js" ]
+    //  }
+    //],
     "bmc": {
       "api": {
         "enable": true,

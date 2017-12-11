@@ -1,6 +1,268 @@
 ﻿@import "_variables.scss";
 
-.webframe-form {
+$default-font-family: 'Segoe UI', Verdana;
+$base-font-size: 16px; // 1em = 16, 0.75 = 12, 1.375 = 22, 1.5em = 24
+$form-background-colour: white;
+
+$text-colour: black;
+$disabled-colour: gray;
+
+$help-colour: #808080;
+$success-colour: darkgreen;
+$warning-colour: orange;
+$error-colour: red;
+
+$control-background-colour: white;
+$control-border-colour: #ccc;
+/*$control-hover-colour: #337ab7;
+$control-text-hover-colour: white;*/
+
+
+.text-help {
+    font-size: smaller;
+    font-style: italic;
+    color: $help-colour;
+}
+
+.text-success {
+    @extend .text-help;
+    color: $success-colour;
+}
+
+.text-warning {
+    @extend .text-help;
+    color: $warning-colour;
+}
+
+.text-error {
+    @extend .text-help;
+    color: $error-colour
+}
+
+
+.fastnet-form {
+
+    button {
+        $prime-colour: cornflowerblue;
+        $secondary-colour: darkorange;
+        $danger-colour: $error-colour;
+        $link-colour: $prime-colour;
+        /*$warning-colour: darkorange;*/
+        min-width: 7.5em;
+        //margin-left: 5px;
+        color: $form-background-colour;
+        border: 1px solid $form-background-colour;
+        border-radius: 0.2em;
+        padding: 0.375em 0.75em;
+        background-color: $prime-colour;
+
+        &:hover {
+            background-color: $form-background-colour;
+            color: $prime-colour;
+            border: 1px solid $prime-colour;
+        }
+
+        &.secondary {
+            background-color: $secondary-colour;
+
+            &:hover {
+                background-color: $form-background-colour;
+                color: $secondary-colour;
+                border: 1px solid $secondary-colour;
+            }
+        }
+
+        &.danger {
+            background-color: $danger-colour;
+
+            &:hover {
+                background-color: $form-background-colour;
+                color: $danger-colour;
+                border: 1px solid $danger-colour;
+            }
+        }
+
+        &.cancel {
+            background-color: $control-background-colour;
+            color: $text-colour;
+
+            &:hover {
+                background-color: $text-colour;
+                color: $control-background-colour;
+            }
+        }
+
+        &.link {
+            background: none;
+            border: none;
+            color: $link-colour;
+            text-align: left;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        &[disabled] {
+            cursor: none;
+            pointer-events: none;
+            background-color: $disabled-colour;
+        }
+    }
+
+    font-family: $default-font-family;
+    font-size: $base-font-size;
+    padding: 0.5em;
+
+    .header {
+        margin-top: 0;
+        margin-bottom: 1em;
+
+        .main {
+            font-size: 1.375em;
+        }
+
+        .sub {
+            font-size: 1.125em
+        }
+    }
+
+    .footer {
+        margin-top: 1.0em;
+        margin-bottom: 0;
+    }
+
+    .commands {
+        margin-top: 1em;
+        display: flex;
+
+        .filler {
+            flex: 1;
+        }
+
+        button:not(:first-child) {
+            margin-left: 0.25em;
+        }
+    }
+
+    form {
+
+        .validation {
+            /*.validation-text {
+                visibility: hidden;
+            }*/
+            span {
+                &.validation-text {
+                    margin-top: 0;
+
+                    span {
+                        margin-top: 0;
+                    }
+                }
+            }
+        }
+
+        .label-above {
+            margin-top: 0.5em;
+            margin-bottom: 0.125em;
+        }
+
+        .label-after {
+            margin-top: 0.5em;
+            margin-left: 0.25em;
+            margin-right: 0;
+        }
+
+        .input-box {
+            font-weight: normal;
+            border-radius: 0.25em;
+            padding-left: 0.25em;
+            padding-right: 0.25em;
+            padding-bottom: 0.25em;
+            //padding-top: 0.25em;
+            border: 1px solid $control-border-colour;
+        }
+
+        label {
+            width: 100%;
+
+            span {
+                font-weight: 600;
+            }
+        }
+
+
+        .text-input {
+
+
+            &.error {
+                input {
+                    border: 1px solid $error-colour;
+                }
+
+                .validation-text {
+                    display: block;
+                }
+            }
+
+            &:not(.error) {
+                .validation-text {
+                    display: none;
+                }
+            }
+
+            label {
+                span {
+                    @extend .label-above;
+                    display: block;
+                }
+
+                @extend .validation;
+            }
+
+            input {
+                @extend .input-box;
+            }
+        }
+
+        .bool-input, .enum-input {
+            label span {
+                @extend .label-after;
+            }
+        }
+
+        .enum-input {
+            display: flex;
+            flex-direction: column;
+            //align-items: flex-start;
+
+            .enum-label {
+                margin-bottom: -0.75em;
+                background-color: $control-background-colour;
+                z-index: 9999;
+                padding-left: 0.25em;
+                padding-right: 0.25em;
+                margin-left: 0.5em;
+                align-self:flex-start;
+            }
+
+            .enum-group {
+                padding-left: 0.25em;
+                padding-right: 0.25em;
+                padding-top: 0.5em;
+                padding-bottom: 0.25em;
+                border: 1px solid $control-border-colour;
+                border-radius: 0.2em;
+            }
+            &.layout-horizontal {
+                display: block;
+                .enum-group {
+                    display: flex;
+                }
+            }
+        }
+    }
+
     $input-border-colour: #ccc;
     $footer-colour: #808080;
     $link-colour: #30b0e9;
@@ -9,6 +271,8 @@
     $button-background-colour: white;
     $button-foreground-colour: black;
     $button-hover-colour: lightgray;
+
+
     padding-left: 0.5em;
     padding-right: 0.5em;
 
@@ -17,13 +281,11 @@
         font-size: smaller;
         font-style: italic;
     }
-
-    .header {
+    /*.header {
         font-size: 22px;
         margin-top: 16px;
         margin-bottom: 16px;
-    }
-
+    }*/
     .sub-header {
         font-size: 18px;
         margin-top: 10px;
@@ -39,8 +301,7 @@
     .form-body {
         margin-bottom: 12px;
     }
-
-    label {
+    /*label {
         font-size: 14px;
     }
 
@@ -51,8 +312,7 @@
         padding-left: 5px;
         padding-right: 5px;
         padding-bottom: 6px;
-    }
-
+    }*/
     .form-buttons {
         margin-top: 24px;
         display: flex;
@@ -79,6 +339,7 @@
         }
 
         .button {
+            width: 120px;
             margin-left: 5px;
             border: 1px solid $button-foreground-colour;
             border-radius: 3px;

@@ -10,7 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/home/pagenotfound.component';
 import { EditorComponent } from './components/home/editor/editor.component';
-import { PageComponent } from './components/page/page.component';
+//import { PageComponent } from './components/page/page.component';
+import { PageModule } from './components/page/page.module';
 import { MenuComponent } from './components/home/menu.component';
 import { SidebarMenuComponent } from './components/home/sidebarmenu.component';
 import { LoginComponent } from './components/authentication/login.component';
@@ -24,7 +25,7 @@ import { PermissionDeniedComponent } from './components/routeguards/permissionde
         AppComponent,
         HomeComponent,
         PageNotFoundComponent,
-        PageComponent,
+        //PageComponent,
         MenuComponent,
         SidebarMenuComponent,
         EditorComponent,
@@ -36,6 +37,7 @@ import { PermissionDeniedComponent } from './components/routeguards/permissionde
         CommonModule,
         HttpModule,
         FormsModule,
+        PageModule,
         AppRoutingModule
     ],
     providers: [

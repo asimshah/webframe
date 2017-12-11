@@ -1,1 +1,145 @@
-﻿
+﻿@import "../../styles/forms";
+
+.SitePanel {
+    height: 100%;
+}
+
+.mode-commands {
+    background-color: darkblue;
+    padding: 2px;
+
+    button {
+        all: unset;
+        background-color: cornflowerblue;
+        border-style: none;
+        border-radius: 2px;
+        color: white;
+        margin: 0;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        padding-top: 0.25em;
+        padding-bottom: 0.25em;
+        display: inline;
+        margin-right: 0.5em;
+        cursor: pointer;
+
+        &:hover {
+            color: cornflowerblue;
+            background-color: white;
+        }
+    }
+}
+
+.membership-app-panel, .group-app-panel {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+
+    &.hidden {
+        display: none;
+    }
+
+    .left-panel {
+        //background-color: lightsteelblue;
+        width: 100%;
+        flex: 1;
+    }
+
+    .right-panel {
+        //background-color: lightcyan;
+        width: 100%;
+        flex: 2;
+    }
+}
+
+.membership-app-panel {
+    .member-index {
+        $backcolor: white;
+        $forecolor: cornflowerblue;
+        margin: 4px;
+
+        .search-group {
+            display: flex;
+            background: white;
+            height: 28px;
+            margin-left: 3px;
+            margin-right: 3px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            border-radius: 3px;
+            border: 1px solid black;
+
+            button {
+                border: none;
+                border-radius: 0;
+                height: 100%;
+                background: none;
+
+                &:hover {
+                    background-color: $forecolor;
+                    color: $backcolor;
+                }
+
+                &.not-visible {
+                    visibility: hidden;
+                }
+
+                &:focus {
+                    outline: none;
+                }
+            }
+
+            input {
+                border: none;
+                flex: 1;
+
+                &:focus {
+                    outline: none;
+                }
+            }
+        }
+
+        .address-book {
+            display: flex;
+
+            .address-book-tabs {
+                display: flex;
+                flex-direction: column;
+
+                button {
+                    border: 1px solid black;
+                    border-radius: 6px 0 0 6px;
+                    background-color: $forecolor;
+                    color: $backcolor;
+                    height: 24px;
+                    width: 24px;
+
+                    &.selected {
+                        background-color: darkorange;
+                    }
+
+                    &:not(:first-child) {
+                        margin-top: -4px;
+                    }
+
+                    &:hover {
+                        background-color: $backcolor;
+                        color: $forecolor;
+                    }
+
+                    &:focus {
+                        outline: none;
+                    }
+                }
+            }
+
+            .address-book-list {
+                border: 1px solid black;
+                border-radius: 0 3px 3px 0;
+                padding: 4px;
+                width: 100%;
+            }
+        }
+    }
+}

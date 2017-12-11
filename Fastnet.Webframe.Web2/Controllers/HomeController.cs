@@ -11,6 +11,7 @@ using Fastnet.Webframe.Common2;
 using Microsoft.AspNetCore.Identity;
 using Fastnet.Webframe.IdentityData2;
 using Microsoft.AspNetCore.Hosting;
+using Fastnet.Webframe.Web2.Models.HomeViewModels;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
@@ -21,15 +22,17 @@ namespace Fastnet.Webframe.Web2.Controllers
         private readonly ILogger log;
         //private readonly CoreDataContext coreDataContext;
         private readonly WebframeOptions webframeOptions;
+        private readonly CustomisationOptions customisationOptions;
         private readonly ContentAssistant contentAssistant;
-        public HomeController(IHostingEnvironment environment, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            ContentAssistant ca,
-            ILogger<HomeController> logger, CoreDataContext coreDataContext, IOptions<WebframeOptions> webframeOptions) : base(environment, userManager, coreDataContext)
+        public HomeController(ILogger<HomeController> logger, ContentAssistant ca,
+            IOptions<WebframeOptions> webframeOptions, IOptions<CustomisationOptions> customisation, SignInManager<ApplicationUser> signInManager,
+            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(environment, userManager, coreDataContext)
         {
             this.signInManager = signInManager;
             this.contentAssistant = ca;
             this.log = logger;
             this.webframeOptions = webframeOptions.Value;
+            this.customisationOptions = customisation.Value;
         }
         //[Route("page/{id}")]
         //[Route("$home")]
@@ -69,7 +72,11 @@ namespace Fastnet.Webframe.Web2.Controllers
             //    page = contentAssistant.FindLandingPage(GetCurrentMember());
             //}
             //SetCurrentPage(page);
-            return View();
+            var model = new StartupViewModel
+            {
+                ClientCustomisation = this.customisationOptions.GetClientCustomisation()
+            };
+            return View(model);
         }
         //[Route("permissiondenied/{message?}")]
         //public ActionResult PermissionDenied(string message)

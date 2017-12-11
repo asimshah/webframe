@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmailValidator, FormControl } from '@angular/forms';
 
@@ -16,6 +16,7 @@ class LoginModel {
     styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+    private nameSpace = "webframe-";
     public bannerPageId: number | null;
     public loginModel: LoginModel;
     public model: Credentials;
@@ -23,15 +24,23 @@ export class LoginComponent implements OnInit {
     public passwordIsValid: boolean = true;
     public loginFailed: boolean;
     public failureReason: string;
+    private usernameKey: string;
+    @ViewChild('password') passwordElement: ElementRef;
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
         private dialogService: ModalDialogService,
-        private pageService: PageService
-    ) {
+        private pageService: PageService) {
+        this.usernameKey = `${this.nameSpace}-last-used-email`;
         this.model = new Credentials();
+
     }
     async ngOnInit() {
         this.bannerPageId = await this.pageService.getDefaultBanner();
+        let lastused = localStorage.getItem(this.usernameKey)
+        if (lastused != null) {
+            this.model.emailAddress = lastused;
+            this.passwordElement.nativeElement.focus();
+        }
         //console.log(`banner page id is ${this.bannerPageId}`);
     }
     getPageId() {               
@@ -43,6 +52,7 @@ export class LoginComponent implements OnInit {
         switch (lr) {
             case LoginResult.Succeeded:
                 this.loginFailed = false;
+                localStorage.setItem(this.usernameKey, this.model.emailAddress);
                 break;
             case LoginResult.CredentialsInvalid:
                 this.failureReason = "These credentials are not valid";

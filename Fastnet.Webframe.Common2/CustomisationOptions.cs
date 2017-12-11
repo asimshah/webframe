@@ -7,18 +7,6 @@ namespace Fastnet.Webframe.Common2
 {
     public class CustomisationOptions
     {
-        public class BMCApi
-        {
-            public bool enable { get; set; }
-            public string apikey { get; set; }
-            public string apiurl { get; set; }
-            public string apiuser { get; set; }
-        }
-        public class BMCOptions
-        {
-            public BMCApi api { get; set; }
-        }
-
         private FactoryName _name;
         public FactoryName Factory
         {
@@ -37,6 +25,19 @@ namespace Fastnet.Webframe.Common2
                 _name = (FactoryName)Enum.Parse(typeof(FactoryName), _factory, true);
             }
         }
+        public class BMCApi
+        {
+            public bool enable { get; set; }
+            public string apikey { get; set; }
+            public string apiurl { get; set; }
+            public string apiuser { get; set; }
+        }
+        public class BMCOptions
+        {
+            public BMCApi api { get; set; }
+        }
+
+
         public BMCOptions bmc { get; set; }
     }
 }

@@ -1,11 +1,25 @@
+@model StartupViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
 
 @*<app asp-prerender-module="ClientApp/dist/main-server">Loading...</app>*@
-<app >Loading...</app>
+<app ></app>
 
 <script src="~/dist/vendor.js" asp-append-version="true"></script>
 @section scripts {
+<script>
+        function getCustomisation() {
+            console.log("Index.html getCustomisation()");
+            return @Html.Raw(Model.ClientCustomisation.ToJson());
+        }
+        @*try {
+            console.log("startup 3", @Html.Raw(Model.ClientCustomisation.ToJson()))
+            window['customisation'] = "{ para1: 'hello', para2: 'world' }";
+        } catch (e) {
+            console.log(e);
+        }*@
+</script>
     <script src="~/dist/main-client.js" asp-append-version="true"></script>
+
 }

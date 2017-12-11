@@ -8,10 +8,10 @@ export class AdminGuard implements CanActivate, CanLoad {
 
     }
     canLoad(): boolean {
-        this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true})
-        return false;
+        //this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true})
+        return true;
     }
     canActivate(): boolean {
-        return false;
+        return true;
     }
 }

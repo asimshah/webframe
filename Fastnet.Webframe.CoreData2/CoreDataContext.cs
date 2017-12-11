@@ -1,4 +1,5 @@
-﻿using Fastnet.Webframe.Common2;
+﻿
+using Fastnet.Webframe.Common2;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

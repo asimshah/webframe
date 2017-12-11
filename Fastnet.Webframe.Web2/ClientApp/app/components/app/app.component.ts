@@ -1,6 +1,10 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
+import { Router, Routes, Route } from '@angular/router';
 
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
+//import { ConfigService } from '../shared/config.service';
+import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
+declare var getCustomisation: any;
 
 @Component({
     selector: 'app',
@@ -9,15 +13,17 @@ import { ModalDialogService } from '../modaldialog/modal-dialog.service';
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-    constructor(private dialogService: ModalDialogService) {
+    private customisation: ClientCustomisation;
+    constructor(private router: Router, private dialogService: ModalDialogService) {
+        this.customisation = <ClientCustomisation>getCustomisation();
+        console.log(`AppComponent constructor(): for factory ${FactoryName[this.customisation.factory]}`);
         this.loadCustomCss();
+        for (let rr of this.customisation.routeRedirections) {
+            //console.log(`${rr.fromRoute} to ${rr.toRoute}`);
+            this.redirect(rr.fromRoute, rr.toRoute);
+        }
     }
-    onTestClick(): void {
-        this.dialogService.open("test-modal");
-    }
-    closeTestDialog(): void {
-        this.dialogService.close("test-modal");
-    }
+
     private loadCustomCss() {
         // I can't load this css in the normal way using a link tag in the
         // _Layout.cshtml because all the remain styles are created as <style> elements by the angular environment
@@ -34,6 +40,24 @@ export class AppComponent {
             headElement.appendChild(customLink);
         } catch (e) {
             console.log("custom css not loaded")
+        }
+    }
+
+    private redirect(fromRoute: string, toRoute: string) {
+        let fromIndex = this.router.config.findIndex((r) => r.path == fromRoute);
+        let toIndex = this.router.config.findIndex((r) => r.path == toRoute);
+        if (fromIndex > 0 && toIndex > 0) {
+            //this.router.config[fromIndex].loadChildren = this.router.config[toIndex].loadChildren;
+            let tr = this.router.config[toIndex];
+            let fr = this.router.config[fromIndex];
+            tr.path = fromRoute;
+            fr.path = toRoute;
+            this.router.config[fromIndex] = tr;
+            this.router.config[toIndex] = fr;
+            console.log(`route ${fromRoute} redirected to ${toRoute}`);
+            //console.log(`membership route index is ${fromIndex}, ${this.router.config[fromIndex].loadChildren}`);
+        } else {
+            console.log(`route redirection failed: fromIndex = ${fromIndex}, toIndex ${toIndex}`);
         }
     }
 }

@@ -11,10 +11,10 @@ import { PageService, PageHtmlInformation } from '../shared/page.service';
 export class PageComponent {
     innerHtml: string;
     private _pageId: number | null = null;
-    get pageId(): number | null {
+    public get pageId(): number | null {
         return this._pageId;
     }
-    @Input() set pageId(val: number | null) {
+    @Input() public set pageId(val: number | null) {
         this._pageId = val;
         this.onPageIdChanged();
     }

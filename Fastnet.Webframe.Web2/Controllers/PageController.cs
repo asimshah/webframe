@@ -25,8 +25,8 @@ namespace Fastnet.Webframe.Web2.Controllers
         private readonly ILogger log;
         private readonly ContentAssistant contentAssistant;
         private readonly IHostingEnvironment environment;
-        public PageController(IHostingEnvironment environment, ILogger<PageController> logger, UserManager<ApplicationUser> userManager,
-            ContentAssistant contentAssistant, CoreDataContext coreDataContext) : base(environment, userManager, coreDataContext)
+        public PageController(ILogger<PageController> logger, ContentAssistant contentAssistant,
+            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(environment, userManager, coreDataContext)
         {
             this.log = logger;
             this.environment = environment;

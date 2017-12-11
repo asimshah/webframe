@@ -1,7 +1,7 @@
 ﻿@import "../../styles/_variables.scss";
-@import "../../styles/forms";
+@import "../../styles/_forms";
 .login-form {
-    max-width: 480px;
+    max-width: 512px;
     margin: 0 auto;
 
     .form-body {

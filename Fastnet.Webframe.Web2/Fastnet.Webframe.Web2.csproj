@@ -46,9 +46,11 @@
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
+    <None Remove="ClientApp\app\components\page\page.module.ts" />
     <None Remove="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
+    <None Remove="ClientApp\app\components\shared\config.types.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,8 +64,8 @@
     <Folder Include="ClientApp\app\components\designer\" />
     <Folder Include="data\" />
     <Folder Include="logs\" />
-    <Folder Include="Models\" />
     <Folder Include="Default Pages\" />
+    <Folder Include="Screenshots\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -78,9 +80,14 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\sidebarmenu.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\config.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\config.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />

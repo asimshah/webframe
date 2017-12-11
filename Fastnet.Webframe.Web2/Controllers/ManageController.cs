@@ -17,6 +17,7 @@ using Fastnet.Webframe.IdentityData2;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
+    // *NB* not in use for webframe
     [Authorize]
     [Route("[controller]/[action]")]
     public class ManageController : Controller

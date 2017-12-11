@@ -13,6 +13,25 @@ using System.Threading.Tasks;
 
 namespace Fastnet.Webframe.Web2
 {
+    public static class _extensions
+    {
+        public static ClientCustomisation GetClientCustomisation(this CustomisationOptions customisationOptions)
+        {
+            var cc = new ClientCustomisation();
+            switch (customisationOptions.Factory)
+            {
+                case FactoryName.None:
+                    break;
+                case FactoryName.DonWhillansHut:
+                    cc.factory = FactoryName.DonWhillansHut;
+                    List<RouteRedirection> rds = new List<RouteRedirection>();
+                    rds.Add(new RouteRedirection { fromRoute = "membership", toRoute = "dwhmembership" });
+                    cc.routeRedirections = rds;
+                    break;
+            }
+            return cc;
+        }
+    }
     public static class WebExtensions
     {
         public static void AddWebframeServices(this IServiceCollection services)

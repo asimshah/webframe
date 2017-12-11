@@ -29,6 +29,9 @@ export class PageService extends BaseService {
         super(http);
         //console.log("PageService constructor");
     }
+    public test(): number {
+        return 43;
+    }
     public async getDefaultBanner(): Promise<number | null> {
         let query = `/pageapi/get/default/banner/pageId`;
         let result = await this.query(query);

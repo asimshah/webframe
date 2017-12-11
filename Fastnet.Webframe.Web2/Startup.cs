@@ -115,7 +115,7 @@ namespace Fastnet.Webframe.Web2
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<CustomisationOptions> options,
             IServiceProvider serviceProvider,
-            ApplicationDbContext appDb, CoreDataContext coreDataContext, BookingDataContext bookingDataContext)
+            ApplicationDbContext appDb, CoreDataContext coreDataContext)
         {
             if (env.IsDevelopment())
             {
@@ -156,7 +156,7 @@ namespace Fastnet.Webframe.Web2
             if (options.Value.Factory == FactoryName.DonWhillansHut)
             {
                 DWHMember.ResetAnonymous(coreDataContext);
-                DebugSomeBookingDataStats(bookingDataContext);
+                //DebugSomeBookingDataStats(bookingDataContext);
             }
             DebugSomeCoreDataStats(coreDataContext, options.Value);
             

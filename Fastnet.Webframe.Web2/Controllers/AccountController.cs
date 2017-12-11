@@ -18,6 +18,7 @@ using System.Diagnostics;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
+    // *NB* not in use for webframe - retained for information
     [Authorize]
     [Route("[controller]/[action]")]
     public class AccountController : Controller

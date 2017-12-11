@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Subscription } from 'rxjs/Subscription';
 
+//import { PageModule } from '../page/page.module';
 import { PageKeys, PageService } from '../shared/page.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 

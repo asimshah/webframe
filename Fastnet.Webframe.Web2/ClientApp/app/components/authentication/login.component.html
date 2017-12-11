@@ -3,7 +3,7 @@
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
     <div class="ContentPanel">
-        <div class="login-form webframe-form">
+        <div class="login-form fastnet-form">
             <div class="header">Login</div>
             <div class="sub-header">Enter your email address and password</div>
             <form #loginForm="ngForm">
@@ -14,7 +14,7 @@
                     <!--<div class="error-message" *ngIf="!emailAddressIsValid && emailAddress.errors.required">An email address is required</div>
                     <div class="error-message" *ngIf="!emailAddressIsValid && emailAddress.errors.email">This is not a valid email address</div>-->
                     <label for="password">Password</label>
-                    <input tabindex="2" type="password" id="password" name="password" required [(ngModel)]="model.password" #password="ngModel" (input)="onPasswordChange(loginForm.form.controls.password)" />
+                    <input #password tabindex="2" type="password" id="password" name="password" required [(ngModel)]="model.password" #password="ngModel" (input)="onPasswordChange(loginForm.form.controls.password)" />
                     <div class="error-message" *ngIf="!passwordIsValid && password?.errors?.required">A password is required</div>
                 </div>
                 <div class="login-result" *ngIf="loginFailed">{{failureReason}}</div>
