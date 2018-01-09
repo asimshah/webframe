@@ -1,7 +1,14 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
-import { ValidationResult, ControlState, EnumValue} from '../controls/controls.component';
+import { Dictionary} from '../shared/dictionary.types';
+import {
+    ControlBase,
+    //TextInputControl,
+    ValidationResult, ControlState, EnumValue, ListItem,
+    PropertyValidatorAsync
+} from '../controls/controls.component';
+
 
 class TabItem {
     name: string;
@@ -16,17 +23,22 @@ enum Choice {
     Second,
     Third
 }
+
 class memberProperties {
     firstName: string;
     lastName: string;
-    something: string;
+    emailAddress: string;
     disabled: boolean;
     choice: Choice;
+    birthDate: Date;
+    age: number;
     constructor() {
         this.firstName = "";
-        this.something = this.lastName = this.firstName;
+        this.emailAddress = "";
         this.disabled = false;
-        this.choice = Choice.First;
+        this.choice = Choice.Second;
+        this.birthDate = new Date();
+        this.age = 14;
     }
 }
 
@@ -37,31 +49,38 @@ class memberProperties {
     styleUrls: ['./membership.component.scss']
 })
 export class MembershipComponent implements OnInit {
-    //public numbers: number[] = [];
+    public validators: Dictionary<PropertyValidatorAsync>;
+    public dropdownList: ListItem[] = [];
+    public dropdownList2: ListItem[] = [];
+    public selectedDropdownItem: number;
+    public selectedDropdownItem2: number;
+    public maxBirthDate: Date = new Date();
     public choiceValues: EnumValue[] = [];
-    public groupMode: boolean; 
+    public groupMode: boolean;
     public bannerPageId: number | null;
     public tabs: TabItem[] = [];
     public searchText: string = "";
     public member: memberProperties;
-    //public memberValidations: { [key: string]: ValidationResult } = {};
-    public mValidations: Map<string, ValidationResult> = new Map<string, ValidationResult>();
-    private fnv: boolean;
-    get firstNameValid(): boolean {
-        return this.fnv;
-    }
-    set firstNameValid(v: boolean) {
-        this.fnv = v;
-    }
+    @ViewChildren(ControlBase) controls: QueryList<ControlBase>;
     constructor(protected pageService: PageService, protected router: Router) {
         this.member = new memberProperties();
-        //this.memberValidations["firstName"] = new ValidationResult();
-        //this.memberValidations["lastName"] = new ValidationResult();
-        //this.memberValidations["something"] = new ValidationResult();
-        this.mValidations.set("firstName", new ValidationResult());
-        this.mValidations.set("lastName", new ValidationResult());
-        this.mValidations.set("something", new ValidationResult());
+        this.validators = new Dictionary<PropertyValidatorAsync>();
+        this.validators.add("firstName", new PropertyValidatorAsync(this.firstNameValidatorAsync));
+        this.validators.add("lastName", new PropertyValidatorAsync(this.lastNameValidatorAsync));
+        this.validators.add("age", new PropertyValidatorAsync(this.ageValidatorAsync));
         this.choiceValues = this.choiceToValues();
+        this.dropdownList.push({ value: 0, name: "Internet Explorer" });
+        this.dropdownList.push({ value: 1, name: "Chrome" });
+        this.dropdownList.push({ value: 2, name: "Firefox" });
+        this.dropdownList.push({ value: 3, name: "Opera" });
+        this.dropdownList.push({ value: 4, name: "Safari" });
+        this.selectedDropdownItem = this.dropdownList[2].value;
+        this.dropdownList2.push({ value: 0, name: "Red" });
+        this.dropdownList2.push({ value: 1, name: "Blue" });
+        this.dropdownList2.push({ value: 2, name: "Green" });
+        this.dropdownList2.push({ value: 3, name: "Yellow" });
+        this.dropdownList2.push({ value: 4, name: "White" });
+        this.selectedDropdownItem2 = this.dropdownList2[3].value;
     }
     async ngOnInit() {
 
@@ -73,7 +92,7 @@ export class MembershipComponent implements OnInit {
             "Y", "Z", "#"
         ]
         for (let letter of letters) {
-            let ti = new TabItem (letter);
+            let ti = new TabItem(letter);
             this.tabs.push(ti);
         }
 
@@ -120,77 +139,128 @@ export class MembershipComponent implements OnInit {
     diagSearchText() {
         console.log(`search is ${this.searchText}`);
     }
-    onFirstNameValidate(cs: ControlState) {
-        if (cs.touched) {
-            this.validate("firstName", cs.value);
-        }
-        console.log(`first name change: ${cs.value}, touched = ${cs.touched}`);
+    //firstNameValidator(cs: ControlState): ValidationResult {
+    //    let vr = cs.validationResult;
+    //    let text = cs.value || "";
+    //    if (text.length === 0) {
+    //        vr.valid = false;
+    //        vr.message = `a First Name is required`;
+    //    } else if (text.startsWith("z")) {
+    //        vr.valid = false;
+    //        vr.message = `a First Name cannot begin with z`;
+    //    }
+    //    console.log(`${JSON.stringify(cs)}`);
+    //    return vr;
+    //}
+    firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            let vr = cs.validationResult;
+            let text = cs.value || "";
+            if (text.length === 0) {
+                vr.valid = false;
+                vr.message = `a First Name is required`;
+            } else if (text.startsWith("z")) {
+                vr.valid = false;
+                vr.message = `a First Name cannot begin with z`;
+            }
+            console.log(`${JSON.stringify(cs)}`);
+            resolve(cs.validationResult);
+        });
     }
-    onLastNameValidate(cs: ControlState) {
-        if (cs.touched) {
-            this.validate("lastName", cs.value);
-        }
-        console.log(`last name change: ${cs.value}, touched = ${cs.touched}`);
+    //lastNameValidator(cs: ControlState): ValidationResult {
+    //    let vr = cs.validationResult;
+    //    let text = cs.value || "";
+    //    if (text.length === 0) {
+    //        vr.valid = false;
+    //        vr.message = `a Last Name is required`;
+    //    } else if (text.startsWith("z")) {
+    //        vr.valid = false;
+    //        vr.message = `a Last Name cannot begin with z`;
+    //    }
+    //    console.log(`${JSON.stringify(cs)}`);
+    //    return vr;
+    //}
+    lastNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            let vr = cs.validationResult;
+            let text = cs.value || "";
+            if (text.length === 0) {
+                vr.valid = false;
+                vr.message = `a Last Name is required`;
+            } else if (text.startsWith("z")) {
+                vr.valid = false;
+                vr.message = `a Last Name cannot begin with z`;
+            }
+            console.log(`${JSON.stringify(cs)}`);
+            resolve(cs.validationResult);
+        });
     }
-    onBetaButton() {
-        console.log(`member = ${JSON.stringify(this.member)}`);
-        if (this.validateAll()) {
+    //ageValidator(cs: ControlState): ValidationResult {
+    //    let vr = cs.validationResult;
+    //    let age = cs.value || 0;
+    //    if (age === 99) {
+    //        vr.valid = false;
+    //        vr.message = `99 not allowed`;
+    //    }
+    //    console.log(`${JSON.stringify(cs)}`);
+    //    return vr;
+    //}
+    ageValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            setTimeout(() => {
+                let vr = cs.validationResult;
+                let age = cs.value || 0;
+                if (age === 99) {
+                    vr.valid = false;
+                    vr.message = `99 not allowed`;
+                }
+                console.log(`${JSON.stringify(cs)}`);
+                resolve(vr);
+            }, 5000);
+        });
+    }
+    async validateAll(): Promise<boolean> {        
+        return ControlBase.validateAll(this.controls);
+    }
+    async onBetaButton() {
+        let r = await this.validateAll();
+        if (r) {
             console.log(`can save`);
         } else {
             console.log(`cannot save`);
         }
-    }
-    getValidationResult(prop: string): ValidationResult {
-        return <ValidationResult>this.mValidations.get(prop);
-        //return this.memberValidations[prop];
-    }
-    validate(prop: string, value: any) {
-        //let vr = this.memberValidations[prop];
-        let vr = <ValidationResult>this.mValidations.get(prop);
-        vr.valid = true;
-        vr.message = "";
-        let text: string = value;
-        switch (prop) {
-            case "firstName":                
-                if (text.length === 0) {
-                    vr.valid = false;
-                    vr.message = `a First Name is required`;
-                } else if (text.startsWith("z")) {
-                    vr.valid = false;
-                    vr.message = `a First Name cannot begin with z`;
-                }
+        switch (this.member.choice) {
+            case Choice.First:
+                this.member.choice = Choice.Second;
                 break;
-            case "lastName":
-                //let text: string = value;
-                if (text.length === 0) {
-                    vr.valid = false;
-                    vr.message = `a Last Name is required`;
-                } else if (text.startsWith("z")) {
-                    vr.valid = false;
-                    vr.message = `a Last Name cannot begin with z`;
-                }
+            case Choice.Second:
+                this.member.choice = Choice.Third;
+                break;
+            case Choice.Third:
+                this.member.choice = Choice.First;
                 break;
         }
-    }
-    validateAll(): boolean {
-        let invalidPropertyCount = 0;
-        this.validate("firstName", this.member.firstName);
-        this.validate("lastName", this.member.lastName);
-        this.mValidations.forEach((v, k) => {
-            if (!v.valid) {
-                invalidPropertyCount++;
-            }
-        });
-        return invalidPropertyCount === 0;
     }
     choiceToValues(): EnumValue[] {
         let r: EnumValue[] = [];
         for (var v in Choice) {
             if (typeof Choice[v] === 'number') {
-                r.push({value: <any>Choice[v], name: v, selected: false})
+                r.push({ value: <any>Choice[v], name: v })
             }
         }
         console.log(`${JSON.stringify(r)}`);
         return r;
+    }
+    get debug() {
+        let d = {
+            member: this.member,
+            fl: this.findItem(this.dropdownList, this.selectedDropdownItem),
+            sl: this.findItem(this.dropdownList2, this.selectedDropdownItem2) };
+        return JSON.stringify(d, null, 2);
+    }
+    findItem(list: ListItem[], value: number): ListItem | undefined {
+        return list.find((item, i) => {
+            return item.value === value;
+        });
     }
 }

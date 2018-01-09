@@ -51,6 +51,7 @@
     <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
+    <None Remove="ClientApp\app\components\shared\dictionary.types.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -88,6 +89,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\dictionary.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />

@@ -6,7 +6,16 @@ import { MembershipComponent } from './membership.component';
 //import { PageComponent } from '../page/page.component';
 import { PageModule } from '../page/page.module';
 import { routing } from './membership.routing';
-import { TextInputControl, PasswordInputControl, BoolInputControl,  EnumInputControl } from "../controls/controls.component";
+import {
+    TextInputControl,
+    PasswordInputControl,
+    EmailInputControl,
+    NumberInputControl,
+    DateInputControl,
+    BoolInputControl,
+    EnumInputControl,
+    DropDownControl
+} from "../controls/controls.component";
 
 @NgModule({
     imports: [
@@ -21,8 +30,12 @@ import { TextInputControl, PasswordInputControl, BoolInputControl,  EnumInputCon
         MembershipComponent,
         TextInputControl,
         PasswordInputControl,
+        EmailInputControl,
+        NumberInputControl,
+        DateInputControl,
         BoolInputControl,
-        EnumInputControl
+        EnumInputControl,
+        DropDownControl
         ],
     providers: [],
 })

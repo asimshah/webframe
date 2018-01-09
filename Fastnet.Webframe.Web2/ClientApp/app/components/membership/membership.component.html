@@ -28,27 +28,15 @@
                     <div class="sub">Sub header</div>
                 </div>
                 <form  #memberForm="ngForm" >
-                    <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validationResult]="getValidationResult('firstName')" (validate)="onFirstNameValidate($event)"></text-input>
-                    <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validationResult]="getValidationResult('lastName')" (validate)="onLastNameValidate($event)"></text-input>
-                    <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled" ></bool-input>
-                    <enum-input label="choices" [items]="choiceValues" ></enum-input>
-                    <div class="enum-input layout-horizontal">
-                        <div class="enum-label">Choice</div>
-                        <div class="enum-group">                            
-                            <label>
-                                <input type="radio" name="enum1" [value]="0" [(ngModel)]="member.choice" />
-                                <span>First</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="enum1" [value]="1" [(ngModel)]="member.choice" />
-                                <span>Second</span>
-                            </label>
-                            <label>
-                                <input type="radio" name="enum1" [value]="2" [(ngModel)]="member.choice" />
-                                <span>Third</span>
-                            </label>
-                        </div>
-                    </div>
+                    <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
+                    <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
+                    <!--<bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled" ></bool-input>-->
+                    <!--<enum-input disabled class="h-align" label="Choices" name="choice" [(ngModel)]="member.choice" [items]="choiceValues" ></enum-input>-->
+                    <!--<date-input label="Start Date" name="birthDate" [(ngModel)]="member.birthDate" [minDate]="maxBirthDate" ></date-input>-->
+                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
+                    <number-input label="Age" name="age" [(ngModel)]="member.age" [validator]="validators.item('age')" [minNumber]="12" [maxNumber]="110"></number-input>
+                    <dropdown-input label="select from" name="dropdownItem" [(ngModel)]="selectedDropdownItem" [items]="dropdownList"></dropdown-input>
+                    <dropdown-input label="select from 2" name="dropdownItem2" [(ngModel)]="selectedDropdownItem2" [items]="dropdownList2"></dropdown-input>
                 </form>
                 <div class="footer">
                     <div class="text-help">some help text</div>
@@ -61,7 +49,7 @@
                     <button class="cancel" >Cancel</button>
                 </div>
             </div>
-
+            <div>{{debug}}</div>
         </div>
     </div>
     <div class="group-app-panel hidden" [ngClass]="{hidden: !groupMode}">
