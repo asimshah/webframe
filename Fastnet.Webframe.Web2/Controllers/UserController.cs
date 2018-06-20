@@ -25,7 +25,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         private readonly ILogger log;
         private readonly SignInManager<ApplicationUser> signInManager;
         public UserController(IHostingEnvironment env, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            CoreDataContext coreDataContext, ILogger<UserController> logger) : base(env, userManager, coreDataContext)
+            CoreDataContext coreDataContext, ILogger<UserController> logger) : base(logger, env, userManager, coreDataContext)
         {
             this.log = logger;
             this.signInManager = signInManager;

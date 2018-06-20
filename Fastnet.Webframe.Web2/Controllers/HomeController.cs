@@ -26,7 +26,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         private readonly ContentAssistant contentAssistant;
         public HomeController(ILogger<HomeController> logger, ContentAssistant ca,
             IOptions<WebframeOptions> webframeOptions, IOptions<CustomisationOptions> customisation, SignInManager<ApplicationUser> signInManager,
-            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(environment, userManager, coreDataContext)
+            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager, coreDataContext)
         {
             this.signInManager = signInManager;
             this.contentAssistant = ca;

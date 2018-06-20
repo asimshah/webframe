@@ -1,0 +1,74 @@
+﻿@import "shared.component.scss";
+ 
+:host {
+    width: 100%;
+    display: block;
+
+    * {
+        background-color: transparent;
+    }
+}
+
+.search-input {
+    height: 100%;
+
+    &.not-valid {
+        input:not(:focus) {
+            border: 1px solid $error-colour;
+        }
+    }
+
+    label {
+        span {
+            @extend .label-above;
+            display: block;
+        }
+    }
+
+    input {
+        @extend .input-box;
+        width: 100%;
+        border: none;
+        border-radius: 0;
+        vertical-align: text-bottom;
+        color: var(--colour, black);
+
+        &:focus {
+            outline: none;
+            border: none;
+        }
+    }
+
+    display: flex;
+    align-items: center;
+
+    button {
+        height: 100%;
+        border: none;
+        border-radius: 0;
+        font-size: 1.5em;
+        display: flex;
+        padding-right: 0.25em;
+        padding-left: 0;
+        &:focus {
+            outline: none;
+        }
+
+        &.search-button {
+            color: var(--search-colour, cornflowerblue);
+
+            &:hover {
+                color: var(--search-hover-colour, orange);
+            }
+        }
+
+        &.clear-button {
+            font-size: 1.8em;
+            color: var(--clear-colour, red);
+
+            &:hover {
+                color: var(--clear-hover-colour,orange);
+            }
+        }
+    }
+}

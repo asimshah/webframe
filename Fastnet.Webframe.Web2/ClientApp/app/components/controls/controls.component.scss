@@ -1,41 +1,4 @@
-﻿$border-color: #808080;
-$error-colour: red;
-$focus-colour: cornflowerblue;
-
-.label-above {
-    margin-top: 0; //0.5em;
-    //margin-bottom: 0.125em;
-}
-
-.label-after {
-    margin-top: 0.5em;
-    margin-left: 0.25em;
-    margin-right: 0;
-}
-
-label {
-    margin-bottom: 0;
-    width: 100%;
-
-    span {
-        font-weight: 600;
-    }
-}
-
-.input-box {
-    font-weight: normal;
-    border-radius: 0.25em;
-    padding-left: 0.25em;
-    padding-right: 0.25em;
-    padding-bottom: 0.25em;
-    //padding-top: 0.25em;
-    border: 1px solid $border-color;
-
-    &:focus {
-        outline: none;
-        border: 1px solid $focus-colour;
-    }
-}
+﻿@import "shared.component.scss";
 
 .text-error {
     font-size: smaller;
@@ -49,30 +12,35 @@ label {
 
 .set-disabled {
     pointer-events: none;
+    $disabled-color: #dadada;
 
     label {
-        color: $border-color;
+        color: $disabled-color;
 
         &.selected {
             span:first-child {
-                border: 0.0625em solid $border-color !important;
+                border: 0.0625em solid $disabled-color !important;
             }
 
             span:nth-child(2) {
-                border: 0.0625em solid $border-color !important;
-                background-color: $border-color !important;
+                border: 0.0625em solid $disabled-color !important;
+                background-color: $disabled-color !important;
             }
 
             span:last-child {
-                color: $border-color !important;
+                color: $disabled-color !important;
             }
         }
     }
 }
 
-.text-input, .password-input, .date-input, .number-input {
+.text-input, .multiline-input, .password-input, .date-input, .number-input {
     &.not-valid {
         input:not(:focus) {
+            border: 1px solid $error-colour;
+        }
+
+        textarea {
             border: 1px solid $error-colour;
         }
     }
@@ -84,14 +52,21 @@ label {
         }
     }
 
-    input {
+    input, textarea {
         @extend .input-box;
         width: 100%;
     }
+
+    textarea {
+        width: 100%;
+        resize: none;
+    }
 }
+
 .number-input {
     input[type=number] {
         text-align: right;
+        line-height: 22px;
     }
 }
 .bool-input {
@@ -117,13 +92,14 @@ label {
     }
 }
 
-enum-input {
+enum-input, bool-enum-input {
     input[type=radio] {
         display: none;
     }
 
     .enum-group {
         padding-left: 0.5em;
+        padding-right: 0.5em;
 
         .enum-item {
             margin-top: -0.5em;
@@ -133,13 +109,16 @@ enum-input {
             display: flex;
             align-items: flex-start;
             font-weight: 600;
+            $outer-circle-size: 13px;
+            $outer-circle-radius: 7px;
+            $outer-cicle-border-width: 0.875px;
 
             span:first-child {
                 //display: inline-block;
-                width: 0.875em;
-                height: 0.875em;
-                border: 0.0625em solid rgb(192,192,192);
-                border-radius: 0.5em;
+                width: $outer-circle-size; //0.875em;
+                height: $outer-circle-size; //0.875em;
+                border: $outer-cicle-border-width solid rgb(192,192,192);
+                border-radius: $outer-circle-radius; // 0.5em;
             }
 
             span:last-child {
@@ -153,28 +132,31 @@ enum-input {
                 color: $focus-colour;
             }
 
+            $inner-circle-size: 7px;
+            $inner-circle-radius: 3.5px;
+            $inner-cicle-border-width: 0.875px; //0.0625em
             span:nth-child(2) {
                 //display: block;
-                width: 0.5em;
-                height: 0.5em;
-                margin-right: 0.125em;
-                margin-bottom: 0.125em;
-                margin-left: -0.7em;
-                margin-top: 0.2em;
-                border: 0.0625em solid darken($focus-colour, 10%);
-                border-radius: 0.25em;
+                width: $inner-circle-size; // 0.5em;
+                height: $inner-circle-size; //0.5em;
+                margin-right: 1.75px; // 0.125em;
+                margin-bottom: 1.75px; // 0.125em;
+                margin-left: -9.8px; // -0.7em;
+                margin-top: 3px; // 0.2em;
+                border: $inner-cicle-border-width solid darken($focus-colour, 10%);
+                border-radius: $inner-circle-radius; //0.25em;
                 background: $focus-colour;
             }
         }
     }
 
-    &:not(.h-align) {
+    &:not(.horizontal) {
         .enum-item {
             margin-bottom: 0.75em;
         }
     }
 
-    &.h-align {
+    &.horizontal {
         .enum-group {
             padding-bottom: 0.5em;
         }
@@ -189,7 +171,6 @@ enum-input {
     }
 
     .enum-border {
-        margin-top: 0.75em;
         border: 1px solid $border-color;
         border-radius: 0.25em;
 
@@ -207,18 +188,23 @@ enum-input {
 
 .dropdown-input {
     select {
+        font: inherit;
+        font-size: inherit;
         width: 100%;
         border-radius: 0.25em;
         padding-left: 0.25em;
         padding-right: 0.25em;
         padding-bottom: 0.25em;
+        padding-top: 0.25em;
         border: 1px solid $border-color;
     }
 }
 
 
-text-input, password-input, date-input, bool-input, enum-input, number-input {
-    &[disabled] {
+text-input, multiline-input, password-input,
+    date-input, bool-input, enum-input, bool-enum-input,
+    number-input, dropdown-input {
+    &.disabled {
         @extend .set-disabled;
     }
 }

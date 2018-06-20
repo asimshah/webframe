@@ -1,0 +1,11 @@
+{
+  "Id": "standard.types",
+  "Version": "1.0.3",
+  "TargetDirectory": "app\\components\\types",
+  "Files": [
+    "**/*.ts",
+    "**/*.html",
+    "**/*.css",
+    "**/*.scss"
+  ]
+}

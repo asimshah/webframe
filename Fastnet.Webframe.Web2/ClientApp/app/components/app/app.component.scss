@@ -26,3 +26,15 @@ body {
     }
 }
 
+#message-box {
+    $caption-background: cornflowerblue;
+    $caption-colour: white;
+    .caption {
+        background-color: $caption-background;
+        color: $caption-colour;
+    }
+    .message-body {
+        margin: 0.25em;
+    }
+}
+

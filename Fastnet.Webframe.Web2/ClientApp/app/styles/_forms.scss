@@ -48,7 +48,7 @@ $control-text-hover-colour: white;*/
         $danger-colour: $error-colour;
         $link-colour: $prime-colour;
         /*$warning-colour: darkorange;*/
-        min-width: 7.5em;
+        width: 20%;
         //margin-left: 5px;
         color: $form-background-colour;
         border: 1px solid $form-background-colour;
@@ -339,7 +339,7 @@ $control-text-hover-colour: white;*/
         }
 
         .button {
-            width: 120px;
+            //width: 120px;
             margin-left: 5px;
             border: 1px solid $button-foreground-colour;
             border-radius: 3px;

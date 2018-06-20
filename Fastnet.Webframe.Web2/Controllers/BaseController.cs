@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Fastnet.Core.Web.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
@@ -15,7 +16,7 @@ namespace Fastnet.Webframe.Web2.Controllers
     {
         protected readonly UserManager<ApplicationUser> userManager;
         protected readonly CoreDataContext coreDataContext;
-        public BaseController(IHostingEnvironment env, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(env)
+        public BaseController(ILogger logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, env)
         {
             this.userManager = userManager;
             this.coreDataContext = coreDataContext;

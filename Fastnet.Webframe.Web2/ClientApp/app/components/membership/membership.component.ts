@@ -1,14 +1,27 @@
 ﻿import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
-import { Dictionary} from '../shared/dictionary.types';
+//import { Dictionary} from '../shared/dictionary.types';
 import {
     ControlBase,
     //TextInputControl,
     ValidationResult, ControlState, EnumValue, ListItem,
     PropertyValidatorAsync
 } from '../controls/controls.component';
+import { Dictionary } from '../types/dictionary.types';
+import { Member } from './membership.types';
+import { MembershipService } from './membership.service';
+import { MessageBox } from '../shared/common.types';
+import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 
+enum CommandButtons {
+    Cancel,
+    Save,
+    SendPasswordReset,
+    SendActivationEmail,
+    AddNewMember,
+    DeleteMember
+}
 
 class TabItem {
     name: string;
@@ -18,69 +31,38 @@ class TabItem {
         this.selected = false;
     }
 }
-enum Choice {
-    First,
-    Second,
-    Third
-}
 
-class memberProperties {
-    firstName: string;
-    lastName: string;
-    emailAddress: string;
-    disabled: boolean;
-    choice: Choice;
-    birthDate: Date;
-    age: number;
-    constructor() {
-        this.firstName = "";
-        this.emailAddress = "";
-        this.disabled = false;
-        this.choice = Choice.Second;
-        this.birthDate = new Date();
-        this.age = 14;
-    }
+enum Modes {
+    Member,
+    Group
 }
-
 
 @Component({
     selector: 'webframe-membership',
     templateUrl: './membership.component.html',
-    styleUrls: ['./membership.component.scss']
+    styleUrls: ['../../styles/webframe.forms.scss', './membership.component.scss']
 })
 export class MembershipComponent implements OnInit {
+    public Modes = Modes;
+    public CommandButtons = CommandButtons;
+    public messageBox: MessageBox;
     public validators: Dictionary<PropertyValidatorAsync>;
-    public dropdownList: ListItem[] = [];
-    public dropdownList2: ListItem[] = [];
-    public selectedDropdownItem: number;
-    public selectedDropdownItem2: number;
-    public maxBirthDate: Date = new Date();
-    public choiceValues: EnumValue[] = [];
-    public groupMode: boolean;
+    public mode: Modes;
     public bannerPageId: number | null;
     public tabs: TabItem[] = [];
     public searchText: string = "";
-    public member: memberProperties;
+    public member?: Member
+    public memberIsNew: boolean;
+    public memberList: Member[];
+    private originalMemberJson?: string;
     @ViewChildren(ControlBase) controls: QueryList<ControlBase>;
-    constructor(protected pageService: PageService, protected router: Router) {
-        this.member = new memberProperties();
+    constructor(protected pageService: PageService, protected router: Router,
+        private dialogService: ModalDialogService,
+        protected membershipService: MembershipService) {
+        this.mode = Modes.Member;
         this.validators = new Dictionary<PropertyValidatorAsync>();
         this.validators.add("firstName", new PropertyValidatorAsync(this.firstNameValidatorAsync));
         this.validators.add("lastName", new PropertyValidatorAsync(this.lastNameValidatorAsync));
-        this.validators.add("age", new PropertyValidatorAsync(this.ageValidatorAsync));
-        this.choiceValues = this.choiceToValues();
-        this.dropdownList.push({ value: 0, name: "Internet Explorer" });
-        this.dropdownList.push({ value: 1, name: "Chrome" });
-        this.dropdownList.push({ value: 2, name: "Firefox" });
-        this.dropdownList.push({ value: 3, name: "Opera" });
-        this.dropdownList.push({ value: 4, name: "Safari" });
-        this.selectedDropdownItem = this.dropdownList[2].value;
-        this.dropdownList2.push({ value: 0, name: "Red" });
-        this.dropdownList2.push({ value: 1, name: "Blue" });
-        this.dropdownList2.push({ value: 2, name: "Green" });
-        this.dropdownList2.push({ value: 3, name: "Yellow" });
-        this.dropdownList2.push({ value: 4, name: "White" });
-        this.selectedDropdownItem2 = this.dropdownList2[3].value;
     }
     async ngOnInit() {
 
@@ -95,50 +77,121 @@ export class MembershipComponent implements OnInit {
             let ti = new TabItem(letter);
             this.tabs.push(ti);
         }
-
     }
-    goBack() {
+    public goBack() {
         this.router.navigate(['/home']);
     }
-    getPageId() {
+    public getPageId() {
         return this.bannerPageId;
     }
-    setMode(group: boolean) {
-        if (group) {
-            if (!this.groupMode) {
-                this.groupMode = true;
-            }
-        } else {
-            if (this.groupMode) {
-                this.groupMode = false;
-            }
-        }
+    public setMode(mode: Modes) {
+        this.mode = mode;
     }
-    selectTab(item: TabItem) {
+    public canShowCommand(cb: CommandButtons): boolean {
+        let r = false;
+        switch (cb) {
+            case CommandButtons.DeleteMember:
+            case CommandButtons.SendActivationEmail:
+            case CommandButtons.SendPasswordReset:
+                r = !this.memberIsNew;
+                break;
+            case CommandButtons.Cancel:
+            case CommandButtons.Save:
+                r = true;
+                break;
+        }
+        return r;
+    }
+    public async selectTab(item: TabItem) {
         console.log(`pressed ${item.name}`);
         this.searchText = item.name;
         this.clearTabSelection();
         item.selected = true;
-        this.searchForMembers();
+        await this.searchMembers(true);
     }
-    clearTabSelection() {
+    public onClearSearchClick() {
+        this.searchText = "";
+        this.clearTabSelection();
+        console.log("search cleared");
+    }
+    public onTabClick(tab: TabItem) {
+        this.selectTab(tab);
+    }
+    public onMemberClick(m: Member) {
+        this.member = m;
+    }
+    public async onSearchClick() {        
+        let tab: TabItem | undefined  = undefined;
+        if (this.searchText.length === 1) {
+            tab = this.matchesTabItem(this.searchText);
+        } 
+        if (tab) {
+            this.selectTab(tab);
+        } else {
+            this.clearTabSelection();
+            await this.searchMembers(false);
+        }
+    }
+    public getMemberFullName(m: Member) {
+        if (this.memberIsNew) {
+            if ((!m.firstName || m.firstName.trim().length === 0) && (!m.lastName || m.lastName.trim().length === 0)) {
+                return "(new member)";
+            }
+        }
+        return (m.firstName || "")  + ' ' + (m.lastName || "");
+    }
+    public onAddNewMember() {
+        if (!this.memberIsNew) {
+            this.member = this.getNewMember();// new Member();
+            this.memberIsNew = true;
+            this.saveMemberJson();
+        } else {
+            if (this.memberHasChanges()) {
+                this.showConfirmationMessage("First save the current member, or use Cancel");
+            }
+        }
+    }
+    public onCloseMessageBox() {
+        this.dialogService.close("message-box");
+    }
+    public onCancelClick() {
+        if (this.memberIsNew) {
+            this.memberIsNew = false;
+        }
+        this.member = undefined;
+        this.originalMemberJson = undefined;
+    }
+    protected async searchMembers(prefix: boolean) {
+        console.log(`search started using ${this.searchText}, prefix = ${prefix}`);
+        this.memberList = await this.membershipService.getMembers(this.searchText, prefix);
+    }
+    protected getNewMember(): Member {
+        return new Member();
+    }
+    private clearTabSelection() {
         for (let tab of this.tabs) {
             tab.selected = false;
         }
     }
-    clearSearchText() {
-        this.searchText = "";
-        this.clearTabSelection();
+    private matchesTabItem(text: string): TabItem | undefined {
+        return this.tabs.find(t => t.name.toLocaleLowerCase() === text.toLocaleLowerCase());
     }
-    searchForMembers() {
-        console.log(`search started using ${this.searchText}`);
+    private saveMemberJson() {
+        this.originalMemberJson = JSON.stringify(this.member);
     }
-    addNewMember() {
-        console.log(`add new member requested`);
+    private memberHasChanges(): boolean {
+        let text = JSON.stringify(this.member);
+        return text != this.originalMemberJson;
     }
-    diagSearchText() {
-        console.log(`search is ${this.searchText}`);
+    private showConfirmationMessage(msg: string) {
+        this.messageBox = new MessageBox();
+        this.messageBox.caption = "Message";
+        this.messageBox.message = msg;
+        this.dialogService.open("message-box");
     }
+    //diagSearchText() {
+    //    console.log(`search is ${this.searchText}`);
+    //}
     //firstNameValidator(cs: ControlState): ValidationResult {
     //    let vr = cs.validationResult;
     //    let text = cs.value || "";
@@ -219,45 +272,48 @@ export class MembershipComponent implements OnInit {
             }, 5000);
         });
     }
-    async validateAll(): Promise<boolean> {        
-        return ControlBase.validateAll(this.controls);
+    async validateAll(): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            let badCount = await ControlBase.validateAll();
+            resolve(badCount.length === 0);
+        });
     }
-    async onBetaButton() {
-        let r = await this.validateAll();
-        if (r) {
-            console.log(`can save`);
-        } else {
-            console.log(`cannot save`);
-        }
-        switch (this.member.choice) {
-            case Choice.First:
-                this.member.choice = Choice.Second;
-                break;
-            case Choice.Second:
-                this.member.choice = Choice.Third;
-                break;
-            case Choice.Third:
-                this.member.choice = Choice.First;
-                break;
-        }
-    }
-    choiceToValues(): EnumValue[] {
-        let r: EnumValue[] = [];
-        for (var v in Choice) {
-            if (typeof Choice[v] === 'number') {
-                r.push({ value: <any>Choice[v], name: v })
-            }
-        }
-        console.log(`${JSON.stringify(r)}`);
-        return r;
-    }
-    get debug() {
-        let d = {
-            member: this.member,
-            fl: this.findItem(this.dropdownList, this.selectedDropdownItem),
-            sl: this.findItem(this.dropdownList2, this.selectedDropdownItem2) };
-        return JSON.stringify(d, null, 2);
-    }
+    //async onBetaButton() {
+    //    let r = await this.validateAll();
+    //    if (r) {
+    //        console.log(`can save`);
+    //    } else {
+    //        console.log(`cannot save`);
+    //    }
+    //    switch (this.member.choice) {
+    //        case Choice.First:
+    //            this.member.choice = Choice.Second;
+    //            break;
+    //        case Choice.Second:
+    //            this.member.choice = Choice.Third;
+    //            break;
+    //        case Choice.Third:
+    //            this.member.choice = Choice.First;
+    //            break;
+    //    }
+    //}
+    //choiceToValues(): EnumValue[] {
+    //    let r: EnumValue[] = [];
+    //    for (var v in Choice) {
+    //        if (typeof Choice[v] === 'number') {
+    //            r.push({ value: <any>Choice[v], name: v })
+    //        }
+    //    }
+    //    //console.log(`${JSON.stringify(r)}`);
+    //    return r;
+    //}
+    //get debug() {
+    //    let d = {
+    //        member: this.member,
+    //        fl: this.findItem(this.dropdownList, this.selectedDropdownItem),
+    //        sl: this.findItem(this.dropdownList2, this.selectedDropdownItem2) };
+    //    return JSON.stringify(d, null, 2);
+    //}
     findItem(list: ListItem[], value: number): ListItem | undefined {
         return list.find((item, i) => {
             return item.value === value;

@@ -1,0 +1,41 @@
+﻿
+$annotation-colour: #152eea;
+
+.webframe-form, modal-dialog {
+    font-size: 16px;
+    padding: 0.5em;
+
+
+
+    .caption {
+        margin-top: 0;
+        //margin-bottom: 1em;
+        font-size: 1.5em;
+
+        .sub-heading {
+            font-size: 0.8em;
+        }
+    }
+
+
+
+    .annotation {
+        font-size: 12px;
+        color: $annotation-colour;
+    }
+}
+.webframe-form .form-body {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+modal-dialog {
+    .caption {
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+    }
+}
+#message-box {
+    .modal-container {
+        width: 33%;
+    }
+}

@@ -22,31 +22,30 @@
             </div>
         </div>
         <div class="right-panel">
-            <div class="fastnet-form member-properties">
-                <div class="header">
-                    <div class="main">Main header</div>
-                    <div class="sub">Sub header</div>
+            <div class="webframe-form member-properties">
+                <div class="caption">
+                    <div >Main header</div>
+                    <div class="sub-heading">Sub header</div>
                 </div>
-                <form  #memberForm="ngForm" >
+                <div class="form-body">
+                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
                     <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
                     <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
-                    <!--<bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled" ></bool-input>-->
-                    <!--<enum-input disabled class="h-align" label="Choices" name="choice" [(ngModel)]="member.choice" [items]="choiceValues" ></enum-input>-->
-                    <!--<date-input label="Start Date" name="birthDate" [(ngModel)]="member.birthDate" [minDate]="maxBirthDate" ></date-input>-->
                     <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
-                    <number-input label="Age" name="age" [(ngModel)]="member.age" [validator]="validators.item('age')" [minNumber]="12" [maxNumber]="110"></number-input>
-                    <dropdown-input label="select from" name="dropdownItem" [(ngModel)]="selectedDropdownItem" [items]="dropdownList"></dropdown-input>
-                    <dropdown-input label="select from 2" name="dropdownItem2" [(ngModel)]="selectedDropdownItem2" [items]="dropdownList2"></dropdown-input>
-                </form>
-                <div class="footer">
-                    <div class="text-help">some help text</div>
+                    <text-input label="Password" name="password" [(ngModel)]="member.password"></text-input>
+                    <text-input label="Club/Organisation" name="club" [(ngModel)]="member.password"></text-input>
+                    <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.password"></text-input>
+                    <bool-input label="Disabled" name="disabled" [(ngModel)]="member.password"></bool-input>
                 </div>
-                <div class="commands">
-                    <button class="link">Alpha</button>
-                    <button class="secondary" (click)="onBetaButton()">beta</button>
-                    <span class="filler"></span>
-                    <button disabled >Login</button>
-                    <button class="cancel" >Cancel</button>
+                <div class="command-buttons align-at-ends">
+                    <div>
+                        <button class="link">Alpha</button>
+                        <button class="secondary" (click)="onBetaButton()">beta</button>
+                    </div>
+                    <div>
+                        <button disabled>Login</button>
+                        <button class="cancel">Cancel</button>
+                    </div>
                 </div>
             </div>
             <div>{{debug}}</div>

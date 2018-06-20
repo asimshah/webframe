@@ -1,5 +1,5 @@
-﻿import { Inject, OnInit } from '@angular/core';
-import { Http, Response } from '@angular/http';
+﻿import { Inject, OnInit, Injectable } from '@angular/core';
+import { Http, Response, Headers, BaseRequestOptions, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/toPromise';
@@ -22,6 +22,16 @@ export abstract class BaseService {
         if (this.RunningInNode()) {
             this.baseUrl = "http://localhost:60933";
         }
+    }
+    protected async queryFromDataResult<T>(query: string): Promise<T> {
+        return new Promise<T>(async (resolve, reject) => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data as T);
+            } else {
+                reject(`${dr.message}, ${dr.exceptionMessage}`);
+            }
+        });
     }
     protected query(url: string): Promise<DataResult> {
         if (this.baseUrl != null) {
@@ -51,21 +61,41 @@ export abstract class BaseService {
             .catch(this.handleError)
             .toPromise();
     }
+    protected postWithOptions(url: string, data: any, options: RequestOptions): Promise<DataResult> {
+        return this.http.post(url, data, options)
+            .map(r => {
+                let dr = r.json() as DataResult;
+                if (!dr.success) {
+                    console.log(`ErrorResult: ${JSON.stringify(dr)}`);
+                }
+                return dr;
+            })
+            .catch((e) => this.handleError(e))
+            .toPromise();
+    }
     private handleError(error: any): Promise<any> {
-        console.error('An error occurred', error);
-        return Promise.reject(error.message || error);
+        //console.log('An error occurred', error);
+        if (error.status === 401) {
+            console.log(`error status 401: ${JSON.stringify(error)}`);
+            let msg = "Unauthorised access. This can be because you have been idle for a long time. If so, please refresh the browser window and login again.";
+            alert(msg);
+        } else {
+            alert(error);
+        }
+        return Promise.resolve(error);
+        //return Promise.reject(error.message || error);
     }
     private RunningInNode(): boolean {
         if (typeof window === 'undefined') {
             return true;
         }
         return false;
-        //let r = false;
-        //try {
-        //    r = window === undefined;
-            
-        //} catch (x) { r = true; };
-        //console.log(`running in node = ${r}`);
-        //return r;
     }
+
+}
+@Injectable()
+export class DefaultRequestOptions extends BaseRequestOptions {
+    headers = new Headers({
+        'Content-Type': 'application/json'
+    });
 }

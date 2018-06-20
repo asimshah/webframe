@@ -6,36 +6,22 @@ import { MembershipComponent } from './membership.component';
 //import { PageComponent } from '../page/page.component';
 import { PageModule } from '../page/page.module';
 import { routing } from './membership.routing';
-import {
-    TextInputControl,
-    PasswordInputControl,
-    EmailInputControl,
-    NumberInputControl,
-    DateInputControl,
-    BoolInputControl,
-    EnumInputControl,
-    DropDownControl
-} from "../controls/controls.component";
+import { ControlsModule } from "../controls/controls.module";
+import { ModalDialogModule } from '../modaldialog/modal-dialog.module';
+
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         routing,
-        PageModule
+        PageModule,
+        ControlsModule,
+        ModalDialogModule
     ],
     exports: [],
     declarations: [
-        //PageComponent,
-        MembershipComponent,
-        TextInputControl,
-        PasswordInputControl,
-        EmailInputControl,
-        NumberInputControl,
-        DateInputControl,
-        BoolInputControl,
-        EnumInputControl,
-        DropDownControl
+        MembershipComponent
         ],
     providers: [],
 })

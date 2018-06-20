@@ -15,9 +15,20 @@ import { PageModule } from './components/page/page.module';
 import { MenuComponent } from './components/home/menu.component';
 import { SidebarMenuComponent } from './components/home/sidebarmenu.component';
 import { LoginComponent } from './components/authentication/login.component';
-import { ModalDialogComponent } from './components/modaldialog/modal-dialog.component';
+//import { ModalDialogComponent } from './components/modaldialog/modal-dialog.component';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
-
+import { ControlsModule } from "./components/controls/controls.module";
+import { ModalDialogModule } from './components/modaldialog/modal-dialog.module';
+//import {
+//    TextInputControl,
+//    PasswordInputControl,
+//    EmailInputControl,
+//    NumberInputControl,
+//    DateInputControl,
+//    BoolInputControl,
+//    EnumInputControl,
+//    DropDownControl
+//} from "./components/controls/controls.component";
 
 
 @NgModule({
@@ -31,14 +42,24 @@ import { PermissionDeniedComponent } from './components/routeguards/permissionde
         EditorComponent,
         LoginComponent,
         PermissionDeniedComponent,
-        ModalDialogComponent
+        //ModalDialogComponent//,
+        //TextInputControl,
+        //PasswordInputControl,
+        //EmailInputControl,
+        //NumberInputControl,
+        //DateInputControl,
+        //BoolInputControl,
+        //EnumInputControl,
+        //DropDownControl
     ],
     imports: [
         CommonModule,
         HttpModule,
         FormsModule,
         PageModule,
-        AppRoutingModule
+        AppRoutingModule,
+        ControlsModule,
+        ModalDialogModule
     ],
     providers: [
         

@@ -12,6 +12,8 @@ import { MemberGuard } from './components/routeguards/member-guard.service';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
 import { ModalDialogService } from './components/modaldialog/modal-dialog.service';
 import { AuthenticationService } from './components/authentication/authentication.service';
+import { MembershipService } from './components/membership/membership.service';
+import { DWHMembershipService } from './components/membership/dwh/dwhmembership.service';
 
 
 const appRoutes: Routes = [
@@ -44,7 +46,16 @@ const appRoutes: Routes = [
     exports: [
         RouterModule
     ],
-    providers: [AdminGuard, MemberGuard, ConfigService, AuthenticationService, ModalDialogService, PageService],
+    providers: [
+        AdminGuard,
+        MemberGuard,
+        ConfigService,
+        AuthenticationService,
+        //ModalDialogService,
+        PageService,
+        MembershipService,
+        DWHMembershipService
+    ],
 })
 export class AppRoutingModule  {
 

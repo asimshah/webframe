@@ -1,0 +1,11 @@
+{
+  "Id": "html.controls",
+  "Version": "1.0.5",
+  "TargetDirectory": "app\\components\\controls",
+  "Files": [
+    "**/*.ts",
+    "**/*.html",
+    "**/*.css",
+    "**/*.scss"
+  ]
+}

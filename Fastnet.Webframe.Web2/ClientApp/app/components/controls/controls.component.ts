@@ -1,67 +1,18 @@
 ﻿import {
     ElementRef, Renderer2, Component, forwardRef,
     Input, Output, EventEmitter, ViewChild, ViewChildren, QueryList,
-    ViewEncapsulation, OnInit
+    ViewEncapsulation, OnInit, AfterViewInit
 } from '@angular/core';
 import {
     NG_VALUE_ACCESSOR, NG_VALIDATORS,
     ControlValueAccessor
 } from "@angular/forms";
-import { Dictionary} from '../shared/dictionary.types';
+import { Dictionary } from '../types/dictionary.types';
+//import { Dictionary} from '../shared/dictionary.types';
+
 
 const noop = () => { };
 
-//interface IDictionary<T> {
-//    [Key: string]: T;
-//}
-//export class Dictionary<T> {
-//    private items: IDictionary<T> = {};
-//    private count: number = 0;
-//    public add(key: string, item: T) {
-//        if (!this.containsKey(key)) {
-//            this.count++;
-//        }
-//        this.items[key] = item;
-//    }
-//    public item(key: string): T {
-//        return this.items[key];
-//    }
-//    public remove(key: string): T | null {
-//        if (this.containsKey(key)) {
-//            let val = this.items[key];
-//            delete this.items[key];
-//            this.count++;
-//            return val;
-//        }
-//        return null;
-//    }
-//    public containsKey(key: string) {
-//        return this.items.hasOwnProperty(key);
-//    }
-//    public keys(): string[] {
-//        var keySet: string[] = [];
-
-//        for (var prop in this.items) {
-//            if (this.items.hasOwnProperty(prop)) {
-//                keySet.push(prop);
-//            }
-//        }
-
-//        return keySet;
-//    }
-
-//    public values(): T[] {
-//        var values: T[] = [];
-
-//        for (var prop in this.items) {
-//            if (this.items.hasOwnProperty(prop)) {
-//                values.push(this.items[prop]);
-//            }
-//        }
-
-//        return values;
-//    }
-//}
 export class ControlState {
     touched: boolean;
     value: any;
@@ -91,12 +42,24 @@ export class PropertyValidatorAsync {
     }
 }
 
-export class ControlBase implements ControlValueAccessor {
+export class ControlBase implements ControlValueAccessor, AfterViewInit {
+    //        let cs = new ControlState();
+    //        cs.value = this.value;
+    //        //console.log(`calling property validator using route 2 with ${JSON.stringify(cs)}`);
+    //        return await this.validator.validator(cs);
+    //        //console.log(`${JSON.stringify(this.vr)}`);
+    //    }
+    //    return new Promise<ValidationResult>((resolve) => resolve(new ValidationResult()));
+    //}
+    private static allControls: Dictionary<ControlBase> = new Dictionary<ControlBase>();
     private trace: boolean = false;
     private _disabled: boolean = false;
     protected innerValue: string = '';
     protected isTouched: boolean = false;
-    protected vr: ValidationResult = { valid: true, message: '' };
+    //@Input() focus: any | undefined;
+    @Input() name: string;
+    @ViewChild('focusable') focusableElement: ElementRef; // set this on the html element that should receive focus
+    public vr: ValidationResult = { valid: true, message: '' };
     protected onTouchedCallback: () => void = noop;
     protected onChangeCallback: (_: any) => void = noop;
     protected localChangeCallBack: (_: any) => void = noop;
@@ -113,6 +76,28 @@ export class ControlBase implements ControlValueAccessor {
             this.localChangeCallBack(v);
             this.onChangeCallback(v);
             this.doValidation();
+        }
+    }
+    constructor() {
+        //if (!ControlBase.allControls) {
+        //    ControlBase.allControls = new Dictionary<ControlBase>();
+        //}
+    }
+    ngAfterViewInit(): void {
+        if (ControlBase.allControls.containsKey(this.name)) {
+            //alert(`a control named ${this.name} already exists`);
+            ControlBase.allControls.remove(this.name);
+        }
+        ControlBase.allControls.add(this.name, this);
+        //console.log(`name is ${this.name}`);
+
+    }
+    focus() {
+        //console.log(`focusing ..${JSON.stringify(this.element)}`);
+        if (this.focusableElement) {
+            this.focusableElement.nativeElement.focus();
+        } else {
+            console.log(`no focusable element present`);
         }
     }
     @Input() get disabled(): boolean {
@@ -170,32 +155,79 @@ export class ControlBase implements ControlValueAccessor {
         //console.log(`vr not found`);
         return false;
     }
-    private async validate(): Promise<ValidationResult> {
-        if (this.validator) {
-            let cs = new ControlState();
-            cs.value = this.value;
-            //console.log(`calling property validator using route 2 with ${JSON.stringify(cs)}`);
-            return await this.validator.validator(cs);
-            //console.log(`${JSON.stringify(this.vr)}`);
-        }
-        return new Promise<ValidationResult>((resolve) => resolve(new ValidationResult()));
+    //private async validate(): Promise<ValidationResult> {
+    //    if (this.validator) {
+    //        let cs = new ControlState();
+    //        cs.value = this.value;
+    //        //console.log(`calling property validator using route 2 with ${JSON.stringify(cs)}`);
+    //        return await this.validator.validator(cs);
+    //        //console.log(`${JSON.stringify(this.vr)}`);
+    //    }
+    //    return new Promise<ValidationResult>((resolve) => resolve(new ValidationResult()));
+    //}
+    private validate2(): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            if (this.validator) {
+                let cs = new ControlState();
+                cs.value = this.value;
+                this.validator.validator(cs).then((r) => {
+                    this.vr = r;
+                    console.log(`${JSON.stringify(this.vr)}`);
+                    resolve(r);
+                });
+            } else {
+                resolve(new ValidationResult());
+            }
+        });
     }
+    ///**
+    // * validate all the controls in the QueryList provided
+    // * @param controls - pass a list of controls obtained using ViewChildren
+    // */
+    //static async validateAll(controls: QueryList<ControlBase>): Promise<boolean> {
+    //    let invalidCount = 0;
+    //    console.log(`control count is ${controls.length}`);
+    //    let i = 0;
+    //    controls.forEach(async c => {            
+    //        c.vr = await c.validate();
+    //        console.log(`control ${++i}/${controls.length} validated`);
+    //        if (!c.vr.valid) {
+    //            invalidCount++;
+    //        }
+    //        //console.log(`found ${JSON.stringify(c)}`);
+    //    });
+    //    console.log(`control invalid count is  ${invalidCount}`);
+    //    return new Promise<boolean>((resolve) => resolve(invalidCount === 0));
+    //}
     /**
-     * validate all the controls in the QueryList provided
-     * @param controls - pass a list of controls obtained using ViewChildren
+     * returns a count of invalid controls 
      */
-    static async validateAll(controls: QueryList<ControlBase>): Promise<boolean> {
+    static async validateAll(): Promise<ControlBase[]> {
+        let arr = ControlBase.allControls.values();
+        //console.log(`control count is ${arr.length}`);
         let invalidCount = 0;
-        controls.forEach(async c => {            
-            c.vr = await c.validate();
+        let i = 0;
+        let invalidControls: ControlBase[] = [];
+        let promises: Promise<ValidationResult>[] = [];
+        for (let c of arr) {
+            await c.validate2();
             if (!c.vr.valid) {
+                invalidControls.push(c);
                 invalidCount++;
             }
-            //console.log(`found ${JSON.stringify(c)}`);
-        });
-        return new Promise<boolean>((resolve) => resolve(invalidCount > 0));
+        }
+        //console.log(`all promises complete`);
+        return invalidControls;
     }
-    
+    static focus(name: string) {
+        if (ControlBase.allControls.containsKey(name)) {
+            let c = ControlBase.allControls.item(name);
+            c.focus();
+        } else {
+            console.log(`control with name ${name} not found`)
+        }
+
+    }
     private tracelog(t: string) {
         if (this.trace) {
             console.log(t);
@@ -208,7 +240,7 @@ export class ControlBase implements ControlValueAccessor {
     template: `<div class="text-input" [ngClass]="{'not-valid': isInvalid}" >
             <label>
                 <span>{{label}}</span>
-            <input type="text" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
+            <input #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
             </label>
             <div class="validation-text">
                 <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
@@ -228,6 +260,8 @@ export class ControlBase implements ControlValueAccessor {
 })
 export class TextInputControl extends ControlBase {
     @Input() label: string = '';
+    
+    @Input() placeHolderText: string = '';
     constructor() {
         super();
     }
@@ -237,6 +271,33 @@ export class TextInputControl extends ControlBase {
     onInput() {
         this.onTouchedCallback();
     }
+
+}
+@Component({
+    selector: 'multiline-input',
+    template: `<div class="multiline-input" [ngClass]="{'not-valid': vr && vr.valid === false}" >
+            <label>  
+                <span>{{label}}</span>
+            <textarea #focusable type="text" [(ngModel)]="value" [rows]=rows  (blur)="onBlur()"></textarea>
+            </label>
+            <div class="validation-text">
+                <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
+            </div>
+        </div>`,
+    styleUrls: ['./controls.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MultilineTextInput),
+            multi: true
+        }
+    ]
+})
+export class MultilineTextInput extends TextInputControl {
+    @Input() rows: number;
+    constructor() {
+        super();
+    }
 }
 
 @Component({
@@ -244,7 +305,7 @@ export class TextInputControl extends ControlBase {
     template: `<div class="text-input" [ngClass]="{'not-valid': vr && vr.valid === false}" >
             <label>
                 <span>{{label}}</span>
-            <input type="email" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
+            <input #focusable type="email" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
             </label>
             <div class="validation-text">
                 <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
@@ -265,10 +326,15 @@ export class TextInputControl extends ControlBase {
 export class EmailInputControl extends TextInputControl {
     private defaultEmailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     @Input() label: string = '';
+    //@ViewChild('focusable') focusableElement: ElementRef;
     constructor() {
         super();
         this.setPrevalidator((cs) => this.validateEmailAsync(cs));
     }
+    //focus() {
+    //    //console.log(`focusing ..${JSON.stringify(this.element)}`);
+    //    this.element.nativeElement.focus();
+    //}
     private validateEmailAsync(cs: ControlState): Promise<ValidationResult>
     {
         return new Promise<ValidationResult>((resolve) => {
@@ -289,7 +355,7 @@ export class EmailInputControl extends TextInputControl {
     template: `<div class="password-input" [ngClass]="{'not-valid': vr.valid === false}" >
             <label>
                 <span>{{label}}</span>
-            <input type="password" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
+            <input #focusable type="password" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"/>
             </label>
             <div class="validation-text">
                 <span *ngIf="vr.valid === false" class="text-error">{{vr.message}}</span>
@@ -312,13 +378,69 @@ export class PasswordInputControl extends TextInputControl {
         super();
     }
 }
-
+@Component({
+    selector: 'search-input',
+    template: `<div class="search-input" [ngClass]="{'not-valid': isInvalid}" >               
+            <label>
+                <span>{{label}}</span>
+            <input #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="onTextChanged($event)" (input)="onInput()" (keyup)="onKeyUp($event)"/>
+            
+            </label>
+                <button class="clear-button" [ngClass]="{'not-visible': value?.length === 0}" (click)="clearSearchText()">
+                    <span class="fa fa-remove"></span>
+                </button>
+                <button class="search-button"(click)="onSearchClick($event)">
+                    <span class="fa fa-search"></span>
+                </button>
+            <div class="validation-text">
+                <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
+            </div>
+        </div>`,
+    styleUrls: ['./search-input.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SearchInputControl),
+            multi: true
+        },
+        {
+            provide: ControlBase, useExisting: forwardRef(() => SearchInputControl)
+        }
+    ]
+})
+export class SearchInputControl extends TextInputControl {
+    @Output() searchClick = new EventEmitter();
+    @Output() clearClick = new EventEmitter();
+    constructor() {
+        super();
+    }
+    clearSearchText() {
+        this.writeValue("");
+        this.onTextChanged(null);
+    }
+    onSearchClick(event: any) {
+        //console.log("SearchInputControl: onSearchClick()");
+        this.searchClick.emit(event);
+    }
+    onKeyUp(event: any) {
+        //console.log(JSON.stringify(event));
+        if (event.keyCode === 13) {
+            this.searchClick.emit(event);
+        }
+    }
+    onTextChanged(event: any) {
+        //console.log(`SearchInputControl: ${this.value}`);
+        if (this.value == "") {
+            this.clearClick.emit();
+        }
+    }
+}
 @Component({
     selector: 'number-input',
     template: `<div class="number-input" [ngClass]="{'not-valid': vr.valid === false}" >
             <label>
                 <span>{{label}}</span>
-            <input type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" (input)="onInput()"/>
+            <input class="focus-able" type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" (input)="onInput()"/>
             </label>
             <div class="validation-text">
                 <span *ngIf="vr.valid === false" class="text-error">{{vr.message}}</span>
@@ -363,18 +485,17 @@ export class NumberInputControl extends TextInputControl {
         return cs;
     }
 }
-
 @Component({
     selector: 'date-input',
     template: `<div class="date-input" [ngClass]="{'not-valid': vr.valid === false}" >
             <label>
                 <span>{{label}}</span>
-            <input type="date" [min]="standardDate(minDate)" [max]="standardDate(maxDate)" [ngModel]="value | date:'yyyy-MM-dd'" (blur)="onBlur()" (input)="onInput()" (ngModelChange)="value = $event"/>
+            <input #focusable type="date" [min]="standardDate(minDate)" [max]="standardDate(maxDate)" [ngModel]="value | date:'yyyy-MM-dd'" (blur)="onBlur()" (input)="onInput()" (ngModelChange)="value = $event"/>
             </label>
             <div class="validation-text">
                 <span *ngIf="vr.valid === false" class="text-error">{{vr.message}}</span>
             </div>
-            <div>{{debug}}</div>
+           
         </div>`,
     styleUrls: ['./controls.component.scss'],
     providers: [
@@ -386,7 +507,8 @@ export class NumberInputControl extends TextInputControl {
         {
             provide: ControlBase, useExisting: forwardRef(() => DateInputControl)
         }
-    ]
+    ],
+    encapsulation: ViewEncapsulation.None
 })
 export class DateInputControl extends TextInputControl {
     @Input() minDate: Date;
@@ -402,6 +524,10 @@ export class DateInputControl extends TextInputControl {
         }
         return "";
     }
+    //focus() {
+    //    //console.log(`focusing ..${JSON.stringify(this.element)}`);
+    //    this.element.nativeElement.focus();
+    //}
     get debug() { return JSON.stringify(this.value, null, 2); }
 }
 
@@ -409,7 +535,7 @@ export class DateInputControl extends TextInputControl {
     selector: 'bool-input',
     template: `<div class="bool-input" >
             <label>                
-            <input type="checkbox" [(ngModel)]="value" (blur)="onBlur()"/>
+            <input class="focus-able" type="checkbox" [(ngModel)]="value" (blur)="onBlur()"/>
                 <span>{{label}}</span>
             </label>
         </div>`,
@@ -437,7 +563,7 @@ export class EnumValue {
     selector: 'enum-input',
     template: `<div class="enum-border" >
         <div class="enum-label">{{label}}</div>  
-            <div class="enum-group" >
+            <div class="enum-group"   >
                 <div class="enum-item" *ngFor="let item of items">
                     <label [ngClass]="{selected: isSelected(item)}" >
                         <span></span><span></span>
@@ -458,7 +584,7 @@ export class EnumValue {
 })
 export class EnumInputControl extends TextInputControl {
     private static index: number = 0;
-    private reference: number;
+    protected reference: number;
     groupName: string = "";
     @Input() items: EnumValue[] = [];
     selectedValue: number | null = null;
@@ -473,7 +599,7 @@ export class EnumInputControl extends TextInputControl {
         this.writeValue(item.value);
     }
     isSelected(item: EnumValue): boolean {
-        if (this.selectedValue != null) {
+        if (item && this.selectedValue != null) {
             return this.selectedValue === item.value;
         }
         return false;
@@ -481,6 +607,50 @@ export class EnumInputControl extends TextInputControl {
     get debug() { return JSON.stringify(this, null, 2); }
 }
 
+@Component({
+    selector: 'bool-enum-input',
+    template: `<div class="enum-border" >
+        <div class="enum-label">{{label}}</div>  
+            <div class="enum-group"    >
+                <div class="enum-item" >
+                    <label [ngClass]="{selected: value}" >
+                        <span></span><span></span>
+                        <input #rbx name="{{groupName}}" type="radio" (click)="onTrue()" [checked]="this.value" />
+                    <span >{{trueLabel}}</span></label>
+                </div>
+                <div class="enum-item">
+                    <label [ngClass]="{selected: !value}" >
+                        <span></span><span></span>
+                        <input #rbx name="{{groupName}}" type="radio" (click)="onFalse()" [checked]="!this.value" />
+                    <span >{{falseLabel}}</span></label>
+                </div>
+            </div>
+        </div>`,
+    styleUrls: ['./controls.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => BoolEnumInputControl),
+            multi: true
+        }
+    ],
+    encapsulation: ViewEncapsulation.None
+})
+export class BoolEnumInputControl extends EnumInputControl {
+    @Input() trueLabel: string = "True";
+    @Input() falseLabel: string = "False";
+    @Input() items: EnumValue[] = [];
+    constructor() {
+        super();
+    }
+    onTrue() {
+        this.writeValue(true);
+    }
+    onFalse() {
+        this.writeValue(false);
+    }
+    get debug() { return JSON.stringify(this, null, 2); }
+}
 
 export class ListItem {
     value: any;
@@ -490,11 +660,11 @@ export class ListItem {
 @Component({
     selector: 'dropdown-input',
     template: `<div class="dropdown-input">
-            <label>
+            <label *ngIf="label">
                 <span>{{label}}</span>
             </label>
-            <select #sl1 [(ngModel)]="value" (ngModelChange)="modelChange($event)" >
-                <option *ngFor="let item of items" label="{{item.name}}" [value]="item.value" [attr.selected]="item.value === selectedValue? '': null"  >
+            <select class="focus-able" #sl1 [ngModel]="value" (ngModelChange)="modelChange($event)" >
+                <option *ngFor="let item of items" label="{{item.name}}" [value]="item.value" [attr.selected]="item.value === selectedValue ? '': null"  >
             </select>
         </div>`,
     styleUrls: ['./controls.component.scss'],
@@ -508,22 +678,26 @@ export class ListItem {
 })
 export class DropDownControl extends TextInputControl {
     @Input() items: ListItem[] = [];
-    @Input() label: string = '';
-    selectedValue: number;
+    @Input() label: string;// = '';
+    //@Output() change = new EventEmitter();
+    selectedValue: any;// number;
     constructor() {
         super();
         this.localChangeCallBack = (v) => {
             if (v !== null) {
                 this.selectedValue = v;// this.items[i];
-                //console.log(`found index = ${i}, item ${JSON.stringify(this.selectedValue)}`);
+                //console.log(`ddc ${JSON.stringify(this.selectedValue)}`);
             } else {
                 //console.log("localChangeCallBack() called with null");
             }
         };
     }
     modelChange(val: any) {
-        this.value = +this.value;
-        //console.log(`modelChange(): ${JSON.stringify(this.value)} (called with ${JSON.stringify(val)}`);
+        this.value = val;// +this.value;
+        console.log(`modelChange(): ${JSON.stringify(this.value)} (called with ${JSON.stringify(val)})`);
+    }
+    selectChange(e: Event) {
+        //this.change.emit(e);
     }
     get debug() { return JSON.stringify(this, null, 2); }
 }

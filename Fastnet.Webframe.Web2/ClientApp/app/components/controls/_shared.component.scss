@@ -1,0 +1,41 @@
+﻿$border-color: #808080;
+$error-colour: red;
+$focus-colour: cornflowerblue;
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+.label-above {
+    margin-top: 0; //0.5em;
+    //margin-bottom: 0.125em;
+}
+
+.label-after {
+    margin-top: 0.5em;
+    margin-left: 0.25em;
+    margin-right: 0;
+}
+
+label {
+    margin-bottom: 0;
+    width: 100%;
+
+    span {
+        font-weight: 600;
+    }
+}
+
+.input-box {
+    font-weight: normal;
+    border-radius: 0.25em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border: 1px solid $border-color;
+    &:focus {
+        outline: none;
+        border: 1px solid $focus-colour;
+    }
+}

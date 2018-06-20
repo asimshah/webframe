@@ -1,6 +1,6 @@
 ﻿{
   "CustomisationOptions": {
-    "factory": "None",
+    "factory": "DonWhillansHut",
     //"legacy": {
     //  "legacyDatabaseName": "dwh-002",
     //  "bookingDatabaseName": "dwh-booking-002",

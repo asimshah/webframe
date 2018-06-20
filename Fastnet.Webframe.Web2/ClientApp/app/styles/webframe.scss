@@ -8,7 +8,7 @@ $default-leftpanel-width: 210px;
 
 .SitePanel {
     margin: 0 auto;
-    font-family: verdana;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 10.5pt;
     width: auto;
     max-width: $max-sitepanel-width;
@@ -40,8 +40,7 @@ $default-leftpanel-width: 210px;
                 border-radius: 3px;
                 font-size: x-small;
                 //color: white;
-                background-color: #155a85;// #405370;
-
+                background-color: #155a85; // #405370;
                 a {
                     span {
                         color: white;
@@ -84,6 +83,112 @@ $default-leftpanel-width: 210px;
         }
     }
 }
+
+button {
+    $button-background: white;
+    $default-button-background: #337ab7;
+    $button-colour: black;
+    $button-hover: orange;
+    $disabled-colour: gray;
+    $warning-colour: red;
+    $secondary-colour: green;
+    $link-colour: #30b0e9;
+    border: 1px solid $button-colour;
+    border-radius: 0.25em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    height: 28px;
+    background-color: $button-background;
+    color: $button-colour;
+
+    &.default {
+        border: 1px solid $default-button-background;
+        background-color: $default-button-background;
+        color: $button-background;
+    }
+
+    &.secondary {
+        border: 1px solid $secondary-colour;
+        background-color: $secondary-colour;
+        color: $button-background;
+    }
+
+    &.warning {
+        border: none;
+        border: 1px solid $warning-colour;
+        background-color: $warning-colour;
+        color: $button-background;
+    }
+
+    &:hover {
+        background-color: $button-hover;
+        color: $button-background;
+    }
+
+
+
+    &[disabled], &.disabled {
+        cursor: none;
+        pointer-events: none;
+        background-color: $disabled-colour;
+        color: $button-background;
+    }
+
+    &.link {
+        background: none;
+        border: none;
+        color: $link-colour;
+        font-size: 8pt;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        &[disabled], &.disabled {
+            color: gray;
+        }
+    }
+}
+
+.command-buttons {
+    margin-top: 0.5em;
+    display: flex;
+    align-items: center;
+    button {
+        margin-top: 0.25em;
+        margin-bottom: 0.25em;
+    }
+    &.align-centrally {
+        justify-content: center;
+    }
+
+    &.align-at-ends {
+        justify-content: space-between;
+
+        > div {
+            display: flex;
+            align-items: center;
+
+            /*button {
+                width: 100%;
+            }*/
+
+            &:first-child {
+                button:not(:first-child) {
+                    margin-left: 0.25em;
+                }
+            }
+
+            &:last-child {
+                button:not(:last-child) {
+                    margin-right: 0.25em;
+                }
+            }
+        }
+    }
+}
+
+
 
 @media all and (max-width: 748px) {
     .SitePanel .BannerPanel {

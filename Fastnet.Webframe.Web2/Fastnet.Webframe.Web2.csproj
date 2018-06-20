@@ -9,8 +9,16 @@
     <Description>Webframe Version 5</Description>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.179" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.440" />
     <PackageReference Include="HtmlAgilityPack" Version="1.5.5" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
@@ -38,20 +46,26 @@
     <None Remove="ClientApp\app\components\authentication\login.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
+    <None Remove="ClientApp\app\components\controls\controls.module.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
     <None Remove="ClientApp\app\components\home\menu.component.ts" />
     <None Remove="ClientApp\app\components\home\page.service.ts" />
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
+    <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
+    <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.service.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.types.ts" />
+    <None Remove="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\page\page.module.ts" />
     <None Remove="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
+    <None Remove="ClientApp\app\components\shared\common.types.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
-    <None Remove="ClientApp\app\components\shared\dictionary.types.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,14 +96,20 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\sidebarmenu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\common.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.types.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\shared\dictionary.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />
