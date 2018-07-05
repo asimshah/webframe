@@ -24,11 +24,14 @@ namespace Fastnet.Webframe.Web2.Controllers
     {
         private readonly ILogger log;
         private readonly SignInManager<ApplicationUser> signInManager;
-        public UserController(IHostingEnvironment env, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+        private readonly IMemberFactory memberfactory;
+        public UserController(IHostingEnvironment env, UserManager<ApplicationUser> userManager,
+            IMemberFactory mch, SignInManager<ApplicationUser> signInManager,
             CoreDataContext coreDataContext, ILogger<UserController> logger) : base(logger, env, userManager, coreDataContext)
         {
             this.log = logger;
             this.signInManager = signInManager;
+            this.memberfactory = mch;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]Credentials credentials)
@@ -52,8 +55,10 @@ namespace Fastnet.Webframe.Web2.Controllers
                 if(result.Succeeded)
                 {
                     member.LastLoginDate = DateTime.UtcNow;
+                    var groupNames = await GetGroupsForMember(member);
                     await coreDataContext.SaveChangesAsync();
-                    return SuccessDataResult(null);
+                    var userData = memberfactory.ToUserCredentialsDTO(member, groupNames);
+                    return SuccessDataResult(userData);
                 }
                 else
                 {
@@ -85,6 +90,11 @@ namespace Fastnet.Webframe.Web2.Controllers
                 await userManager.UpdateSecurityStampAsync(user);
             }
             return SuccessDataResult(null);
+        }
+        private async Task<IEnumerable<string>> GetGroupsForMember(Member m)
+        {
+            var groups = await coreDataContext.GetGroupsForMember(m);
+            return groups.Select(x => x.Name);
         }
     }
 }

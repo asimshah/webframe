@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
@@ -18,10 +18,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.440" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.5.5" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.462" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,7 +57,6 @@
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
     <None Remove="ClientApp\app\components\membership\membership.service.ts" />
-    <None Remove="ClientApp\app\components\membership\membership.types.ts" />
     <None Remove="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\page\page.module.ts" />
@@ -104,7 +103,6 @@
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\common.types.ts" />

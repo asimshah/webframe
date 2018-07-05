@@ -1,5 +1,12 @@
-﻿<div class="permission-page">
-    <div class="heading">Permission Denied</div>
-    <div class="message">{{msg}}</div>
-    <button (click)="this.onGoback()">Home page</button>
+﻿<div class="SitePanel">
+    <div class="BannerPanel">
+        <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
+    </div>
+    <div class="CentrePanel">
+        <div class="permission-page">
+            <div class="heading">Permission Denied</div>
+            <div class="message">{{msg}}</div>
+            <button (click)="this.onGoback()">Home page</button>
+        </div>
+    </div>
 </div>

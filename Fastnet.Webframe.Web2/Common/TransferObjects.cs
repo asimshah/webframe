@@ -1,5 +1,7 @@
 ﻿using Fastnet.Core;
+using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.CoreData2;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,31 +11,38 @@ namespace Fastnet.Webframe.Web2
 {
     public static partial class dtoExtensions
     {
-        public static MemberDTO ToDTO<T>(this T member) where T : Member
-        {
-            switch(member)
-            {
-                case DWHMember dwhm:
-                    return ToDWHMemberDTO(dwhm);
-                case Member m:
-                    return ToMemberDTO<MemberDTO>(m);
-            }
-            return null;
-        }
+        //public static MemberDTO ToDTO<T>(this T member, DbContext extraContext) where T : Member
+        //{
+        //    switch(member)
+        //    {
+        //        case DWHMember dwhm:
+        //            return ToDWHMemberDTO(dwhm, extraContext as BookingDataContext);
+        //        case Member m:
+        //            return ToMemberDTO<MemberDTO>(m);
+        //    }
+        //    return null;
+        //}
         //public static MemberDTO ToDTO(this Member member)
         //{
         //    return ToDTO<MemberDTO>(member);
         //}
-
-        private static T ToMemberDTO<T>(Member member) where T : MemberDTO, new()
+        public static MemberDTO ToDTO(this Member member)
         {
-            var dto =  new T();
+            var dto = new MemberDTO();
             ToMemberDTO(dto, member);
             return dto;
         }
+
+        //private static T ToMemberDTO<T>(Member member) where T : MemberDTO, new()
+        //{
+        //    var dto =  new T();
+        //    ToMemberDTO(dto, member);
+        //    return dto;
+        //}
         private static void ToMemberDTO(MemberDTO dto, Member member)
         {
             dto.Id = member.Id;
+            dto.IsAdministrator = member.IsAdministrator;
             dto.FirstName = member.FirstName;
             dto.LastName = member.LastName;
             dto.EmailAddress = member.EmailAddress;
@@ -49,6 +58,7 @@ namespace Fastnet.Webframe.Web2
     public class MemberDTO
     {
         public string Id { get; set; }
+        public bool IsAdministrator { get; set; }
         public string EmailAddress { get; set; }
         public bool EmailAddressConfirmed { get; set; }
         public string FirstName { get; set; }
@@ -59,5 +69,10 @@ namespace Fastnet.Webframe.Web2
         public bool Disabled { get; set; }
         public string CreationDateFormatted { get; set; }
         public string LastLoginDateFormatted { get; set; }
+    }
+    public class UserCredentialsDTO
+    {
+        public MemberDTO Member { get; set; }
+        public IEnumerable<string> Groups { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Fastnet.Webframe.BookingData2;
+using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
 using Fastnet.Webframe.IdentityData2;
 using Microsoft.AspNetCore.Hosting;
@@ -11,21 +13,30 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
     [Produces("application/json")]
     [Route("membershipapi")]
+    [Authorize(Roles = "Administrators")]
     public class MembershipController : BaseController
     {
-        public MembershipController(ILogger<MembershipController> logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, env, userManager, coreDataContext)
+        private readonly IMemberFactory memberfactory;
+        public MembershipController(ILogger<MembershipController> logger, IHostingEnvironment env,
+            IMemberFactory mch,
+            UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, env, userManager, coreDataContext)
         {
+            this.memberfactory = mch;
         }
         [HttpGet("get/members/{searchtext}/{prefix?}")]
         public async Task<IActionResult> GetMembers(string searchText, bool prefix = false)
         {
             var members = await FindMembers(searchText, prefix);
-            var result = members.Select(m => m.ToDTO());
+            var result = memberfactory.ToDTO(members);
+            //var result = members.Select(m => m.ToDTO(extraContext));
             return SuccessDataResult(result);
         }
         private async Task<IEnumerable<Member>> FindMembers(string searchText, bool prefix)

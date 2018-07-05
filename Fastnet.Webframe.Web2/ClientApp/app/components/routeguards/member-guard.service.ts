@@ -9,9 +9,9 @@ export class MemberGuard implements CanActivate, CanLoad {
     }
     canLoad(): boolean {
         this.router.navigate(['permissiondenied', 'Restricted to users who have logged in.', 'true'], { skipLocationChange: true})
-        return false;
+        return true;
     }
     canActivate(): boolean {
-        return false;
+        return true;
     }
 }

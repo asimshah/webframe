@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,6 +14,45 @@ namespace Fastnet.Webframe.CoreData2
     }
     public static partial class Extensions
     {
+        public static async Task<IEnumerable<Group>> GetGroupsForMember(this CoreDataContext ctx, Member m)
+        {
+            List<Group> groups = new List<Group>();
+            Action<IEnumerable<Group>> addGroup = (list) =>
+            {
+                foreach (Group g in list)
+                {
+                    if (!groups.Contains(g))
+                    {
+                        groups.Add(g);
+                    }
+                }
+            };
+            Action<IEnumerable<Group>> processGroups = null;
+            processGroups = (list) =>
+            {
+                addGroup(list);
+                list = list.Where(pg => pg.ParentGroup != null).Select(l => l.ParentGroup);
+                if (list.Count() > 0)
+                {
+                    processGroups(list);
+                }
+            };
+            if (m != null)
+            {
+                await ctx.Entry(m).Collection(x => x.GroupMembers).LoadAsync();
+                foreach(var item in m.GroupMembers)
+                {
+                    await ctx.Entry(item).Reference(x => x.Group).LoadAsync();
+                }
+                processGroups(m.GroupMembers.Select(x => x.Group));
+            }
+            else
+            {
+                groups.Add(ctx.GetSystemGroup(SystemGroups.Anonymous));
+                groups.Add(ctx.GetSystemGroup(SystemGroups.Everyone));
+            }
+            return groups;
+        }
         public static Member GetAnonymousMember(this CoreDataContext coreDataContext)
         {
             return coreDataContext.Members.OfType<Member>().Single(x => x.IsAnonymous);

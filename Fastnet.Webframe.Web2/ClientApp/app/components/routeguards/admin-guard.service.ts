@@ -1,14 +1,16 @@
 ﻿import { Injectable } from '@angular/core';
 import { CanLoad, CanActivate, Router } from '@angular/router';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable()
 export class AdminGuard implements CanActivate, CanLoad {
-
-    constructor(private router: Router) {
+    constructor(private router: Router, private authenticationService: AuthenticationService) {
 
     }
     canLoad(): boolean {
-        //this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true})
+        if (!this.authenticationService.isAdministrator()) {
+            this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true });
+        }
         return true;
     }
     canActivate(): boolean {

@@ -59,7 +59,7 @@ namespace Fastnet.Webframe.CoreData2
         [MaxLength(128)]
         public string Organisation { get; set; }
 
-        internal DWHMember()
+        public DWHMember()
         {
 
         }

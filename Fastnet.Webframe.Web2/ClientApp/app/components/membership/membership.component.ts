@@ -9,9 +9,8 @@ import {
     PropertyValidatorAsync
 } from '../controls/controls.component';
 import { Dictionary } from '../types/dictionary.types';
-import { Member } from './membership.types';
 import { MembershipService } from './membership.service';
-import { MessageBox } from '../shared/common.types';
+import { MessageBox, Member } from '../shared/common.types';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 
 enum CommandButtons {

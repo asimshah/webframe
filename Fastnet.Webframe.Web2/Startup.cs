@@ -27,6 +27,9 @@ using Fastnet.Webframe.Common2;
 using System.Collections.Generic;
 using Fastnet.Webframe.BookingData2;
 using Microsoft.AspNetCore.ResponseCaching;
+using System.Reflection;
+using System.Net;
+using Fastnet.Core;
 
 namespace Fastnet.Webframe.Web2
 {
@@ -43,7 +46,9 @@ namespace Fastnet.Webframe.Web2
             this.log = logger;
             appRoot = env.ContentRootPath;
             Configuration = configuration;
-            var version = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
+            //var version = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
+            var version = typeof(Startup).GetTypeInfo().Assembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
             log.LogInformation($"Webframe Site {version} started");
         }
 
@@ -73,41 +78,51 @@ namespace Fastnet.Webframe.Web2
             {
                 options.Cookie.HttpOnly = true;
                 options.Cookie.Expiration = TimeSpan.FromMinutes(30);
-                options.LoginPath = "/Home/AccessFailed";
+                //*NB* so that users always see the access denied page if they are required to be authenticated
+                // in practice, such access is caught in angular routeguard
+                options.LoginPath = "/Home/AccessDenied";// "/login";               
+                options.AccessDeniedPath = "/Home/AccessDenied";
                 options.SlidingExpiration = true;
                 options.Events = new CookieAuthenticationEvents
                 {
-                    OnSignedIn = c =>
-                    {
-                        log.LogInformation($"{c.Principal.Identity.Name} logged in");
-                        return Task.CompletedTask;
-                    },
-                    OnSigningOut = c =>
-                    {
-                        log.LogInformation($"{c.HttpContext.User.Identity.Name} logged out");
-                        return Task.CompletedTask;
-                    }
+                    OnRedirectToLogin = c => { return CheckForUnauthorized(c); },
+                    OnRedirectToAccessDenied = c => { return CheckForUnauthorized(c); }
+                    //OnRedirectToLogout = c =>
+                    //{
+                    //    log.Debug($"OnRedirectToLogout");
+                    //    return Task.CompletedTask;
+                    //},
+                    //OnSignedIn = c =>
+                    //{
+                    //    log.Information($"{c.Principal.Identity.Name} logged in");
+                    //    return Task.CompletedTask;
+                    //},
+                    //OnSigningOut = c =>
+                    //{
+                    //    log.Information($"{c.HttpContext.User.Identity.Name} logged out");
+                    //    return Task.CompletedTask;
+                    //},
+                    //OnRedirectToReturnUrl = c =>
+                    //{
+                    //    log.Debug($"OnRedirectToReturnUrl");
+                    //    return Task.CompletedTask;
+                    //},
+                    //OnSigningIn = c =>
+                    //{
+                    //    log.Debug($"OnSigningIn");
+                    //    return Task.CompletedTask;
+                    //},
+                    //OnValidatePrincipal = c =>
+                    //{
+                    //    log.Debug($"OnSigningIn");
+                    //    return Task.CompletedTask;
+                    //}
                 };
             });
 
             services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddWebframeServices();
-            //services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            //services.AddTransient<IMemberFactory>((sp) =>
-            //{
-            //    var options = sp.GetRequiredService<IOptions<CustomisationOptions>>();
-            //    var coreDataContext = sp.GetRequiredService<CoreDataContext>();
-            //    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
-            //    switch (options.Value.factory)
-            //    {
-            //        case "DonWhillansHut":
-            //            return new DWHMemberFactory(loggerFactory.CreateLogger<DWHMemberFactory>(),  options, coreDataContext);
-            //        default:
-            //            return new MemberFactory(loggerFactory.CreateLogger<MemberFactory>(), options, coreDataContext);
-            //    }
-            //});
 
             services.AddMvc();
         }
@@ -202,7 +217,15 @@ namespace Fastnet.Webframe.Web2
                 }
             }
         }
-
+        private Task CheckForUnauthorized(RedirectContext<CookieAuthenticationOptions> ctx)
+        {
+            if (ctx.Request.Path.StartsWithSegments("/membershipapi") &&
+                ctx.Response.StatusCode == (int)HttpStatusCode.OK)
+            {
+                ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            }
+            return Task.CompletedTask;
+        }
         private void DebugSomeBookingDataStats(BookingDataContext ctx)
         {
             log.LogInformation($"booking Count: {ctx.Bookings.Count()}");

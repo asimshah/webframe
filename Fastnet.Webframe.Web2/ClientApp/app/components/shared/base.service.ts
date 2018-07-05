@@ -77,7 +77,7 @@ export abstract class BaseService {
         //console.log('An error occurred', error);
         if (error.status === 401) {
             console.log(`error status 401: ${JSON.stringify(error)}`);
-            let msg = "Unauthorised access. This can be because you have been idle for a long time. If so, please refresh the browser window and login again.";
+            let msg = "Unauthorised access. If you were logged in, this can occur because you have been idle for a long time. If so, please refresh the browser window and login again.";
             alert(msg);
         } else {
             alert(error);

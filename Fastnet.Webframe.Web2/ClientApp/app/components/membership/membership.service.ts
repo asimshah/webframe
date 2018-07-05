@@ -1,7 +1,8 @@
 ﻿import { Injectable } from "@angular/core";
 import { BaseService } from "../shared/base.service";
 import { Http } from "@angular/http";
-import { Member } from "./membership.types";
+import { Member } from "../shared/common.types";
+
 
 @Injectable()
 export class MembershipService extends BaseService {

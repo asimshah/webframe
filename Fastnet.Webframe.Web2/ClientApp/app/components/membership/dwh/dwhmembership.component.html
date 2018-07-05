@@ -35,15 +35,29 @@
                 </div>
                 <div class="form-body">
                     <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
-                    <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
-                    <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
-                    <text-input label="Password" name="password" [(ngModel)]="member.password"></text-input>
-                    <text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
-                    <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership"></text-input>
-                    <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled"></bool-input>
+                    <div *ngIf="member.isAdministrator === false">
+                        <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
+                        <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
+                        <text-input label="Password" name="password" [(ngModel)]="member.password"></text-input>
+                        <text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
+                        <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership"></text-input>
+                        <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled"></bool-input>
+                    </div>
+                    <div *ngIf="member.isAdministrator === false && (member.pastBookingCount + member.futureBookingCount) > 0" class="annotation">
+                        <span *ngIf="member.futureBookingCount > 0">This member has a total of {{member.pastBookingCount + member.futureBookingCount}} booking(s) of which {{member.pastBookingCount}} are in the past.</span>
+                        <span *ngIf="member.futureBookingCount === 0">This member has a total of {{member.pastBookingCount}} booking(s) which are all in the past.</span>
+                    </div>
+                    <div class="annotation no-space">
+                        <span>Created: {{member.creationDateFormatted}}</span>
+                        <span *ngIf="member.lastLoginDate !== null">, Last logged in: {{member.lastLoginDateFormatted}}.</span>
+                        <span *ngIf="member.lastLoginDate === null">, This member has not logged in.</span>
+                    </div>
+                    <div class="annotation warning" *ngIf="member.emailAddressConfirmed === false">
+                        <span>This email address is not confirmed. The member needs to respond to the activation email.</span>
+                    </div>
                 </div>
                 <div class="command-buttons align-at-ends">
-                    <div>
+                    <div *ngIf="member.isAdministrator === false">
                         <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning">Delete Member</button>
                         <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)"  class="secondary">Send Activation Email</button>
                         <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)"  class="secondary">Send Password Reset</button>

@@ -2,3 +2,17 @@
     caption: string = "Message";
     message: string = "<div>No message provided</div>"
 }
+export class Member {
+    id: string;
+    isAdministrator: boolean;
+    emailAddress: string;
+    emailAddressConfirmed: boolean;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    creationDate?: Date;
+    lastLoginDate?: Date;
+    disabled: boolean;
+    creationDateFormatted: string;
+    lastLoginDateFormatted: string;
+}

@@ -7,8 +7,8 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
+//using Microsoft.ApplicationInsights.Extensibility;
+//using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Fastnet.Core.Web.Logging;
 
 namespace Fastnet.Webframe.Web2
@@ -17,8 +17,8 @@ namespace Fastnet.Webframe.Web2
     {
         public static void Main(string[] args)
         {
-            TelemetryConfiguration.Active.DisableTelemetry = true;
-            TelemetryDebugWriter.IsTracingDisabled = true;
+            //TelemetryConfiguration.Active.DisableTelemetry = true;
+            //TelemetryDebugWriter.IsTracingDisabled = true;
             BuildWebHost(args).Run();
         }
 

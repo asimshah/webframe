@@ -1,6 +1,7 @@
 ﻿using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
+using Fastnet.Webframe.Web2.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,9 +47,11 @@ namespace Fastnet.Webframe.Web2
                 case FactoryName.DonWhillansHut:
                     services.AddDbContext<BookingDataContext>(o => o.UseSqlServer(config.GetConnectionString("DefaultConnection")));
                     services.AddTransient<IMemberFactory, DWHMemberFactory>();
+                    //services.AddTransient<IMembershipControllerHelper, DWHMembershipControllerHelper>();
                     break;
                 default:
                     services.AddTransient<IMemberFactory, MemberFactory>();
+                    //services.AddTransient<IMembershipControllerHelper, MembershipControllerHelper>();
                     break;
             }
         }

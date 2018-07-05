@@ -1,5 +1,6 @@
 ﻿//using Fastnet.Web.Common;
 using Fastnet.Webframe.Common2;
+using Fastnet.Webframe.CoreData2;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -9,37 +10,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fastnet.Webframe.CoreData2
+namespace Fastnet.Webframe.Web2
 {
     public interface IMemberFactory
     {
-
+        IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members);
+        UserCredentialsDTO ToUserCredentialsDTO(Member member, IEnumerable<string> groups);
     }
     public class MemberFactory : IMemberFactory
     {
-        //private static MemberFactory instance;
-        //public static MemberFactory GetInstance()
-        //{
-        //    if (instance == null)
-        //    {
-        //        MemberFactory mf = null;
-        //        switch (FactoryName)
-        //        {
-        //            case FactoryName.None:
-        //                mf = new MemberFactory();
-        //                break;
-        //            case FactoryName.DonWhillansHut:
-        //                mf = new DWHMemberFactory();
-        //                break;
-        //        }
-        //        instance = mf;
-        //    }
-        //    return instance;
-        //}
         protected readonly CustomisationOptions options;
         protected readonly CoreDataContext coreDataContext;
         protected readonly ILogger log;
-        public MemberFactory(ILogger log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext) 
+        public MemberFactory(ILogger<MemberFactory> log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext) 
         {
             this.options = options.Value;
             this.coreDataContext = coreDataContext;
@@ -55,6 +38,15 @@ namespace Fastnet.Webframe.CoreData2
             member.FirstName = firstName;
             member.LastName = lastName;
             member.CreationDate = DateTime.UtcNow;
+        }
+        public virtual IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members)
+        {
+            return members.Select(x => x.ToDTO());
+        }
+        public virtual UserCredentialsDTO ToUserCredentialsDTO(Member member, IEnumerable<string> groups)
+        {
+            var dto = member.ToDTO();
+            return new UserCredentialsDTO { Member = dto, Groups = groups };
         }
         public virtual Member CreateNew(string id, dynamic data, object additionalData)
         {

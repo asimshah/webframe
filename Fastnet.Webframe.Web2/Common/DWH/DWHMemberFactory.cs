@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fastnet.Webframe.CoreData2
+namespace Fastnet.Webframe.Web2
 {
     //public class BMCApiClient : WebApiClient
     //{
@@ -126,7 +126,7 @@ namespace Fastnet.Webframe.CoreData2
         //}
         private readonly bool EnableBMCApi;
         private readonly BookingDataContext bookingDataContext;
-        public DWHMemberFactory(ILogger log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext, BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
+        public DWHMemberFactory(ILogger<DWHMemberFactory> log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext, BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
         {
             this.bookingDataContext = bookingDataContext;
             EnableBMCApi = this.options.bmc.api.enable;// Settings.bmc.api.enable;
@@ -134,6 +134,15 @@ namespace Fastnet.Webframe.CoreData2
         protected override Member CreateMemberInstance()
         {
             return new DWHMember();
+        }
+        public override IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members)
+        {
+            return members.Cast<DWHMember>().Select(x => x.ToDTO(bookingDataContext));
+        }
+        public override UserCredentialsDTO ToUserCredentialsDTO(Member member, IEnumerable<string> groups)
+        {
+            var dto = (member as DWHMember).ToDTO(bookingDataContext);
+            return new DWHUserCredentialsDTO { Member = dto, Groups = groups };
         }
         public override Member CreateNew(string id, dynamic data, object additionalData)
         {
