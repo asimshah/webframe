@@ -1,4 +1,5 @@
-﻿using Fastnet.Webframe.BookingData2;
+﻿using Fastnet.Core.Web;
+using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
 using Fastnet.Webframe.Web2.Controllers;
@@ -39,7 +40,9 @@ namespace Fastnet.Webframe.Web2
         {
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+            services.Configure<CoreDataDbOptions>(config.GetSection("CoreDataDbOptions"));
+            services.AddWebDbContext<CoreDataContext, CoreDataDbContextFactory, CoreDataDbOptions>(config, "CoreDataDbOptions");
             services.AddTransient<ContentAssistant>();
             var customisation = provider.GetService<IOptions<CustomisationOptions>>();
             switch(customisation.Value.Factory)

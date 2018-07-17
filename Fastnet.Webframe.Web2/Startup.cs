@@ -64,7 +64,7 @@ namespace Fastnet.Webframe.Web2
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>((options) =>
-            {                
+            {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
@@ -72,7 +72,7 @@ namespace Fastnet.Webframe.Web2
                 options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();                
+                .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -160,11 +160,24 @@ namespace Fastnet.Webframe.Web2
                     name: "spa-fallback",
                     defaults: new { controller = "Home", action = "Index" });
             });
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                try
+                {
+                    var db = scope.ServiceProvider.GetService<CoreDataContext>();
+                    var log = scope.ServiceProvider.GetService<ILogger<CoreDataDbInitialiser>>();
+                    CoreDataDbInitialiser.Initialise(db, log);
+                }
+                catch (Exception xe)
+                {
+                    log.Error(xe, "Error initialising CoreDataContext");
+                }
+            }
             if (appDb.Users.ToArray().Count(x => string.IsNullOrWhiteSpace(x.NormalizedUserName)) > 0)
             {
                 log.LogInformation($"Application db user records need normalisation");
                 NormalizeUserRecords(appDb);
-                
+
                 log.LogInformation($"Application db user records normalised");
             }
             CreateRolesForUsers(coreDataContext, serviceProvider);
@@ -174,7 +187,7 @@ namespace Fastnet.Webframe.Web2
                 //DebugSomeBookingDataStats(bookingDataContext);
             }
             DebugSomeCoreDataStats(coreDataContext, options.Value);
-            
+
         }
 
         private void CreateRolesForUsers(CoreDataContext coreDataContext, IServiceProvider serviceProvider)
@@ -184,7 +197,7 @@ namespace Fastnet.Webframe.Web2
             var groups = coreDataContext.Groups.Include(x => x.GroupMembers)
                 .ThenInclude(x => x.Member)
                 .ToArray();
-            foreach(var group in groups)
+            foreach (var group in groups)
             {
                 if (!group.Type.HasFlag(GroupTypes.SystemDefinedMembers))
                 {

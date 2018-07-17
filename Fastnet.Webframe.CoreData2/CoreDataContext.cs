@@ -1,6 +1,10 @@
 ﻿
+using Fastnet.Core;
+using Fastnet.Core.Web;
 using Fastnet.Webframe.Common2;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -8,13 +12,76 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.SqlClient;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace Fastnet.Webframe.CoreData2
 {
-    public partial class CoreDataContext : DbContext
+    public class DesignTimeCoreDataDbFactory : DesignTimeWebDbContextFactory<CoreDataContext>
+    {
+        protected override string GetDesignTimeConnectionString()
+        {
+            var path = @"C:\devroot\Fastnet Webframe\Fastnet.Webframe\Fastnet.Webframe.Web2";
+            var databaseFilename = @"sitedb.mdf";
+            var catalog = @"dwh-netstandard2";
+            //string path = environment.ContentRootPath;
+            string dataFolder = Path.Combine(path, "Data");
+            if (!System.IO.Directory.Exists(dataFolder))
+            {
+                System.IO.Directory.CreateDirectory(dataFolder);
+            }
+            string databaseFile = Path.Combine(dataFolder, databaseFilename);
+            SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder();
+            csb.AttachDBFilename = databaseFile;
+            csb.DataSource = ".\\SQLEXPRESS";
+            csb.InitialCatalog = catalog;
+            csb.IntegratedSecurity = true;
+            csb.MultipleActiveResultSets = true;
+            return csb.ToString();
+        }
+    }
+    public class CoreDataDbInitialiser
+    {
+        public static void Initialise(CoreDataContext db, ILogger log)
+        {
+            //var options = db.Database.GetService<IOptions<QParaDbOptions>>();
+            //var log = db.Database.GetService<ILogger<QParaDb>>() as ILogger;
+            var creator = db.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+            var dbExists = creator.Exists();
+
+            if (dbExists)
+            {
+                log.Debug("CoreDataContext exists");
+            }
+            else
+            {
+                log.Warning("No CoreDataContext found");
+            }
+            var pendingMigrations = db.Database.GetPendingMigrations();
+            db.Database.Migrate();
+            log.Trace("The following migrations have been applied:");
+            var migrations = db.Database.GetAppliedMigrations();
+            foreach (var migration in migrations)
+            {
+                log.Trace($"\t{migration}");
+            }
+        }
+    }
+    public class CoreDataDbContextFactory : WebDbContextFactory
+    {
+        public CoreDataDbContextFactory(IOptions<CoreDataDbOptions> options, IServiceProvider sp) : base(options, sp)
+        {
+        }
+    }
+    public class CoreDataDbOptions : WebDbOptions
+    {
+
+    }
+
+    public partial class CoreDataContext : WebDbContext // DbContext
     {
         private CustomisationOptions customisation;
         public DbSet<Directory> Directories { get; set; }
@@ -40,7 +107,7 @@ namespace Fastnet.Webframe.CoreData2
         //public DbSet<Record> Records { get; set; }
         public DbSet<Webtask> Webtasks { get; set; }
         public DbSet<SageTransaction> SageTransactions { get; set; }
-        public CoreDataContext(DbContextOptions<CoreDataContext> options, IOptions<CustomisationOptions> customisation) : base(options)
+        public CoreDataContext(DbContextOptions<CoreDataContext> options, IOptions<CustomisationOptions> customisation, IOptions<CoreDataDbOptions> webDbOptions, IServiceProvider sp) : base(options, webDbOptions, sp)
         {
             this.customisation = customisation.Value;
         }
