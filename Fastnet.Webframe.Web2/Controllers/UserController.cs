@@ -33,6 +33,21 @@ namespace Fastnet.Webframe.Web2.Controllers
             this.signInManager = signInManager;
             this.memberfactory = mch;
         }
+        [HttpGet("sync")]
+        public async Task<IActionResult> Sync()
+        {
+            if(IsAuthenticated)
+            {
+                var member = this.GetCurrentMember();
+                var groupNames = await GetGroupsForMember(member);
+                var userData = memberfactory.ToUserCredentialsDTO(member, groupNames);
+                return SuccessDataResult(userData);
+            }
+            else
+            {
+                return SuccessDataResult(null);
+            }
+        }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]Credentials credentials)
         {
@@ -91,6 +106,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             }
             return SuccessDataResult(null);
         }
+
         private async Task<IEnumerable<string>> GetGroupsForMember(Member m)
         {
             var groups = await coreDataContext.GetGroupsForMember(m);

@@ -16,6 +16,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
+using Fastnet.Core.Web;
+using Fastnet.Core;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
@@ -38,6 +40,51 @@ namespace Fastnet.Webframe.Web2.Controllers
             var result = memberfactory.ToDTO(members);
             //var result = members.Select(m => m.ToDTO(extraContext));
             return SuccessDataResult(result);
+        }
+        [HttpPost("create/member")]
+        public async Task<IActionResult> CreateMember([FromBody] string dto)
+        {
+            try
+            {
+                var m = this.memberfactory.CreateNew(this.Request);
+                var user = new ApplicationUser { UserName = m.EmailAddress, Email = m.EmailAddress };
+                var result = await this.userManager.CreateAsync(user, m.PlainPassword);
+                if (result.Succeeded)
+                {
+                    m.ActivationCode = Guid.NewGuid().ToString();
+                    m.ActivationEmailSentDate = DateTime.UtcNow;
+                    m.RecordChanges(this.GetCurrentMember().Fullname, MemberAction.MemberActionTypes.New);
+                    coreDataContext.Members.Add(m);
+                    await coreDataContext.SaveChangesAsync();
+                    this.memberfactory.AssignGroups(m);
+                    await coreDataContext.SaveChangesAsync();
+                }
+                return SuccessDataResult(null);
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ErrorDataResult(xe.Message, "Internal System Error");
+            }
+        }
+        [HttpGet("validate/email/{address}")]
+        public async Task<IActionResult> ValidateEmailAddress(string address)
+        {
+            address = address.ToLower();
+            var m = await coreDataContext.Members.SingleOrDefaultAsync(x => x.EmailAddress == address);
+            if(m == null)
+            {
+                return SuccessDataResult(true);
+            }
+            return SuccessDataResult(false, "Email address is in use");
+        }
+        [HttpPost("validate/prop/{name}")]
+        public async Task<IActionResult> ValidateProperty(string name)
+        {
+            //await Task.Delay(0);
+            var data = this.Request.FromBody<string[]>();
+            var (success, message) = await this.memberfactory.ValidateProperty(name, data);
+            return SuccessDataResult(success, message);
         }
         private async Task<IEnumerable<Member>> FindMembers(string searchText, bool prefix)
         {

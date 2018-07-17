@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.462" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.470" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -53,6 +53,7 @@
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
     <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
+    <None Remove="ClientApp\app\components\membership\membership-placeholder.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
@@ -102,6 +103,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership-placeholder.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />

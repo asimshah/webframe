@@ -14,6 +14,9 @@ import { ModalDialogService } from './components/modaldialog/modal-dialog.servic
 import { AuthenticationService } from './components/authentication/authentication.service';
 import { MembershipService } from './components/membership/membership.service';
 import { DWHMembershipService } from './components/membership/dwh/dwhmembership.service';
+import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
+//import { MembershipComponent } from './components/membership/membership.component';
+//import { DwhMembershipComponent } from './components/membership/dwh/dwhmembership.component';
 
 
 const appRoutes: Routes = [
@@ -22,7 +25,8 @@ const appRoutes: Routes = [
     { path: 'logout', component: HomeComponent },
     { path: 'page/:id', component: HomeComponent},
     { path: 'login', component: LoginComponent },
-    { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard] },
+    //{ path: 'membership', component: MembershipPlaceholderComponent},
+    { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard], canActivate: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },
     { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule', canLoad: [AdminGuard] },
@@ -55,7 +59,7 @@ const appRoutes: Routes = [
         PageService,
         MembershipService,
         DWHMembershipService
-    ],
+    ]
 })
 export class AppRoutingModule  {
 

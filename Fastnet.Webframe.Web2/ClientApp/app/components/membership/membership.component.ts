@@ -12,6 +12,7 @@ import { Dictionary } from '../types/dictionary.types';
 import { MembershipService } from './membership.service';
 import { MessageBox, Member } from '../shared/common.types';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 enum CommandButtons {
     Cancel,
@@ -54,18 +55,20 @@ export class MembershipComponent implements OnInit {
     public memberIsNew: boolean;
     public memberList: Member[];
     private originalMemberJson?: string;
+    //private originalMember?: Member;
     @ViewChildren(ControlBase) controls: QueryList<ControlBase>;
     constructor(protected pageService: PageService, protected router: Router,
         private dialogService: ModalDialogService,
+        //private authenticationService: AuthenticationService,
         protected membershipService: MembershipService) {
+        console.log(`MembershipComponent: constructor`);
         this.mode = Modes.Member;
-        this.validators = new Dictionary<PropertyValidatorAsync>();
-        this.validators.add("firstName", new PropertyValidatorAsync(this.firstNameValidatorAsync));
-        this.validators.add("lastName", new PropertyValidatorAsync(this.lastNameValidatorAsync));
+
     }
     async ngOnInit() {
-
+        console.log(`MembershipComponent: ngOnInit`);
         this.bannerPageId = await this.pageService.getDefaultBanner();
+        //await this.authenticationService.sync();
         let letters = [
             "A", "B", "C", "D", "E", "F", "G", "H",
             "I", "J", "K", "L", "M", "N", "O", "P",
@@ -118,6 +121,10 @@ export class MembershipComponent implements OnInit {
     }
     public onMemberClick(m: Member) {
         this.member = m;
+        this.memberIsNew = false;
+        this.saveMemberJson();
+        ControlBase.resetAll();
+        this.setExistingMemberValidators();
     }
     public async onSearchClick() {        
         let tab: TabItem | undefined  = undefined;
@@ -144,6 +151,7 @@ export class MembershipComponent implements OnInit {
             this.member = this.getNewMember();// new Member();
             this.memberIsNew = true;
             this.saveMemberJson();
+            this.setNewMemberValidators();
         } else {
             if (this.memberHasChanges()) {
                 this.showConfirmationMessage("First save the current member, or use Cancel");
@@ -153,11 +161,22 @@ export class MembershipComponent implements OnInit {
     public onCloseMessageBox() {
         this.dialogService.close("message-box");
     }
+    public async onSaveClick() {
+        let r = await this.validateAll();
+        if (r) {
+            if (this.memberIsNew) {
+                this.createNewMember();
+            } else {
+                this.updateMember();
+            }
+        }
+    }
     public onCancelClick() {
         if (this.memberIsNew) {
             this.memberIsNew = false;
         }
         this.member = undefined;
+        //this.originalMember = undefined;
         this.originalMemberJson = undefined;
     }
     protected async searchMembers(prefix: boolean) {
@@ -165,7 +184,16 @@ export class MembershipComponent implements OnInit {
         this.memberList = await this.membershipService.getMembers(this.searchText, prefix);
     }
     protected getNewMember(): Member {
+        console.log(`returning standard new member`);
         return new Member();
+    }
+    private async updateMember() {
+
+    }
+    private async createNewMember() {
+        if (this.member) {
+            let cr = await this.membershipService.createNewMember(this.member);
+        }
     }
     private clearTabSelection() {
         for (let tab of this.tabs) {
@@ -176,11 +204,12 @@ export class MembershipComponent implements OnInit {
         return this.tabs.find(t => t.name.toLocaleLowerCase() === text.toLocaleLowerCase());
     }
     private saveMemberJson() {
+        //this.originalMember = JSON.parse(JSON.stringify(this.member));
         this.originalMemberJson = JSON.stringify(this.member);
     }
     private memberHasChanges(): boolean {
         let text = JSON.stringify(this.member);
-        return text != this.originalMemberJson;
+        return text !==  this.originalMemberJson;
     }
     private showConfirmationMessage(msg: string) {
         this.messageBox = new MessageBox();
@@ -188,22 +217,6 @@ export class MembershipComponent implements OnInit {
         this.messageBox.message = msg;
         this.dialogService.open("message-box");
     }
-    //diagSearchText() {
-    //    console.log(`search is ${this.searchText}`);
-    //}
-    //firstNameValidator(cs: ControlState): ValidationResult {
-    //    let vr = cs.validationResult;
-    //    let text = cs.value || "";
-    //    if (text.length === 0) {
-    //        vr.valid = false;
-    //        vr.message = `a First Name is required`;
-    //    } else if (text.startsWith("z")) {
-    //        vr.valid = false;
-    //        vr.message = `a First Name cannot begin with z`;
-    //    }
-    //    console.log(`${JSON.stringify(cs)}`);
-    //    return vr;
-    //}
     firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             let vr = cs.validationResult;
@@ -219,19 +232,6 @@ export class MembershipComponent implements OnInit {
             resolve(cs.validationResult);
         });
     }
-    //lastNameValidator(cs: ControlState): ValidationResult {
-    //    let vr = cs.validationResult;
-    //    let text = cs.value || "";
-    //    if (text.length === 0) {
-    //        vr.valid = false;
-    //        vr.message = `a Last Name is required`;
-    //    } else if (text.startsWith("z")) {
-    //        vr.valid = false;
-    //        vr.message = `a Last Name cannot begin with z`;
-    //    }
-    //    console.log(`${JSON.stringify(cs)}`);
-    //    return vr;
-    //}
     lastNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             let vr = cs.validationResult;
@@ -247,16 +247,27 @@ export class MembershipComponent implements OnInit {
             resolve(cs.validationResult);
         });
     }
-    //ageValidator(cs: ControlState): ValidationResult {
-    //    let vr = cs.validationResult;
-    //    let age = cs.value || 0;
-    //    if (age === 99) {
-    //        vr.valid = false;
-    //        vr.message = `99 not allowed`;
-    //    }
-    //    console.log(`${JSON.stringify(cs)}`);
-    //    return vr;
-    //}
+    emailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        //let ms = this.membershipService;
+        return new Promise<ValidationResult>(async resolve => {
+            let vr = cs.validationResult;
+            if (vr.valid) {
+                let text: string = cs.value || "";
+                if (text.length === 0) {
+                    vr.valid = false;
+                    vr.message = `an Email Address is required`;
+                } else {
+                    text = text.toLocaleLowerCase();
+                    let r = await this.membershipService.validateEmailAddress(text);
+                    if (r === false) {
+                        vr.valid = false;
+                        vr.message = `this Email Address is already in use`;
+                    }
+                }
+            }
+            resolve(cs.validationResult);
+        });
+    }
     ageValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             setTimeout(() => {
@@ -277,42 +288,17 @@ export class MembershipComponent implements OnInit {
             resolve(badCount.length === 0);
         });
     }
-    //async onBetaButton() {
-    //    let r = await this.validateAll();
-    //    if (r) {
-    //        console.log(`can save`);
-    //    } else {
-    //        console.log(`cannot save`);
-    //    }
-    //    switch (this.member.choice) {
-    //        case Choice.First:
-    //            this.member.choice = Choice.Second;
-    //            break;
-    //        case Choice.Second:
-    //            this.member.choice = Choice.Third;
-    //            break;
-    //        case Choice.Third:
-    //            this.member.choice = Choice.First;
-    //            break;
-    //    }
-    //}
-    //choiceToValues(): EnumValue[] {
-    //    let r: EnumValue[] = [];
-    //    for (var v in Choice) {
-    //        if (typeof Choice[v] === 'number') {
-    //            r.push({ value: <any>Choice[v], name: v })
-    //        }
-    //    }
-    //    //console.log(`${JSON.stringify(r)}`);
-    //    return r;
-    //}
-    //get debug() {
-    //    let d = {
-    //        member: this.member,
-    //        fl: this.findItem(this.dropdownList, this.selectedDropdownItem),
-    //        sl: this.findItem(this.dropdownList2, this.selectedDropdownItem2) };
-    //    return JSON.stringify(d, null, 2);
-    //}
+    protected setNewMemberValidators() {
+        this.validators = new Dictionary<PropertyValidatorAsync>();
+        this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
+        this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
+        this.validators.add("emailAddress", new PropertyValidatorAsync((cs) => this.emailAddressValidatorAsync(cs)));
+    }
+    protected setExistingMemberValidators() {
+        this.validators = new Dictionary<PropertyValidatorAsync>();
+        this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
+        this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
+    }
     findItem(list: ListItem[], value: number): ListItem | undefined {
         return list.find((item, i) => {
             return item.value === value;

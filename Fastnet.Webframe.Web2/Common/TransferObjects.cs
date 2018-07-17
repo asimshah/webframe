@@ -11,34 +11,31 @@ namespace Fastnet.Webframe.Web2
 {
     public static partial class dtoExtensions
     {
-        //public static MemberDTO ToDTO<T>(this T member, DbContext extraContext) where T : Member
-        //{
-        //    switch(member)
-        //    {
-        //        case DWHMember dwhm:
-        //            return ToDWHMemberDTO(dwhm, extraContext as BookingDataContext);
-        //        case Member m:
-        //            return ToMemberDTO<MemberDTO>(m);
-        //    }
-        //    return null;
-        //}
-        //public static MemberDTO ToDTO(this Member member)
-        //{
-        //    return ToDTO<MemberDTO>(member);
-        //}
+        public static Member CreateMember(this MemberDTO dto)
+        {
+            var m = new Member();
+            FromMemberDTO(dto, m);
+            return m;
+        }
         public static MemberDTO ToDTO(this Member member)
         {
             var dto = new MemberDTO();
             ToMemberDTO(dto, member);
             return dto;
         }
-
-        //private static T ToMemberDTO<T>(Member member) where T : MemberDTO, new()
-        //{
-        //    var dto =  new T();
-        //    ToMemberDTO(dto, member);
-        //    return dto;
-        //}
+        private static void FromMemberDTO(MemberDTO dto, Member member)
+        {
+            member.FirstName = dto.FirstName;
+            member.LastName = dto.LastName;
+            member.EmailAddress = dto.EmailAddress;
+            member.PhoneNumber = dto.PhoneNumber;
+            member.PlainPassword = dto.Password;
+            member.LastLoginDate = null;
+            member.CreationDate = DateTime.UtcNow;
+            member.Disabled = false;
+            member.IsAdministrator = false;
+            member.EmailAddressConfirmed = false;
+        }
         private static void ToMemberDTO(MemberDTO dto, Member member)
         {
             dto.Id = member.Id;
@@ -63,6 +60,7 @@ namespace Fastnet.Webframe.Web2
         public bool EmailAddressConfirmed { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime? LastLoginDate { get; set; }

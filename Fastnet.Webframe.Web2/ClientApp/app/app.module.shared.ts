@@ -19,17 +19,9 @@ import { LoginComponent } from './components/authentication/login.component';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
 import { ControlsModule } from "./components/controls/controls.module";
 import { ModalDialogModule } from './components/modaldialog/modal-dialog.module';
-//import {
-//    TextInputControl,
-//    PasswordInputControl,
-//    EmailInputControl,
-//    NumberInputControl,
-//    DateInputControl,
-//    BoolInputControl,
-//    EnumInputControl,
-//    DropDownControl
-//} from "./components/controls/controls.component";
-
+//import { MembershipComponent } from './components/membership/membership.component';
+//import { DwhMembershipComponent } from './components/membership/dwh/dwhmembership.component';
+import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
 
 @NgModule({
     declarations: [
@@ -42,15 +34,10 @@ import { ModalDialogModule } from './components/modaldialog/modal-dialog.module'
         EditorComponent,
         LoginComponent,
         PermissionDeniedComponent,
-        //ModalDialogComponent//,
-        //TextInputControl,
-        //PasswordInputControl,
-        //EmailInputControl,
-        //NumberInputControl,
-        //DateInputControl,
-        //BoolInputControl,
-        //EnumInputControl,
-        //DropDownControl
+        MembershipPlaceholderComponent
+        //,
+        //MembershipComponent,
+        //DwhMembershipComponent
     ],
     imports: [
         CommonModule,
@@ -64,6 +51,8 @@ import { ModalDialogModule } from './components/modaldialog/modal-dialog.module'
     providers: [
         
     ]
+    //,
+    //entryComponents: [MembershipComponent, DwhMembershipComponent]
 })
 
 

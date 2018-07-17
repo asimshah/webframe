@@ -1,9 +1,11 @@
 ﻿//using Fastnet.Common;
 //using Fastnet.EventSystem;
 //using Fastnet.Webframe.BookingData;
+using Fastnet.Core.Web;
 using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -110,31 +112,19 @@ namespace Fastnet.Webframe.Web2
     }
     public class DWHMemberFactory : MemberFactory
     {
-        //private bool enableBMCApi;
-
-        //public bool EnableBMCApi
-        //{
-        //    get
-        //    {
-        //        return enableBMCApi;
-        //    }
-
-        //    set
-        //    {
-        //        enableBMCApi = value;
-        //    }
-        //}
-        private readonly bool EnableBMCApi;
         private readonly BookingDataContext bookingDataContext;
-        public DWHMemberFactory(ILogger<DWHMemberFactory> log, IOptions<CustomisationOptions> options, CoreDataContext coreDataContext, BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
+        private readonly BMCApiClient bmcApi;
+        public DWHMemberFactory(ILogger<DWHMemberFactory> log, IOptions<CustomisationOptions> options,
+            CoreDataContext coreDataContext,BMCApiClient bmcApi,
+            BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
         {
             this.bookingDataContext = bookingDataContext;
-            EnableBMCApi = this.options.bmc.api.enable;// Settings.bmc.api.enable;
+            this.bmcApi = bmcApi;
         }
-        protected override Member CreateMemberInstance()
-        {
-            return new DWHMember();
-        }
+        //protected override Member CreateMemberInstance()
+        //{
+        //    return new DWHMember();
+        //}
         public override IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members)
         {
             return members.Cast<DWHMember>().Select(x => x.ToDTO(bookingDataContext));
@@ -144,22 +134,35 @@ namespace Fastnet.Webframe.Web2
             var dto = (member as DWHMember).ToDTO(bookingDataContext);
             return new DWHUserCredentialsDTO { Member = dto, Groups = groups };
         }
-        public override Member CreateNew(string id, dynamic data, object additionalData)
+        public override Member CreateNew(HttpRequest request)
         {
-            dynamic vr = additionalData;
-            DWHMember m = CreateMemberInstance() as DWHMember;
-            string emailAddress = data.emailAddress;
-            string firstName = data.firstName;
-            string lastName = data.lastName;
-            Fill(m, id, emailAddress, firstName, lastName);
-            m.BMCMembership = ExtractBmcMembership(data);// bmc.Trim();
-            m.Organisation = data.organisation?.Value ?? "";
-            if (vr.Success && !string.IsNullOrWhiteSpace(m.BMCMembership))
-            {
-                m.BMCMembershipIsValid = true;
-                m.BMCMembershipValidatedOn = DateTime.Now;
-            }
+            var dto = request.FromBody<DWHMemberDTO>();
+            var m = dto.CreateMember();
+            //DWHMember m = CreateMemberInstance() as DWHMember;
+            //dynamic vr = additionalData;
+
+            //string emailAddress = data.emailAddress;
+            //string firstName = data.firstName;
+            //string lastName = data.lastName;
+            //Fill(m, id, emailAddress, firstName, lastName);
+            //m.BMCMembership = ExtractBmcMembership(data);// bmc.Trim();
+            //m.Organisation = data.organisation?.Value ?? "";
+            //if (vr.Success && !string.IsNullOrWhiteSpace(m.BMCMembership))
+            //{
+            //    m.BMCMembershipIsValid = true;
+            //    m.BMCMembershipValidatedOn = DateTime.Now;
+            //}
             return m;
+        }
+        public override async Task<(bool, string)> ValidateProperty(string name, string[] data)
+        {
+            switch(name)
+            {
+                case "bmcnumber":
+                    return await ValidateBMCNumber(data[0], data[1]);
+
+            }
+            return (false, "Property not supported");
         }
         public override Member Find(CoreDataContext ctx, string id)
         {
@@ -187,73 +190,93 @@ namespace Fastnet.Webframe.Web2
                 remove.GroupMembers.Remove(gm);
             }
         }
-        public string ExtractBmcMembership(dynamic data)
-        {
-            string bmcMembership = data.bmcMembership?.Value ?? "";
-            return bmcMembership.Trim();
-        }
+        //[Obsolete]
+        //public string ExtractBmcMembership(dynamic data)
+        //{
+        //    string bmcMembership = data.bmcMembership?.Value ?? "";
+        //    return bmcMembership.Trim();
+        //}
+        //[Obsolete]
+        //public async override Task<ExpandoObject> ValidateRegistration(dynamic data)
+        //{
+        //    string lastName = ((string)data.lastName).Trim();
+        //    string bmc = ExtractBmcMembership(data);
+        //    //DateTime? dob = ExtractDob(data);
+        //    return await ValidateRegistration(bmc, lastName);//, dob);
+        //}
+        //[Obsolete]
+        //internal async Task<ExpandoObject> ValidateRegistration(string bmcMembership, string lastName)//, DateTime? dob)
+        //{
+        //    dynamic result = new ExpandoObject();
+        //    //if (!string.IsNullOrWhiteSpace(bmcMembership))
+        //    //{
+        //    //    if (!BMCNumberInUse(bmcMembership))
+        //    //    {
+        //    //        if (EnableBMCApi) // ApplicationSettings.Key("DWH:ValidateBMCMembership", true))
+        //    //        {
+        //    //            dynamic r = await ValidateBMCNumber(bmcMembership, lastName);
+        //    //            log.LogInformation("BMC membership validation: {1}, number {0}, success = {2}", bmcMembership, lastName, (bool)r.Success);
+        //    //            return r;
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            //result.Success = true;
+        //    //            result.Success = false;
+        //    //            result.ApiEnabled = false;
+        //    //            result.Error = "BMC validation gateway is disabled";
+        //    //        }
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        result.Success = false;
+        //    //        result.ApiEnabled = true;
+        //    //        result.Error = "This BMC membership is already in use";
+        //    //    }
 
-        public async override Task<ExpandoObject> ValidateRegistration(dynamic data)
+        //    //}
+        //    //else
+        //    //{
+        //    //    result.Success = true;
+        //    //}
+        //    return result;
+        //}
+        public async Task<(bool, string)> ValidateBMCNumber(string bmcMembership, string lastName)
         {
-            string lastName = ((string)data.lastName).Trim();
-            string bmc = ExtractBmcMembership(data);
-            //DateTime? dob = ExtractDob(data);
-            return await ValidateRegistration(bmc, lastName);//, dob);
-        }
-        internal async Task<ExpandoObject> ValidateRegistration(string bmcMembership, string lastName)//, DateTime? dob)
-        {
-            dynamic result = new ExpandoObject();
-            if (!string.IsNullOrWhiteSpace(bmcMembership))
+            bmcMembership = bmcMembership.ToUpper();
+            if(!BMCNumberInUse(bmcMembership))
             {
-                if (!BMCNumberInUse(bmcMembership))
+                var r = await this.bmcApi.Validate(bmcMembership, lastName);
+                if(r.Success)
                 {
-                    if (EnableBMCApi) // ApplicationSettings.Key("DWH:ValidateBMCMembership", true))
-                    {
-                        dynamic r = await ValidateBMCNumber(bmcMembership, lastName);
-                        log.LogInformation("BMC membership validation: {1}, number {0}, success = {2}", bmcMembership, lastName, (bool)r.Success);
-                        return r;
-                    }
-                    else
-                    {
-                        //result.Success = true;
-                        result.Success = false;
-                        result.ApiEnabled = false;
-                        result.Error = "BMC validation gateway is disabled";
-                    }
+                    return (true, "");
                 }
                 else
                 {
-                    result.Success = false;
-                    result.ApiEnabled = true;
-                    result.Error = "This BMC membership is already in use";
+                    return (false, r.Error);
                 }
-
             }
             else
             {
-                result.Success = true;
+                return (false, "This BMC number is in use");
             }
-            return result;
-        }
-        public async Task<ExpandoObject> ValidateBMCNumber(string bmcMembership, string lastName)
-        {
-            if (string.Compare(bmcMembership, "6A6A6A6", true) == 0)
-            {
-                dynamic result = new ExpandoObject();
-                result.Success = true;
-                result.Expiry = DateTime.Today.AddYears(1);
-                result.Error = null;
-                result.Status = BMCMembershipStatus.Current;
-                return result;
-            }
-            else
-            {
-                //var bmcClient = BMCApiFactory.GetClient();
-                //string url = string.Format("MemberUpdate/QueryLight?lastName={0}&membershipNumber={1}", lastName, bmcMembership);
-                //return await bmcClient.Validate(bmcMembership, lastName);
-                await Task.Delay(0);
-                return null;
-            }
+            //if (string.Compare(bmcMembership, "6A6A6A6", true) == 0)
+            //{
+            //    dynamic result = new ExpandoObject();
+            //    result.Success = true;
+            //    result.Expiry = DateTime.Today.AddYears(1);
+            //    result.Error = null;
+            //    result.Status = BMCMembershipStatus.Current;
+            //    //return result;
+            //}
+            //else
+            //{
+            //    //var bmcClient = BMCApiFactory.GetClient();
+            //    //string url = string.Format("MemberUpdate/QueryLight?lastName={0}&membershipNumber={1}", lastName, bmcMembership);
+            //    //return await bmcClient.Validate(bmcMembership, lastName);
+            //    await Task.Delay(0);
+            //    //return null;
+            //}
+            //return result;
         }
         private bool BMCNumberInUse(string bMCMembership)
         {

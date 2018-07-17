@@ -22,9 +22,11 @@ class userData {
 @Injectable()
 export class AuthenticationService extends BaseService {
     currentUser: userData | null = null;
+    initialised: boolean = false;
     constructor(http: Http) {
         super(http);
-        //console.log("AuthenticationService constructor");
+        //setTimeout(this.sync, 10);
+        console.log("new AuthenticationService instance created");
     }
     public async login(credentials: Credentials): Promise<LoginResult> {
         let lr: LoginResult = LoginResult.Unknown;
@@ -52,6 +54,7 @@ export class AuthenticationService extends BaseService {
             lr = LoginResult.Succeeded;
             this.currentUser = result.data;
         }
+        console.log(`lr=${lr}, ${JSON.stringify(this.currentUser)}`);
         return new Promise<LoginResult>(resolve => resolve(lr));
     }
     public async logout(): Promise<void> {
@@ -60,7 +63,7 @@ export class AuthenticationService extends BaseService {
     public isAuthenticated(): boolean {
         return this.currentUser !== null;
     }
-    public isAdministrator(): boolean {
+    public isAdministrator() {
         return this.isMemberOf("Administrators");
     }
     public isMemberOf(group: string): boolean {
@@ -70,6 +73,31 @@ export class AuthenticationService extends BaseService {
                 r = true;
             }
         }
+        console.log(`${group} against ${JSON.stringify(this.currentUser)}, result = ${r}`);
         return r;
+    }
+    //public async isMemberOf(group: string): Promise<boolean> {
+    //    return new Promise<boolean>(async resolve => {
+    //        if (!this.initialised) {
+    //            let result = await this.query("user/sync");
+    //            this.currentUser = result.data;
+    //            this.initialised = true;
+    //        }
+    //        let r = false;
+    //        if (this.currentUser !== null) {
+    //            if (this.currentUser.groups.find(x => x === group)) {
+    //                r = true;
+    //            }
+    //        }
+    //        console.log(`${group} against ${JSON.stringify(this.currentUser)}`);
+    //        return r;
+    //    });
+    //}
+    public async sync() {
+        if (!this.initialised) {
+            let result = await this.query("user/sync");
+            this.currentUser = result.data;
+            this.initialised = true;
+        }
     }
 }

@@ -47,6 +47,7 @@ namespace Fastnet.Webframe.Web2
                 case FactoryName.DonWhillansHut:
                     services.AddDbContext<BookingDataContext>(o => o.UseSqlServer(config.GetConnectionString("DefaultConnection")));
                     services.AddTransient<IMemberFactory, DWHMemberFactory>();
+                    services.AddTransient<BMCApiClient, BMCApiClient>();
                     //services.AddTransient<IMembershipControllerHelper, DWHMembershipControllerHelper>();
                     break;
                 default:

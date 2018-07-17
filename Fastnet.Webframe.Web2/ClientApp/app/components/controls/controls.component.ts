@@ -43,14 +43,6 @@ export class PropertyValidatorAsync {
 }
 
 export class ControlBase implements ControlValueAccessor, AfterViewInit {
-    //        let cs = new ControlState();
-    //        cs.value = this.value;
-    //        //console.log(`calling property validator using route 2 with ${JSON.stringify(cs)}`);
-    //        return await this.validator.validator(cs);
-    //        //console.log(`${JSON.stringify(this.vr)}`);
-    //    }
-    //    return new Promise<ValidationResult>((resolve) => resolve(new ValidationResult()));
-    //}
     private static allControls: Dictionary<ControlBase> = new Dictionary<ControlBase>();
     private trace: boolean = false;
     private _disabled: boolean = false;
@@ -79,9 +71,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         }
     }
     constructor() {
-        //if (!ControlBase.allControls) {
-        //    ControlBase.allControls = new Dictionary<ControlBase>();
-        //}
+
     }
     ngAfterViewInit(): void {
         if (ControlBase.allControls.containsKey(this.name)) {
@@ -155,17 +145,8 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         //console.log(`vr not found`);
         return false;
     }
-    //private async validate(): Promise<ValidationResult> {
-    //    if (this.validator) {
-    //        let cs = new ControlState();
-    //        cs.value = this.value;
-    //        //console.log(`calling property validator using route 2 with ${JSON.stringify(cs)}`);
-    //        return await this.validator.validator(cs);
-    //        //console.log(`${JSON.stringify(this.vr)}`);
-    //    }
-    //    return new Promise<ValidationResult>((resolve) => resolve(new ValidationResult()));
-    //}
-    private validate2(): Promise<ValidationResult> {
+
+    private validate(): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             if (this.validator) {
                 let cs = new ControlState();
@@ -180,25 +161,9 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
             }
         });
     }
-    ///**
-    // * validate all the controls in the QueryList provided
-    // * @param controls - pass a list of controls obtained using ViewChildren
-    // */
-    //static async validateAll(controls: QueryList<ControlBase>): Promise<boolean> {
-    //    let invalidCount = 0;
-    //    console.log(`control count is ${controls.length}`);
-    //    let i = 0;
-    //    controls.forEach(async c => {            
-    //        c.vr = await c.validate();
-    //        console.log(`control ${++i}/${controls.length} validated`);
-    //        if (!c.vr.valid) {
-    //            invalidCount++;
-    //        }
-    //        //console.log(`found ${JSON.stringify(c)}`);
-    //    });
-    //    console.log(`control invalid count is  ${invalidCount}`);
-    //    return new Promise<boolean>((resolve) => resolve(invalidCount === 0));
-    //}
+    private reset() {
+        this.vr = new ValidationResult();
+    }
     /**
      * returns a count of invalid controls 
      */
@@ -210,7 +175,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         let invalidControls: ControlBase[] = [];
         let promises: Promise<ValidationResult>[] = [];
         for (let c of arr) {
-            await c.validate2();
+            await c.validate();
             if (!c.vr.valid) {
                 invalidControls.push(c);
                 invalidCount++;
@@ -218,6 +183,15 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         }
         //console.log(`all promises complete`);
         return invalidControls;
+    }
+    /**
+     * resets all controls
+     */
+    static resetAll() {
+        let arr = ControlBase.allControls.values();
+        for (let c of arr) {
+            c.reset();
+        }
     }
     static focus(name: string) {
         if (ControlBase.allControls.containsKey(name)) {

@@ -1,6 +1,8 @@
 ﻿//using Fastnet.Web.Common;
+using Fastnet.Core.Web;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -16,6 +18,9 @@ namespace Fastnet.Webframe.Web2
     {
         IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members);
         UserCredentialsDTO ToUserCredentialsDTO(Member member, IEnumerable<string> groups);
+        Member CreateNew(HttpRequest request);
+        Task<(bool success, string message)> ValidateProperty(string name, string[] data);
+        void AssignGroups(Member m);
     }
     public class MemberFactory : IMemberFactory
     {
@@ -27,18 +32,18 @@ namespace Fastnet.Webframe.Web2
             this.options = options.Value;
             this.coreDataContext = coreDataContext;
         }
-        protected virtual Member CreateMemberInstance()
-        {
-            return new Member();
-        }
-        protected virtual void Fill(Member member, string id, string emailAddress, string firstName, string lastName)
-        {
-            member.Id = id;
-            member.EmailAddress = emailAddress;
-            member.FirstName = firstName;
-            member.LastName = lastName;
-            member.CreationDate = DateTime.UtcNow;
-        }
+        //protected virtual Member CreateMemberInstance()
+        //{
+        //    return new Member();
+        //}
+        //protected virtual void Fill(Member member, string id, string emailAddress, string firstName, string lastName)
+        //{
+        //    member.Id = id;
+        //    member.EmailAddress = emailAddress;
+        //    member.FirstName = firstName;
+        //    member.LastName = lastName;
+        //    member.CreationDate = DateTime.UtcNow;
+        //}
         public virtual IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members)
         {
             return members.Select(x => x.ToDTO());
@@ -48,28 +53,35 @@ namespace Fastnet.Webframe.Web2
             var dto = member.ToDTO();
             return new UserCredentialsDTO { Member = dto, Groups = groups };
         }
-        public virtual Member CreateNew(string id, dynamic data, object additionalData)
+        public virtual Member CreateNew(HttpRequest request)
         {
-            Member member = CreateMemberInstance();
+            var dto = request.FromBody<MemberDTO>();
+            var m = dto.CreateMember();
+            //Member member = CreateMemberInstance();
 
-            string emailAddress = data.emailAddress;
-            //string password = data.password;
-            string firstName = data.firstName;
-            string lastName = data.lastName;
-            Fill(member, id, emailAddress, firstName, lastName);
-            return member;
+            //string emailAddress = data.emailAddress;
+            ////string password = data.password;
+            //string firstName = data.firstName;
+            //string lastName = data.lastName;
+            //Fill(member, id, emailAddress, firstName, lastName);
+            return m;
+        }
+        public virtual Task<(bool, string)> ValidateProperty(string name, string[] data)
+        {
+            return Task.FromResult((false, "Property not supported"));
         }
         public virtual Member Find(CoreDataContext ctx, string id)
         {
             return ctx.Members.Find(id);// as Member;
         }
-        public async virtual Task<ExpandoObject> ValidateRegistration(dynamic data)
-        {
-            dynamic result = new ExpandoObject();
-            result.Success = true;
-            result.Error = "";
-            return await Task.FromResult(result);
-        }
+        //[Obsolete]
+        //public async virtual Task<ExpandoObject> ValidateRegistration(dynamic data)
+        //{
+        //    dynamic result = new ExpandoObject();
+        //    result.Success = true;
+        //    result.Error = "";
+        //    return await Task.FromResult(result);
+        //}
         public virtual void AssignGroups(Member member)
         {
             var allMembers = coreDataContext.GetSystemGroup(SystemGroups.AllMembers);

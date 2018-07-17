@@ -10,15 +10,25 @@ namespace Fastnet.Webframe.Web2
 {
     public static partial class dtoExtensions
     {
-        //public static DWHMemberDTO ToDWHMemberDTO(this DWHMember member, BookingDataContext bdb)
+        public static DWHMember CreateMember(this DWHMemberDTO dto)
+        {
+            var m = new DWHMember();
+            FromMemberDTO(dto, m);
+            m.BMCMembership = dto.BMCMembership;
+            dto.Organisation = dto.Organisation;
+            m.BMCMembershipIsValid = !string.IsNullOrWhiteSpace(m.BMCMembership);
+            if(m.BMCMembershipIsValid)
+            {
+                m.BMCMembershipValidatedOn = DateTime.UtcNow;
+            }
+            return m;
+        }
         public static DWHMemberDTO ToDTO(this DWHMember member, BookingDataContext bdb)
         {
-            //var dto = ToMemberDTO<DWHMemberDTO>(member);
             var dto = new DWHMemberDTO();
             ToMemberDTO(dto, member);
             dto.BMCMembership = member.BMCMembership;
             dto.Organisation = member.Organisation;
-            //var bdb = sp.GetService<BookingDataContext>();
             if(bdb != null)
             {
                 var bookings = bdb.Bookings.Where(x => x.MemberId == member.Id);

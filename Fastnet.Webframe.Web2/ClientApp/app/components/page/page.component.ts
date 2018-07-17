@@ -33,6 +33,25 @@ export class PageComponent {
             this.loadPage();
         }
     }
+    //onClick(e: any) {
+    //    console.log(`tag is ${e.target.tagName}`);
+    //    if (e.target.tagName === "A") {
+    //        let url = e.target.attributes["href"];
+    //        if (url) {
+    //            switch (url.value.toLocaleLowerCase()) {
+    //                case "membership":
+    //                    //this.routeTo(e, "membership");
+    //                    break;
+    //            }
+    //        }
+    //    }
+    //}
+    //private routeTo(e: any, routeName: string) {
+    //    console.log(`routing to ${routeName}`);
+    //    e.stopPropagation();
+    //    e.preventDefault();
+    //    this.router.navigate([routeName]);
+    //}
     private async loadPage() {
         let r = await this.pageService.getPage(<number>this.pageId);
         if (r !== null) {

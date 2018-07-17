@@ -4,6 +4,7 @@ import { Router, Routes, Route } from '@angular/router';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 //import { ConfigService } from '../shared/config.service';
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
+import { AuthenticationService } from '../authentication/authentication.service';
 declare var getCustomisation: any;
 
 @Component({
@@ -12,18 +13,22 @@ declare var getCustomisation: any;
     styleUrls: ['../../styles/webframe.scss', './app.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     private customisation: ClientCustomisation;
-    constructor(private router: Router, private dialogService: ModalDialogService) {
+    constructor(private router: Router,
+        private authenticationService: AuthenticationService,
+        private dialogService: ModalDialogService) {
         this.customisation = <ClientCustomisation>getCustomisation();
         console.log(`AppComponent constructor(): for factory ${FactoryName[this.customisation.factory]}`);
         this.loadCustomCss();
         for (let rr of this.customisation.routeRedirections) {
-            //console.log(`${rr.fromRoute} to ${rr.toRoute}`);
             this.redirect(rr.fromRoute, rr.toRoute);
         }
     }
-
+    async ngOnInit() {
+        console.log(`AppComponent constructor(): ngOnInit`);
+        //await this.authenticationService.sync();
+    }
     private loadCustomCss() {
         // I can't load this css in the normal way using a link tag in the
         // _Layout.cshtml because all the remain styles are created as <style> elements by the angular environment

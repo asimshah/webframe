@@ -1,0 +1,65 @@
+﻿<div class="content-history">
+    <div class="report-title">Content History</div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th><div class="Name">Folder</div></th>
+                <th>By</th>
+
+                <th>Property</th>
+                <th>Old</th>
+                <th>New</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#data}}
+            <tr>
+                <td  data-order="{{RecordedOnUnix}}"><div class="recordedOn">{{RecordedOnString}}</div></td>
+                <td><div class="actionName">{{ActionName}}</div></td>
+                <td><div class="Name">{{Folder}}</div></td>
+                <td><div class="actionBy">{{ActionBy}}</div></td>
+                {{#IsModification}}
+                <td  class="page-url">{{Url}}</td>
+                <!--<td><div class="propertyChanged">{{PropertyChanged}}</div></td>-->
+                <td class="hidden"><div class="oldValue"></div></td>
+                <td class="hidden"><div class="newValue"></div></td>
+                {{/IsModification}}
+                {{#IsCollectionChanged}}
+                <td><div class="propertyChanged"></div></td>
+                {{#IsAddition}}
+                <td><div class="oldValue"></div></td>
+                <td>
+                    <div class="newValue">
+                        <span>View:</span>
+                        <span>{{View}}</span>
+                        <span>Edit:</span>
+                        <span>{{Edit}}</span>
+                    </div>
+                </td>
+                {{/IsAddition}}
+                {{^IsAddition}}
+                <td>
+                    <div class="oldValue">
+                        <span>View:</span>
+                        <span>{{View}}</span>
+                        <span>Edit:</span>
+                        <span>{{Edit}}</span>
+                    </div>
+                </td>
+                <td><div class="newValue"></div></td>
+                {{/IsAddition}}
+                {{/IsCollectionChanged}}
+                {{^IsModification}}
+                {{^IsCollectionChanged}}
+                <td><div class="propertyChanged"></div></td>
+                <td><div class="oldValue"></div></td>
+                <td><div class="newValue"></div></td>
+                {{/IsCollectionChanged}}
+                {{/IsModification}}
+            </tr>
+            {{/data}}
+        </tbody>
+    </table>
+</div>

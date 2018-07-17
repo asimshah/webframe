@@ -15,7 +15,7 @@ class DataResult {
 
 export abstract class BaseService {
     private baseUrl: string | null;
-    private initialised: boolean = false;
+    //private initialised: boolean = false;
     constructor(protected http: Http) {
         //console.log(`BaseService(): ${location.protocol}://${location.host}`);
         this.baseUrl = null;

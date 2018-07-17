@@ -34,18 +34,19 @@
                     <div>{{getMemberFullName(member)}}</div>
                 </div>
                 <div class="form-body">
-                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
+                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress" [validator]="validators.item('emailAddress')"></email-input>
                     <div *ngIf="member.isAdministrator === false">
                         <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
                         <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
-                        <text-input label="Password" name="password" [(ngModel)]="member.password"></text-input>
+                        <text-input *ngIf="memberIsNew" label="Password" name="password" [(ngModel)]="member.password"></text-input>
                         <text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
-                        <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership"></text-input>
+                        <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership" [validator]="validators.item('bmcMembership')"></text-input>
                         <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled"></bool-input>
                     </div>
                     <div *ngIf="member.isAdministrator === false && (member.pastBookingCount + member.futureBookingCount) > 0" class="annotation">
-                        <span *ngIf="member.futureBookingCount > 0">This member has a total of {{member.pastBookingCount + member.futureBookingCount}} booking(s) of which {{member.pastBookingCount}} are in the past.</span>
-                        <span *ngIf="member.futureBookingCount === 0">This member has a total of {{member.pastBookingCount}} booking(s) which are all in the past.</span>
+                        <span>{{getBookingInformation()}}</span>
+                        <!--<span *ngIf="member.futureBookingCount > 0">This member has a total of {{member.pastBookingCount + member.futureBookingCount}} booking(s) of which {{member.pastBookingCount}} are in the past.</span>
+                <span *ngIf="member.futureBookingCount === 0">This member has a total of {{member.pastBookingCount}} booking(s) which are all in the past.</span>-->
                     </div>
                     <div class="annotation no-space">
                         <span>Created: {{member.creationDateFormatted}}</span>
@@ -59,16 +60,17 @@
                 <div class="command-buttons align-at-ends">
                     <div *ngIf="member.isAdministrator === false">
                         <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning">Delete Member</button>
-                        <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)"  class="secondary">Send Activation Email</button>
-                        <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)"  class="secondary">Send Password Reset</button>
+                        <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)" class="secondary">Send Activation Email</button>
+                        <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary">Send Password Reset</button>
                     </div>
                     <div>
-                        <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" >Save</button>
+                        <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" (click)="onSaveClick()">Save</button>
                         <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelClick()">Cancel</button>
                     </div>
                 </div>
             </div>
-            <div>{{debug}}</div>
+            <div>memberIsNew: {{ memberIsNew}}</div>
+            <div>{{ member | json}}</div>
         </div>
     </div>
     <div class="group-app-panel hidden" [ngClass]="{hidden: !groupMode}">
@@ -78,6 +80,7 @@
         </div>
     </div>
 </div>
+
 <modal-dialog id="message-box">
     <div class="modal-overlay">
         <div class="modal-container">
