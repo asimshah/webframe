@@ -69,6 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fastnet.webframe.BookingData2\Fastnet.Webframe.BookingData2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.Common2\Fastnet.Webframe.Common2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.CoreData2\Fastnet.Webframe.CoreData2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.IdentityData2\Fastnet.Webframe.IdentityData2.csproj" />

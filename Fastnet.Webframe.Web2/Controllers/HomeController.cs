@@ -19,7 +19,7 @@ namespace Fastnet.Webframe.Web2.Controllers
     {
 
         private readonly SignInManager<ApplicationUser> signInManager;
-        private readonly ILogger log;
+        //private readonly ILogger log;
         //private readonly CoreDataContext coreDataContext;
         private readonly WebframeOptions webframeOptions;
         private readonly CustomisationOptions customisationOptions;
@@ -30,7 +30,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             this.signInManager = signInManager;
             this.contentAssistant = ca;
-            this.log = logger;
+            //this.log = logger;
             this.webframeOptions = webframeOptions.Value;
             this.customisationOptions = customisation.Value;
         }

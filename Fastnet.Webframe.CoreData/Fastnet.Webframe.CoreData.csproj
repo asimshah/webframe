@@ -228,14 +228,6 @@
       <Project>{354f79dd-7aa1-43d5-a482-da1b1f9c96cc}</Project>
       <Name>Fastnet.Webframe.BookingData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Fastnet.Webframe.IdentityData\Fastnet.Webframe.IdentityData.csproj">
-      <Project>{080f0a59-2af8-49ad-98bf-e506bec85406}</Project>
-      <Name>Fastnet.Webframe.IdentityData</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Fastnet.Webframe.LegacyData\Fastnet.Webframe.LegacyData.csproj">
-      <Project>{9c5cebcf-d6f3-460b-8751-9651ab571fcf}</Project>
-      <Name>Fastnet.Webframe.LegacyData</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201512051345063_InitialCreate.resx">

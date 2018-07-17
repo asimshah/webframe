@@ -1714,10 +1714,6 @@
       <Project>{080f0a59-2af8-49ad-98bf-e506bec85406}</Project>
       <Name>Fastnet.Webframe.IdentityData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Fastnet.Webframe.SagePay\Fastnet.Webframe.SagePay.csproj">
-      <Project>{af217943-5b82-4006-bbf9-82aade117037}</Project>
-      <Name>Fastnet.Webframe.SagePay</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\membership\Scripts\membership.js" />
@@ -1830,7 +1826,7 @@
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
-      <UserProperties test_1json__JSONSchema="customisation.schema.json" customisation_1dwh_1json__JSONSchema="customisation.schema.json" />
+      <UserProperties customisation_1dwh_1json__JSONSchema="customisation.schema.json" test_1json__JSONSchema="customisation.schema.json" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

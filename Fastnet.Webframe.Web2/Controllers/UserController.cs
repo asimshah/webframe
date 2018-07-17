@@ -22,14 +22,14 @@ namespace Fastnet.Webframe.Web2.Controllers
     [Route("user")]
     public class UserController : BaseController
     {
-        private readonly ILogger log;
+        //private readonly ILogger log;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IMemberFactory memberfactory;
         public UserController(IHostingEnvironment env, UserManager<ApplicationUser> userManager,
             IMemberFactory mch, SignInManager<ApplicationUser> signInManager,
             CoreDataContext coreDataContext, ILogger<UserController> logger) : base(logger, env, userManager, coreDataContext)
         {
-            this.log = logger;
+            //this.log = logger;
             this.signInManager = signInManager;
             this.memberfactory = mch;
         }

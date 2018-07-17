@@ -22,13 +22,13 @@ namespace Fastnet.Webframe.Web2.Controllers
     [Route("pageapi")]
     public class PageController : BaseController
     {
-        private readonly ILogger log;
+        //private readonly ILogger log;
         private readonly ContentAssistant contentAssistant;
         private readonly IHostingEnvironment environment;
         public PageController(ILogger<PageController> logger, ContentAssistant contentAssistant,
             IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager, coreDataContext)
         {
-            this.log = logger;
+            //this.log = logger;
             this.environment = environment;
             this.contentAssistant = contentAssistant;
             coreDataContext.ChangeTracker.AutoDetectChangesEnabled = false;

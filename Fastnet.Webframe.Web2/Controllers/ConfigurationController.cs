@@ -19,10 +19,10 @@ namespace Fastnet.Webframe.Web2.Controllers
     public class ConfigurationController : BaseController
     {
         private readonly CustomisationOptions customisationOptions;
-        private readonly ILogger log;
+        //private readonly ILogger log;
         public ConfigurationController(ILogger<ConfigurationController> logger, IOptions<CustomisationOptions> customOptions, IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager, coreDataContext)
         {
-            this.log = logger;
+            //this.log = logger;
             this.customisationOptions = customOptions.Value;
         }
         [HttpGet("get/configuration")]
