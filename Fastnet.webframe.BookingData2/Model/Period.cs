@@ -22,11 +22,11 @@ namespace Fastnet.Webframe.BookingData2
             //Interval = new LongSpan();
         }
         public long PeriodId { get; set; }
-        public long ParentPeriod_PeriodId { get; set; }
+
         [ForeignKey("ParentPeriod_PeriodId")]
         public Period ParentPeriod { get; set; }
         public PeriodType PeriodType { get; set; }
-        public long PriceStructure_PriceStructureId { get; set; }
+
         [ForeignKey("PriceStructure_PriceStructureId")]
         public PriceStructure PriceStructure { get; set; }
         public DateTime? StartDate { get; set; } // must be non-null if PeriodType == Fixed
@@ -98,6 +98,9 @@ namespace Fastnet.Webframe.BookingData2
             return ts;
         }
         public ICollection<Period> Subperiods { get; set; }
+        internal long? PriceStructure_PriceStructureId { get; set; }
+        internal long? ParentPeriod_PeriodId { get; set; }
+
         [NotMapped]
         public LongSpan Interval // if PeriodType == Rolling, if LongSpan is all zeroes then thsi is an indefinite period
         {

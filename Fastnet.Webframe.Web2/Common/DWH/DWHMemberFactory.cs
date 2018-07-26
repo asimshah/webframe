@@ -1,11 +1,13 @@
 ﻿//using Fastnet.Common;
 //using Fastnet.EventSystem;
 //using Fastnet.Webframe.BookingData;
+using Fastnet.Core;
 using Fastnet.Core.Web;
 using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -116,15 +118,11 @@ namespace Fastnet.Webframe.Web2
         private readonly BMCApiClient bmcApi;
         public DWHMemberFactory(ILogger<DWHMemberFactory> log, IOptions<CustomisationOptions> options,
             CoreDataContext coreDataContext,BMCApiClient bmcApi,
-            BookingDataContext bookingDataContext) : base(log, options, coreDataContext)
+            BookingDataContext bookingDataContext) : base(log, options/*, coreDataContext*/)
         {
             this.bookingDataContext = bookingDataContext;
             this.bmcApi = bmcApi;
         }
-        //protected override Member CreateMemberInstance()
-        //{
-        //    return new DWHMember();
-        //}
         public override IEnumerable<MemberDTO> ToDTO(IEnumerable<Member> members)
         {
             return members.Cast<DWHMember>().Select(x => x.ToDTO(bookingDataContext));
@@ -138,20 +136,6 @@ namespace Fastnet.Webframe.Web2
         {
             var dto = request.FromBody<DWHMemberDTO>();
             var m = dto.CreateMember();
-            //DWHMember m = CreateMemberInstance() as DWHMember;
-            //dynamic vr = additionalData;
-
-            //string emailAddress = data.emailAddress;
-            //string firstName = data.firstName;
-            //string lastName = data.lastName;
-            //Fill(m, id, emailAddress, firstName, lastName);
-            //m.BMCMembership = ExtractBmcMembership(data);// bmc.Trim();
-            //m.Organisation = data.organisation?.Value ?? "";
-            //if (vr.Success && !string.IsNullOrWhiteSpace(m.BMCMembership))
-            //{
-            //    m.BMCMembershipIsValid = true;
-            //    m.BMCMembershipValidatedOn = DateTime.Now;
-            //}
             return m;
         }
         public override async Task<(bool, string)> ValidateProperty(string name, string[] data)
@@ -164,30 +148,74 @@ namespace Fastnet.Webframe.Web2
             }
             return (false, "Property not supported");
         }
-        public override Member Find(CoreDataContext ctx, string id)
+        public override MemberDTO GetMemberDTO(HttpRequest request)
         {
-            return ctx.Members.Find(id) as DWHMember;
+            return request.FromBody<DWHMemberDTO>();
         }
-        public override void AssignGroups(Member m)
+        public override async Task<Member> GetMemberAsync(MemberDTO dto)
         {
-            string addToGroup = null;
-            string removeFromGroup = null;
+            return await coreDataContext.DWHMembers.FindAsync(dto.Id);
+        }
+        public override async Task<Member> GetMemberAsync(HttpRequest request)
+        {
+            var dto = GetMemberDTO(request);
+            var m = await GetMemberAsync(dto);
+            return m;
+        }
+        public override async Task<Member> GetMemberAsync(string emailAddress)
+        {
+            return await coreDataContext.DWHMembers.SingleAsync(x => string.Compare(x.EmailAddress, emailAddress, true) == 0);
+        }
+        public override void DeleteMember(Member m)
+        {
+            var dwhMember = m as DWHMember;
+            var bookings = bookingDataContext.Bookings
+                .Include(x => x.Emails)
+                .Include(x => x.BookingAccomodations)
+                .Where(x => x.MemberId == dwhMember.Id);
+            var accomodations = bookings.SelectMany(x => x.BookingAccomodations);
+            var emails = bookings.SelectMany(x => x.Emails);
+            bookingDataContext.Emails.RemoveRange(emails);
+            log.Information($"Member {m.Fullname}, {m.EmailAddress}, {emails.Count()} booking emails deleted");
+            bookingDataContext.BookingAccomodations.RemoveRange(accomodations);
+            log.Information($"Member {m.Fullname}, {m.EmailAddress}, {accomodations.Count()} booking details deleted");
+            bookingDataContext.Bookings.RemoveRange(bookings);
+            log.Information($"Member {m.Fullname}, {m.EmailAddress}, {bookings.Count()} bookings deleted");
+            base.DeleteMember(m);
+        }
+        public override async Task UpdateMember(Member m, MemberDTO dto, string actionBy)
+        {
+            var dwhm = m as DWHMember;
+            var dwhdto = dto as DWHMemberDTO;
+            dwhm.Organisation = dwhdto.Organisation;
+            dwhm.BMCMembership = dwhdto.BMCMembership;
+            await base.UpdateMember(m, dto, actionBy);
+        }
+        //public override Member Find(CoreDataContext ctx, string id)
+        //{
+        //    return ctx.Members.Find(id) as DWHMember;
+        //}
+        public override async Task AssignGroups(Member m, string actionBy)
+        {
             DWHMember member = m as DWHMember;
-            base.AssignGroups(member);
+            await base.AssignGroups(member, actionBy);
             var para = bookingDataContext.Parameters.OfType<DWHParameter>().Single();
-            addToGroup = member.BMCMembershipIsValid ? para.BMCMembers : para.NonBMCMembers;
-            removeFromGroup = member.BMCMembershipIsValid ? para.NonBMCMembers : para.BMCMembers;
-            Group add = coreDataContext.GetGroup(addToGroup);// Group.GetGroup(addToGroup);
-            Group remove = coreDataContext.GetGroup(removeFromGroup);// Group.GetGroup(removeFromGroup);
+            string addToGroup = member.HasBmcMembership ? para.BMCMembers : para.NonBMCMembers;
+            string removeFromGroup = member.HasBmcMembership ? para.NonBMCMembers : para.BMCMembers;
+            Group add = coreDataContext.GetGroup(addToGroup);
+            Group remove = coreDataContext.GetGroup(removeFromGroup);
             if (add.GroupMembers.Select(x => x.Member).SingleOrDefault(x => x.Id == member.Id) == null)
             {
                 add.GroupMembers.Add(new GroupMember { Group = add, Member = member });
-                //add.Members.Add(member);
+                await coreDataContext.RecordChanges(add, actionBy, GroupAction.GroupActionTypes.MemberAddition, member);
+                log.Debug($"Member {member.Fullname}, {member.EmailAddress} added to group {add.Name}");
             }
             if (remove.GroupMembers.Select(x => x.Member).SingleOrDefault(x => x.Id == member.Id) != null)
             {
                 var gm = remove.GroupMembers.Single(x => x.MemberId == member.Id);
                 remove.GroupMembers.Remove(gm);
+                await coreDataContext.RecordChanges(gm.Group, actionBy, GroupAction.GroupActionTypes.MemberRemoval, member);
+                log.Debug($"Member {member.Fullname}, {member.EmailAddress} removed from group {gm.Group.Name}");
             }
         }
         //[Obsolete]
@@ -280,7 +308,6 @@ namespace Fastnet.Webframe.Web2
         }
         private bool BMCNumberInUse(string bMCMembership)
         {
-            //var ctx = Core.GetDataContext();
             return coreDataContext.Members.OfType<DWHMember>().Any(x => string.Compare(bMCMembership, x.BMCMembership, true) == 0);
         }
     }

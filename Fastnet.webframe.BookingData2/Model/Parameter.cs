@@ -16,13 +16,9 @@ namespace Fastnet.Webframe.BookingData2
         public DateTime? DateToday { get; set; }
         public bool TestMode { get; set; }
         public string BookingSecretaryEmailAddress { get; set; }
-        public virtual Period ForwardBookingPeriod { get; set; }
+        [ForeignKey("ForwardBookingPeriod_PeriodId")]
+        public Period ForwardBookingPeriod { get; set; }
         public string TermsAndConditionsUrl { get; set; }
-        //public int EntryCodeBridgePeriod { get; set; }
-        //public int EntryCodeNotificatioNPeriod { get; set; }
+        internal long? ForwardBookingPeriod_PeriodId { get; set; }
     }
-    //public class Parameter : ParameterBase
-    //{
-
-    //}
 }

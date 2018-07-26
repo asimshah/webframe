@@ -54,10 +54,13 @@ namespace Fastnet.Webframe.CoreData2
     }
     public class DataEntityActionBase : ActionBase
     {
+        [Column("ActionBy")]
         public string ActionBy { get; set; }
-
+        [Column("PropertyChanged")]
         public string PropertyChanged { get; set; } // if Action == Modification
+        [Column("OldValue")]
         public string OldValue { get; set; }
+        [Column("NewValue")]
         public string NewValue { get; set; }
 
 
@@ -78,6 +81,7 @@ namespace Fastnet.Webframe.CoreData2
     {
         public string SessionId { get; set; }
         public string Browser { get; set; }
+        [Column("Version1")]
         public string Version { get; set; }
         public string IpAddress { get; set; }
         public int ScreenWidth { get; set; }
@@ -109,6 +113,7 @@ namespace Fastnet.Webframe.CoreData2
             [Description("Restriction Removed")]
             RestrictionRemoved
         }
+        [Column("Action")]
         public EditingActionTypes Action { get; set; }
 
         public string Folder { get; set; }
@@ -163,7 +168,9 @@ namespace Fastnet.Webframe.CoreData2
             MemberRemoval
         }
         public string GroupId { get; set; }
+        [Column("FullName")]
         public string FullName { get; set; }
+        [Column("Action1")]
         public GroupActionTypes Action { get; set; }
         public string MemberEmailAddress { get; set; }
         [NotMapped]
@@ -195,8 +202,10 @@ namespace Fastnet.Webframe.CoreData2
             Deletion = 64
         }
         public string MemberId { get; set; }
+        [Column("FullName1")]
         public string FullName { get; set; }
         public string EmailAddress { get; set; }
+        [Column("Action2")]
         public MemberActionTypes Action { get; set; }
         [NotMapped]
         public bool IsModification { get { return Action == MemberActionTypes.Modification; } }

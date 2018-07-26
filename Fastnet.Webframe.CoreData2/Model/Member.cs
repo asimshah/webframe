@@ -186,74 +186,74 @@ namespace Fastnet.Webframe.CoreData2
             LastName = newLastName;
             Disabled = newDisabled;
         }
-        public void RecordChanges(string actionBy = null, MemberAction.MemberActionTypes actionType = MemberAction.MemberActionTypes.Modification)
-        {
-            //CoreDataContext DataContext = Core.GetDataContext();
-            //switch (actionType)
-            //{
-            //    default:
-            //    case MemberAction.MemberActionTypes.New:
-            //    case MemberAction.MemberActionTypes.Activation:
-            //    case MemberAction.MemberActionTypes.PasswordResetRequest:
-            //    case MemberAction.MemberActionTypes.PasswordReset:
-            //    case MemberAction.MemberActionTypes.Deactivation:
-            //    case MemberAction.MemberActionTypes.Deletion:
-            //        MemberAction ma = new MemberAction
-            //        {
-            //            MemberId = this.Id,
-            //            EmailAddress = this.EmailAddress,
-            //            FullName = this.Fullname,
-            //            ActionBy = actionBy ?? this.Fullname,
-            //            Action = actionType,
-            //        };
-            //        DataContext.Actions.Add(ma);
-            //        return;
-            //    case MemberAction.MemberActionTypes.Modification:
-            //        break;
-            //}
-            //var entry = DataContext.Entry(this);
-            //foreach (var p in entry.CurrentValues.PropertyNames)
-            //{
-            //    switch (p)
-            //    {
-            //        case "EmailAddressConfirmed":
-            //        case "ActivationCode":
-            //        case "ActivationEmailSentDate":
-            //        case "PasswordResetCode":
-            //        case "PasswordResetEmailSentDate":
-            //        case "PlainPassword":
-            //            break;
-            //        default:
-            //            try
-            //            {
-            //                if (entry.Property(p).IsModified)
-            //                {
-            //                    object ov = entry.Property(p).OriginalValue;
-            //                    object cv = entry.Property(p).CurrentValue;
-            //                    MemberAction ma = new MemberAction
-            //                    {
-            //                        MemberId = this.Id,
-            //                        EmailAddress = this.EmailAddress,
-            //                        FullName = this.Fullname,
-            //                        ActionBy = actionBy ?? this.Fullname,
-            //                        Action = actionType,// MembershipAction.MembershipActionTypes.Modification,
-            //                        PropertyChanged = p,
-            //                        OldValue = ov == null ? "<null>" : ov.ToString(),
-            //                        NewValue = cv == null ? "<null>" : cv.ToString()
-            //                    };
-            //                    DataContext.Actions.Add(ma);
-            //                }
-            //            }
-            //            catch (Exception xe)
-            //            {
-            //                //Debugger.Break();
-            //                Log.Write(xe);
-            //                throw;
-            //            }
-            //            break;
-            //    }
-            //}
-        }
+        //public void RecordChanges(string actionBy = null, MemberAction.MemberActionTypes actionType = MemberAction.MemberActionTypes.Modification)
+        //{
+        //    //CoreDataContext DataContext = Core.GetDataContext();
+        //    //switch (actionType)
+        //    //{
+        //    //    default:
+        //    //    case MemberAction.MemberActionTypes.New:
+        //    //    case MemberAction.MemberActionTypes.Activation:
+        //    //    case MemberAction.MemberActionTypes.PasswordResetRequest:
+        //    //    case MemberAction.MemberActionTypes.PasswordReset:
+        //    //    case MemberAction.MemberActionTypes.Deactivation:
+        //    //    case MemberAction.MemberActionTypes.Deletion:
+        //    //        MemberAction ma = new MemberAction
+        //    //        {
+        //    //            MemberId = this.Id,
+        //    //            EmailAddress = this.EmailAddress,
+        //    //            FullName = this.Fullname,
+        //    //            ActionBy = actionBy ?? this.Fullname,
+        //    //            Action = actionType,
+        //    //        };
+        //    //        DataContext.Actions.Add(ma);
+        //    //        return;
+        //    //    case MemberAction.MemberActionTypes.Modification:
+        //    //        break;
+        //    //}
+        //    //var entry = DataContext.Entry(this);
+        //    //foreach (var p in entry.CurrentValues.PropertyNames)
+        //    //{
+        //    //    switch (p)
+        //    //    {
+        //    //        case "EmailAddressConfirmed":
+        //    //        case "ActivationCode":
+        //    //        case "ActivationEmailSentDate":
+        //    //        case "PasswordResetCode":
+        //    //        case "PasswordResetEmailSentDate":
+        //    //        case "PlainPassword":
+        //    //            break;
+        //    //        default:
+        //    //            try
+        //    //            {
+        //    //                if (entry.Property(p).IsModified)
+        //    //                {
+        //    //                    object ov = entry.Property(p).OriginalValue;
+        //    //                    object cv = entry.Property(p).CurrentValue;
+        //    //                    MemberAction ma = new MemberAction
+        //    //                    {
+        //    //                        MemberId = this.Id,
+        //    //                        EmailAddress = this.EmailAddress,
+        //    //                        FullName = this.Fullname,
+        //    //                        ActionBy = actionBy ?? this.Fullname,
+        //    //                        Action = actionType,// MembershipAction.MembershipActionTypes.Modification,
+        //    //                        PropertyChanged = p,
+        //    //                        OldValue = ov == null ? "<null>" : ov.ToString(),
+        //    //                        NewValue = cv == null ? "<null>" : cv.ToString()
+        //    //                    };
+        //    //                    DataContext.Actions.Add(ma);
+        //    //                }
+        //    //            }
+        //    //            catch (Exception xe)
+        //    //            {
+        //    //                //Debugger.Break();
+        //    //                Log.Write(xe);
+        //    //                throw;
+        //    //            }
+        //    //            break;
+        //    //    }
+        //    //}
+        //}
         private IEnumerable<Group> GetAllGroups()
         {
             // this returns a flat list of all groups this member is in 

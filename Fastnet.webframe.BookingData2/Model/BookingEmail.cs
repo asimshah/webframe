@@ -37,7 +37,8 @@ namespace Fastnet.Webframe.BookingData2
     public class BookingEmail
     {        
         public long BookingEmailId { get; set; }
-        public virtual Booking Booking { get; set; }
+        [ForeignKey("Booking_BookingId")]
+        public Booking Booking { get; set; }
         public BookingEmailTemplates Template { get; set; }
         public BookingEmailStatus Status { get; set; }
         public DateTime UtcDueAt { get; set; } // always UTC
@@ -50,6 +51,7 @@ namespace Fastnet.Webframe.BookingData2
         [MaxLength(128)]
         public string Subject { get; set; }
         public string Body { get; set; }
+        internal long? Booking_BookingId { get; set; }
     }
     public partial class BookingDataContext
     {

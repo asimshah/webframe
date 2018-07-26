@@ -5,7 +5,9 @@ import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 //import { ConfigService } from '../shared/config.service';
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
 import { AuthenticationService } from '../authentication/authentication.service';
+import { ConfigService } from '../shared/config.service';
 declare var getCustomisation: any;
+//declare var platform: any;
 
 @Component({
     selector: 'app',
@@ -16,6 +18,7 @@ declare var getCustomisation: any;
 export class AppComponent implements OnInit {
     private customisation: ClientCustomisation;
     constructor(private router: Router,
+        private configService: ConfigService,
         private authenticationService: AuthenticationService,
         private dialogService: ModalDialogService) {
         this.customisation = <ClientCustomisation>getCustomisation();
@@ -27,6 +30,7 @@ export class AppComponent implements OnInit {
     }
     async ngOnInit() {
         console.log(`AppComponent constructor(): ngOnInit`);
+        await this.configService.postCi();
         //await this.authenticationService.sync();
     }
     private loadCustomCss() {

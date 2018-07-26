@@ -12,32 +12,28 @@ using Microsoft.Extensions.Logging;
 
 namespace Fastnet.Webframe.Web2.Controllers
 {
-    public class BaseController : Fastnet.Core.Web.Controllers.BaseController
+    public abstract class BaseController : Fastnet.Core.Web.Controllers.BaseController
     {
         protected readonly UserManager<ApplicationUser> userManager;
-        protected readonly CoreDataContext coreDataContext;
-        public BaseController(ILogger logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, env)
+        private CoreDataContext db_ctx;
+        protected abstract CoreDataContext GetCoreDataContext();
+        public BaseController(ILogger logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager/*, CoreDataContext coreDataContext*/) : base(logger, env)
         {
             this.userManager = userManager;
-            this.coreDataContext = coreDataContext;
+            
+            //this.coreDataContext = coreDataContext;
         }
-        //public bool IsAuthenticated
-        //{
-        //    get
-        //    {
-        //        return User.Identity.IsAuthenticated;
-        //    }
-        //}
         public Member GetCurrentMember()
         {
+            this.db_ctx = GetCoreDataContext();
             if(IsAuthenticated)
             {
                 var id = userManager.GetUserId(User);
-                return coreDataContext.Members.Single(x => x.Id == id);
+                return db_ctx.Members.Single(x => x.Id == id);
             }
             else
             {
-                return coreDataContext.GetAnonymousMember();
+                return db_ctx.GetAnonymousMember();
             }
         }
         public Page GetCurrentPage()
@@ -48,53 +44,23 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             this.SetPage(page);
         }
-        //public IActionResult CacheableSuccessResult(object data, params object[] args)
-        //{
-        //    var newEtag = CreateEtag(args);
-        //    var ifNoneMatch = Request.GetTypedHeaders().IfNoneMatch;
-        //    var receivedETag = ifNoneMatch?.FirstOrDefault()?.Tag.Value;
-
-        //    if (receivedETag == newEtag)
-        //    {
-        //        return StatusCode(StatusCodes.Status304NotModified);
-        //    }
-        //    Response.GetTypedHeaders().CacheControl = new CacheControlHeaderValue()
-        //    {
-        //        Public = true
-        //    };
-        //    Response.GetTypedHeaders().ETag = new EntityTagHeaderValue(newEtag);
-        //    return SuccessResult(data);
-        //}
-        //private string CreateEtag(params object[] args)
-        //{
-        //    string t = string.Empty;// string.Format("{0:x}", modified.GetHashCode());// "";
-        //    foreach (object arg in args)
-        //    {
-        //        if (arg != null)
-        //        {
-        //            t += string.Format("{0:x}", arg.GetHashCode());
-        //        }
-        //    }
-        //    string etag = "\"" + t + "\"";
-        //    return etag;
-        //}
         private void SetPage(Page page)
         {
             // store the id not the object so that we are syncornised with
             // the current datacontext
             var session = HttpContext.Session;
             session.Set("current-page", BitConverter.GetBytes( (long)page?.PageId));// page == null ? (long?)null : (long?)page.PageId;
-            //Debug.Print("Recorded page {0}", page == null ? "null" : page.PageId);
         }
         private Page GetPage()
-        {            
+        {
+            this.db_ctx = GetCoreDataContext();
             // store the id not the object so that we are syncornised with
             // the current datacontext
             var session = HttpContext.Session;
             if(session.TryGetValue("current-page", out byte[] bytes))
             {
                 long id = BitConverter.ToInt64(bytes, 0);
-                return coreDataContext.Pages.Single(p => p.PageId == id);
+                return db_ctx.Pages.Single(p => p.PageId == id);
             }
             return null;
         }

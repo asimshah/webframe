@@ -10,14 +10,15 @@ namespace Fastnet.Webframe.BookingData2
     public partial class BookingDataContext : DbContext
     {
         private CustomisationOptions customisation;
+        public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingAccomodation> BookingAccomodations { get; set; }
         public DbSet<Accomodation> AccomodationSet { get; set; }
         public DbSet<AccomodationExtra> AccomodationExtras { get; set; }
-        public DbSet<Availability> Availablities { get; set; }
+        public DbSet<Availability> Availabilities { get; set; }
         public DbSet<PriceStructure> PriceStructures { get; set; }
         public DbSet<Period> Periods { get; set; }
         public DbSet<Price> Prices { get; set; }
-        public DbSet<Booking> Bookings { get; set; }
-        public DbSet<BookingAccomodation> BookingAccomodations { get; set; }
+
         public DbSet<EntryCode> EntryCodes { get; set; }
         public DbSet<Parameter> Parameters { get; set; }
         public DbSet<DWHParameter> DWHParameters { get; set; }
@@ -31,6 +32,14 @@ namespace Fastnet.Webframe.BookingData2
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("book");
+            modelBuilder.Entity<Booking>()
+                .Property(x => x.TotalCost)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Price>()
+                .Property(x => x.Amount)
+                .HasColumnType("decimal(18,2)");
+
             modelBuilder.Entity<Accomodation>()
                 .HasIndex(c => c.Name)
                 .IsUnique();

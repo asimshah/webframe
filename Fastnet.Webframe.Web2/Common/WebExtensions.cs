@@ -1,4 +1,5 @@
-﻿using Fastnet.Core.Web;
+﻿using Fastnet.Core;
+using Fastnet.Core.Web;
 using Fastnet.Webframe.BookingData2;
 using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
@@ -40,10 +41,11 @@ namespace Fastnet.Webframe.Web2
         {
             var provider = services.BuildServiceProvider();
             var config = provider.GetRequiredService<IConfiguration>();
-            //services.AddDbContext<CoreDataContext>(options => options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
             services.Configure<CoreDataDbOptions>(config.GetSection("CoreDataDbOptions"));
+            services.Configure<MailOptions>(config.GetSection("MailOptions"));
             services.AddWebDbContext<CoreDataContext, CoreDataDbContextFactory, CoreDataDbOptions>(config, "CoreDataDbOptions");
             services.AddTransient<ContentAssistant>();
+            services.AddTransient<MailHelper>();
             var customisation = provider.GetService<IOptions<CustomisationOptions>>();
             switch(customisation.Value.Factory)
             {
@@ -51,11 +53,9 @@ namespace Fastnet.Webframe.Web2
                     services.AddDbContext<BookingDataContext>(o => o.UseSqlServer(config.GetConnectionString("DefaultConnection")));
                     services.AddTransient<IMemberFactory, DWHMemberFactory>();
                     services.AddTransient<BMCApiClient, BMCApiClient>();
-                    //services.AddTransient<IMembershipControllerHelper, DWHMembershipControllerHelper>();
                     break;
                 default:
                     services.AddTransient<IMemberFactory, MemberFactory>();
-                    //services.AddTransient<IMembershipControllerHelper, MembershipControllerHelper>();
                     break;
             }
         }

@@ -5,42 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Fastnet.Webframe.CoreData2
 {
-    public static partial class Extensions
-    {
-        public static void RecordChanges(this CoreDataContext DataContext, DirectoryGroup dg, string actionBy, RestrictionAction.EditingActionTypes actionType)
-        {
-            //Func<RestrictionAction> getNewAction = () =>
-            //{
-            //    RestrictionAction ra = new RestrictionAction
-            //    {
-            //        Action = actionType,
-            //        ActionBy = actionBy,
-            //        Folder = dg.Directory.DisplayName,
-            //        GroupName = dg.Group.Fullpath,
-            //        View = dg.ViewAllowed,
-            //        Edit = dg.EditAllowed
-            //    };
-            //    return ra;
-            //};
-            ////CoreDataContext DataContext = Core.GetDataContext();
-            //switch (actionType)
-            //{
-            //    default:
-            //        break;
-            //    case RestrictionAction.EditingActionTypes.RestrictionAdded:
-            //    case RestrictionAction.EditingActionTypes.RestrictionRemoved:
-            //        DataContext.Actions.Add(getNewAction());
-            //        break;
-            //    case RestrictionAction.EditingActionTypes.RestrictionModified:
-            //        PageAction.AddPropertyModificationActions(DataContext.Entry(this), getNewAction, (ra) =>
-            //        {
-            //            DataContext.Actions.Add(ra);
-            //        });
-
-            //        break;
-            //}
-        }
-    }
     public partial class DirectoryGroup
     {
         //[Key, Column(Order = 0)]

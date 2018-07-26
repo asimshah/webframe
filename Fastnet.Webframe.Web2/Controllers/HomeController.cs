@@ -24,15 +24,21 @@ namespace Fastnet.Webframe.Web2.Controllers
         private readonly WebframeOptions webframeOptions;
         private readonly CustomisationOptions customisationOptions;
         private readonly ContentAssistant contentAssistant;
+        private readonly CoreDataContext coreDataContext;
         public HomeController(ILogger<HomeController> logger, ContentAssistant ca,
             IOptions<WebframeOptions> webframeOptions, IOptions<CustomisationOptions> customisation, SignInManager<ApplicationUser> signInManager,
-            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager, coreDataContext)
+            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager/*, coreDataContext*/)
         {
+            this.coreDataContext = coreDataContext;
             this.signInManager = signInManager;
             this.contentAssistant = ca;
             //this.log = logger;
             this.webframeOptions = webframeOptions.Value;
             this.customisationOptions = customisation.Value;
+        }
+        protected override CoreDataContext GetCoreDataContext()
+        {
+            return this.coreDataContext;
         }
         //[Route("page/{id}")]
         //[Route("$home")]

@@ -1,5 +1,6 @@
 ﻿//using Fastnet.Common;
 using Fastnet.Core;
+using Fastnet.Webframe.Common2;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

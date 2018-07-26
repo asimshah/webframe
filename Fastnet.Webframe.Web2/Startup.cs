@@ -1,41 +1,40 @@
+using Fastnet.Core;
+using Fastnet.Core.Web;
+using Fastnet.Webframe.BookingData2;
+using Fastnet.Webframe.Common2;
+using Fastnet.Webframe.CoreData2;
 using Fastnet.Webframe.IdentityData2;
 using Fastnet.Webframe.Web2.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using System.Threading.Tasks;
-using Fastnet.Webframe.CoreData2;
 //using Fastnet.Webframe.Web2.Common;
 using Microsoft.Extensions.Options;
-using Fastnet.Webframe.Common2;
+using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
-using Fastnet.Webframe.BookingData2;
-using Microsoft.AspNetCore.ResponseCaching;
-using System.Reflection;
+using System.Diagnostics;
+using System.Linq;
 using System.Net;
-using Fastnet.Core;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace Fastnet.Webframe.Web2
 {
     public class Startup
     {
         private const string SecretKey = "4B6ECC1C-D676-4132-9FC6-04AF278A3937"; // todo: get this from somewhere secure
+        private readonly string version;
         private readonly SymmetricSecurityKey _signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(SecretKey));
         private readonly ILogger log;
         private readonly IHostingEnvironment hostingEnvironment;
@@ -47,7 +46,7 @@ namespace Fastnet.Webframe.Web2
             appRoot = env.ContentRootPath;
             Configuration = configuration;
             //var version = Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationVersion;
-            var version = typeof(Startup).GetTypeInfo().Assembly
+            version = typeof(Startup).GetTypeInfo().Assembly
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
             log.LogInformation($"Webframe Site {version} started");
         }
@@ -58,17 +57,29 @@ namespace Fastnet.Webframe.Web2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddResponseCaching();
+            services.AddSession();
             services.AddOptions();
-            services.Configure<WebframeOptions>(Configuration.GetSection("WebframeOptions"));
+            //services.Configure<WebframeOptions>(Configuration.GetSection("WebframeOptions"));
             services.Configure<CustomisationOptions>(Configuration.GetSection("CustomisationOptions"));
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
+
+            var provider = services.BuildServiceProvider();
+            var customisation = provider.GetService<IOptions<CustomisationOptions>>().Value;
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection"));
+            });
+
+            services.AddWebframeServices();
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>((options) =>
             {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = customisation.PasswordMinimumLength;// 8;
+                options.Password.RequireLowercase = customisation.PasswordRequireLowercase;// false;
+                options.Password.RequireUppercase = customisation.PasswordRequireUppercase;// true;
+                options.Password.RequireNonAlphanumeric = customisation.PasswordRequireNonAlphanumeric;// false;
+                options.Password.RequireDigit = customisation.PasswordRequireDigit;//
                 options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -120,9 +131,10 @@ namespace Fastnet.Webframe.Web2
                 };
             });
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IEmailSender, EmailSender>();
 
-            services.AddWebframeServices();
+
 
             services.AddMvc();
         }
@@ -130,7 +142,7 @@ namespace Fastnet.Webframe.Web2
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<CustomisationOptions> options,
             IServiceProvider serviceProvider,
-            ApplicationDbContext appDb, CoreDataContext coreDataContext)
+            ApplicationDbContext appDb, CoreDataContext coreDataContext, BookingDataContext bookingDb)
         {
             if (env.IsDevelopment())
             {
@@ -144,6 +156,8 @@ namespace Fastnet.Webframe.Web2
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            app.UseSession();
+
             app.UseResponseCaching();
 
             app.UseStaticFiles();
@@ -166,7 +180,10 @@ namespace Fastnet.Webframe.Web2
                 {
                     var db = scope.ServiceProvider.GetService<CoreDataContext>();
                     var log = scope.ServiceProvider.GetService<ILogger<CoreDataDbInitialiser>>();
-                    CoreDataDbInitialiser.Initialise(db, log);
+                    CoreDataDbInitialiser.Initialise(db, log, hostingEnvironment);
+                    var aa = new ApplicationAction { Version = version, Remark = $"Webframe startup, machine {Environment.MachineName}, process {System.Diagnostics.Process.GetCurrentProcess().Id}" };
+                    db.Actions.Add(aa);
+                    db.SaveChanges();
                 }
                 catch (Exception xe)
                 {
@@ -187,7 +204,10 @@ namespace Fastnet.Webframe.Web2
                 //DebugSomeBookingDataStats(bookingDataContext);
             }
             DebugSomeCoreDataStats(coreDataContext, options.Value);
-
+            if (options.Value.bookingApp.enabled)
+            {
+                DebugSomeBookingDataStats(bookingDb);
+            }
         }
 
         private void CreateRolesForUsers(CoreDataContext coreDataContext, IServiceProvider serviceProvider)
@@ -241,17 +261,23 @@ namespace Fastnet.Webframe.Web2
         }
         private void DebugSomeBookingDataStats(BookingDataContext ctx)
         {
-            log.LogInformation($"booking Count: {ctx.Bookings.Count()}");
-            log.LogInformation($"emails Count: {ctx.Emails.Count()}");
-            log.LogInformation($"entry code Count: {ctx.EntryCodes.Count()}");
+            log.Information($"booking Count: {ctx.Bookings.Count()}");
+            log.Information($"emails Count: {ctx.Emails.Count()}");
+            log.Information($"entry code Count: {ctx.EntryCodes.Count()}");
+            log.Information($"accomodation count: {ctx.AccomodationSet.Count()}");
+            log.Information($"availability count: {ctx.Availabilities.Count()}");
+            log.Information($"email template count: {ctx.EmailTemplates.Count()}");
+            log.Information($"parameter count: {ctx.DWHParameters.Count()}");
+            log.Information($"period count: {ctx.Periods.Count()}");
+            log.Information($"prices count: {ctx.Prices.Count()}");
         }
 
         private void DebugSomeCoreDataStats(CoreDataContext ctx, CustomisationOptions options)
         {
-            log.LogInformation($"page Count: {ctx.Pages.Count()}");
-            log.LogInformation($"directory Count: {ctx.Directories.Count()}");
-            log.LogInformation($"group Count: {ctx.Groups.Count()}");
-            log.LogInformation($"member Count: {ctx.Members.Count()}");
+            log.Information($"page Count: {ctx.Pages.Count()}");
+            log.Information($"directory Count: {ctx.Directories.Count()}");
+            log.Information($"group Count: {ctx.Groups.Count()}");
+            log.Information($"member Count: {ctx.Members.Count()}");
             var members = options.Factory == FactoryName.DonWhillansHut ? ctx.DWHMembers as IEnumerable<Member> : ctx.Members;
             //foreach(var member in members.OrderBy(m => m.LastName).ThenBy(m => m.FirstName))
             //{

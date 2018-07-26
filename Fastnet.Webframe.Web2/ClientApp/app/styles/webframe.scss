@@ -149,15 +149,52 @@ button {
         }
     }
 }
-
 .command-buttons {
+    font-size: 0.8em;
     margin-top: 0.5em;
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+
+    .top-row-left {
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+        justify-self: left;
+    }
+
+    .top-row-right {
+        grid-column: 2 / 2;
+        grid-row: 1 / 1;
+        justify-self: right;
+    }
+
+    .bottom-row-left {
+        grid-column: 1 / 1;
+        grid-row: 2 / 2;
+        justify-self: left;
+    }
+
+    .bottom-row-right {
+        grid-column: 2 / 2;
+        grid-row: 2 / 2;
+        justify-self: right;
+    }
+
     button {
         margin-top: 0.25em;
         margin-bottom: 0.25em;
     }
+}
+/*.command-buttons {
+    margin-top: 0.5em;
+    display: flex;
+    align-items: center;
+
+    button {
+        margin-top: 0.25em;
+        margin-bottom: 0.25em;
+    }
+
     &.align-centrally {
         justify-content: center;
     }
@@ -168,10 +205,6 @@ button {
         > div {
             display: flex;
             align-items: center;
-
-            /*button {
-                width: 100%;
-            }*/
 
             &:first-child {
                 button:not(:first-child) {
@@ -186,9 +219,7 @@ button {
             }
         }
     }
-}
-
-
+}*/
 
 @media all and (max-width: 748px) {
     .SitePanel .BannerPanel {

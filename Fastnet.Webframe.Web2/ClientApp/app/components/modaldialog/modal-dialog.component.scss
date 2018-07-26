@@ -29,6 +29,45 @@ modal-dialog {
             border: $modal-border;
             border-radius: $modal-border-radius;
             margin: $modal-outside-margin; // 4em 2em;
+            .command-buttons {
+                margin-top: 0.5em;
+                display: flex;
+                align-items: center;
+
+                button {
+                    margin-top: 0.25em;
+                    margin-bottom: 0.25em;
+                }
+
+                &.align-centrally {
+                    justify-content: center;
+                }
+
+                &.align-at-ends {
+                    justify-content: space-between;
+
+                    > div {
+                        display: flex;
+                        align-items: center;
+
+                        &:first-child {
+                            button:not(:first-child) {
+                                margin-left: 0.25em;
+                            }
+                        }
+
+                        &:last-child {
+                            button:not(:last-child) {
+                                margin-right: 0.25em;
+                            }
+                        }
+                    }
+                }
+
+                button {
+                    min-width: 80px;
+                }
+            }
         }
     }
 }

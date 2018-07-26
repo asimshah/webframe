@@ -8,7 +8,7 @@ import { PageKeys, PageService } from '../shared/page.service';
 import { ControlState, PasswordInputControl, PropertyValidatorAsync, ValidationResult } from '../controls/controls.component';
 import { Dictionary } from '../types/dictionary.types';
 import { MessageBox } from '../shared/common.types';
-//import { Dictionary } from '../shared/dictionary.types';
+import { BaseComponent } from '../shared/base.component';
 
 class LoginModel {
     message: string;
@@ -19,23 +19,18 @@ class LoginModel {
     templateUrl: './login.component.html',
     styleUrls: ['../../styles/webframe.forms.scss', './login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends BaseComponent implements OnInit {
     private nameSpace = "webframe-";
     public bannerPageId: number | null;
-    public messageBox: MessageBox;
-    //public loginModel: LoginModel;
     public model: Credentials;
-    //public emailAddressIsValid: boolean = true;
-    //public passwordIsValid: boolean = true;
-   // public loginFailed: boolean;
-    //public failureReason: string;
     private usernameKey: string;
     public validators: Dictionary<PropertyValidatorAsync>;
     @ViewChild(PasswordInputControl) passwordElement: PasswordInputControl;
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
-        private dialogService: ModalDialogService,
+        dialogService: ModalDialogService,
         private pageService: PageService) {
+        super(dialogService);
         this.usernameKey = `${this.nameSpace}-last-used-email`;
         this.model = new Credentials();
         this.validators = new Dictionary<PropertyValidatorAsync>();
@@ -48,13 +43,11 @@ export class LoginComponent implements OnInit {
             this.model.emailAddress = lastused;
             this.passwordElement.focus();
         }
-        //console.log(`banner page id is ${this.bannerPageId}`);
     }
     getPageId() {               
         return this.bannerPageId;
     }
     async onLogin(): Promise<void> {
-        //console.log(`credentails are ${this.model.emailAddress} and ${this.model.password}`);
         let lr = await this.authenticationService.login(this.model);
         switch (lr) {
             case LoginResult.Succeeded:
@@ -76,22 +69,13 @@ export class LoginComponent implements OnInit {
     }
     onResetPassword() {
         this.showMessageDialog("Reset password feature not implemented yet.");
-        //this.loginModel = new LoginModel();
-        //this.loginModel.message = "Reset password feature not implemented yet.";
-        //this.dialogService.open('message-box');
     }
     onRegister() {
         this.showMessageDialog("Registration feature not implemented yet.");
-        //this.loginModel = new LoginModel();
-        //this.loginModel.message = "Registration feature not implemented yet.";
-        //this.dialogService.open('message-box');
     }
     onCancel(): void {
         this.router.navigate(['home']);
     }
-    //onPasswordChange(fc: FormControl) {
-    //    this.passwordIsValid = this.isControlValid(fc);
-    //}
     emailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             let vr = cs.validationResult;
@@ -103,44 +87,23 @@ export class LoginComponent implements OnInit {
             resolve(cs.validationResult);
         });
     }
-    //getEmailAddressError(fc: FormControl): string {
-    //    //console.log("getEmailAddressError");
-    //    if (fc.errors != null) {
-    //        if (fc.errors.required) {
-    //            return "An email address is required";
-    //        } else if (fc.errors.email) {
-    //            return "This is not a valid email address";
-    //        }
-    //    }
-    //    return "unexpected";
-    //}
+
     hasEmailAddress(): boolean {
-        //return this.emailAddressIsValid && this.model.emailAddress != null && this.model.emailAddress.trim().length > 0;
         return this.model.emailAddress != null && this.model.emailAddress.trim().length > 0;
     }
     hasPassword(): boolean {
         return this.model.password != null && this.model.password.trim().length > 0;
     }
-    //onEmailAddressChange(fc: FormControl) {        
-    //    this.emailAddressIsValid = this.isControlValid(fc);
-    //}
-    //isControlValid(fc: FormControl): boolean {
-    //    let valid = fc.valid && (fc.dirty || fc.touched);
-    //    //let t = `${valid} [ valid: ${fc.valid}, dirty: ${fc.dirty}, touched: ${fc.touched}]`;
-    //    //console.log(t, JSON.stringify(fc.errors));
-    //    return valid;
-    //}
+
     canAttemptLogin() {
         return this.hasEmailAddress() && this.hasPassword();
     }
-    showMessageDialog(message: string) {
-        //this.loginModel = new LoginModel();
-        //this.loginModel.message = message;
-        this.messageBox = new MessageBox();
-        this.messageBox.message = message;
-        this.dialogService.open('message-box');
-    }
-    onCloseMessageBox() {
-        this.dialogService.close('message-box');
-    }
+    //showMessageDialog(message: string) {
+    //    //this.loginModel = new LoginModel();
+    //    //this.loginModel.message = message;
+    //    this.messageBox = new MessageBox();
+    //    this.messageBox.message = message;
+    //    this.dialogService.open('message-box');
+    //}
+
 }

@@ -19,6 +19,7 @@ namespace Fastnet.Webframe.BookingData2
 
         public long Accomodation_AccomodationId { get; set; }
     }
+    [Table("Accomodations")]
     public class Accomodation : Hierarchy<Accomodation>
     {
         //private ICollection<Booking> bookings;
@@ -33,13 +34,15 @@ namespace Fastnet.Webframe.BookingData2
         public string Fullname { get; set; }
         public bool SubAccomodationSeparatelyBookable { get; set; }
         public bool Bookable { get; set; } // if false, then SubAccomodationSeparatelyBookable should be true, else it is means this accomodation has been taken out of service
-        public long ParentAccomodation_AccomodationId { get; set; }
         [ForeignKey("ParentAccomodation_AccomodationId")]
         public Accomodation ParentAccomodation { get; set; }
         public ICollection<AccomodationExtra> Extras { get; set; }
         public ICollection<Accomodation> SubAccomodation { get; set; }
         public ICollection<Availability> Availabilities { get; set; }
         public ICollection<BookingAccomodation> BookingAccomodations { get; set; }
+
+        internal long ParentAccomodation_AccomodationId { get; set; }
+
         public override Accomodation GetParent()
         {
             return this.ParentAccomodation;

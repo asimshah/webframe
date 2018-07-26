@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,11 +60,15 @@ namespace Fastnet.Webframe.CoreData2
         }
         public static Group GetSystemGroup(this CoreDataContext coreDataContext, SystemGroups sg)
         {
-            return coreDataContext.Groups.ToArray().Single(x => x.Name == sg.ToString() && x.Type.HasFlag(GroupTypes.System));
+            return coreDataContext.Groups
+                .Include(x => x.GroupMembers).ThenInclude(y => y.Member)
+                .ToArray().Single(x => x.Name == sg.ToString() && x.Type.HasFlag(GroupTypes.System));
         }
         public static Group GetGroup(this CoreDataContext coreDataContext, string name)
         {
-            return coreDataContext.Groups.ToArray().Single(x => x.Name == name && x.Type.HasFlag(GroupTypes.User));
+            return coreDataContext.Groups
+                .Include(x => x.GroupMembers).ThenInclude(y => y.Member)
+                .ToArray().Single(x => x.Name == name && x.Type.HasFlag(GroupTypes.User));
         }
         public static async Task LoadParentsAsync(this CoreDataContext coreDataContext, Directory dir)
         {
@@ -126,6 +131,198 @@ namespace Fastnet.Webframe.CoreData2
                 }
             }
         }
+        public static void RecordChanges(this CoreDataContext DataContext, DirectoryGroup dg, string actionBy, RestrictionAction.EditingActionTypes actionType)
+        {
+            //Func<RestrictionAction> getNewAction = () =>
+            //{
+            //    RestrictionAction ra = new RestrictionAction
+            //    {
+            //        Action = actionType,
+            //        ActionBy = actionBy,
+            //        Folder = dg.Directory.DisplayName,
+            //        GroupName = dg.Group.Fullpath,
+            //        View = dg.ViewAllowed,
+            //        Edit = dg.EditAllowed
+            //    };
+            //    return ra;
+            //};
+            ////CoreDataContext DataContext = Core.GetDataContext();
+            //switch (actionType)
+            //{
+            //    default:
+            //        break;
+            //    case RestrictionAction.EditingActionTypes.RestrictionAdded:
+            //    case RestrictionAction.EditingActionTypes.RestrictionRemoved:
+            //        DataContext.Actions.Add(getNewAction());
+            //        break;
+            //    case RestrictionAction.EditingActionTypes.RestrictionModified:
+            //        PageAction.AddPropertyModificationActions(DataContext.Entry(this), getNewAction, (ra) =>
+            //        {
+            //            DataContext.Actions.Add(ra);
+            //        });
+
+            //        break;
+            //}
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, string fromAddress, string toAddress, string subject, string body,
+            bool redirected, string redirectedTo, string templateName, string remark, bool mailDisabled, string failure = null)
+        {
+            var ma = new MailAction
+            {
+                Subject = subject,
+                To = toAddress,
+                From = fromAddress,
+                MailBody = body,
+                Redirected = redirected,
+                RedirectedTo = redirectedTo,
+                MailTemplate = templateName,
+                MailDisabled = mailDisabled,
+                Remark = remark, 
+                Failure = failure
+            };
+            await ctx.Actions.AddAsync(ma);
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Group group, string actionBy, GroupAction.GroupActionTypes actionType, Member m = null)
+        {
+            GroupAction ga = null;
+            switch(actionType)
+            {
+                case GroupAction.GroupActionTypes.Deletion:
+                case GroupAction.GroupActionTypes.New:
+                    ga = new GroupAction
+                    {
+                        Action = actionType,
+                        ActionBy = actionBy,
+                        FullName = group.Shortenedpath,
+                        GroupId = group.GroupId.ToString()
+                    };
+                    await ctx.Actions.AddAsync(ga);
+                    break;
+                case GroupAction.GroupActionTypes.Modification:
+                    var changes = GetChanges(ctx.Entry(group));
+                    foreach(var (property, oldValue, newValue) in changes)
+                    {
+                        ga = new GroupAction
+                        {
+                            Action = actionType,
+                            ActionBy = actionBy,
+                            FullName = group.Shortenedpath,
+                            GroupId = group.GroupId.ToString(),
+                            PropertyChanged = property,
+                            OldValue = oldValue,
+                            NewValue = newValue
+                        };
+                        await ctx.Actions.AddAsync(ga);
+                    }
+                    break;
+                case GroupAction.GroupActionTypes.MemberAddition:
+                case GroupAction.GroupActionTypes.MemberRemoval:
+                    if(m != null)
+                    {
+                        ga = new GroupAction
+                        {
+                            Action = actionType,
+                            ActionBy = actionBy,
+                            FullName = group.Shortenedpath,
+                            GroupId = group.GroupId.ToString(),
+                            MemberEmailAddress = m.EmailAddress
+                        };
+                        await ctx.Actions.AddAsync(ga);
+                    }
+                    else
+                    {
+                        throw new Exception($"Group Actions of type {actionType.ToString()} need a Member instance");
+                    }
+                    break;
+            }
+
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Member m, string actionBy = null, MemberAction.MemberActionTypes actionType = MemberAction.MemberActionTypes.Modification)
+        {
+            switch (actionType)
+            {
+                default:
+                case MemberAction.MemberActionTypes.New:
+                case MemberAction.MemberActionTypes.Activation:
+                case MemberAction.MemberActionTypes.PasswordResetRequest:
+                case MemberAction.MemberActionTypes.PasswordReset:
+                case MemberAction.MemberActionTypes.Deactivation:
+                case MemberAction.MemberActionTypes.Deletion:
+                    MemberAction ma = new MemberAction
+                    {
+                        MemberId = m.Id,
+                        EmailAddress = m.EmailAddress,
+                        FullName = m.Fullname,
+                        ActionBy = actionBy ?? m.Fullname,
+                        Action = actionType,
+                    };
+                    await ctx.Actions.AddAsync(ma);
+                    return;
+                case MemberAction.MemberActionTypes.Modification:
+                    break;
+            }
+            var changes = GetChanges(ctx.Entry(m));
+            foreach(var (property, oldValue, newValue) in changes)
+            {
+                switch(property)
+                {
+                    case "EmailAddressConfirmed":
+                    case "ActivationCode":
+                    case "ActivationEmailSentDate":
+                    case "PasswordResetCode":
+                    case "PasswordResetEmailSentDate":
+                    case "PlainPassword":
+                        break;
+                    default:
+                        MemberAction ma = new MemberAction
+                        {
+                            MemberId = m.Id,
+                            EmailAddress = m.EmailAddress,
+                            FullName = m.Fullname,
+                            ActionBy = actionBy ?? m.Fullname,
+                            Action = actionType,// MembershipAction.MembershipActionTypes.Modification,
+                            PropertyChanged = property,
+                            OldValue = oldValue,
+                            NewValue = newValue
+                        };
+                        await ctx.Actions.AddAsync(ma);
+                        break;
+                }
+            }
+            //var entry = ctx.Entry(m);
+            //foreach (var p in entry.CurrentValues.Properties)
+            //{
+            //    switch (p.Name)
+            //    {
+            //        case "EmailAddressConfirmed":
+            //        case "ActivationCode":
+            //        case "ActivationEmailSentDate":
+            //        case "PasswordResetCode":
+            //        case "PasswordResetEmailSentDate":
+            //        case "PlainPassword":
+            //            break;
+            //        default:
+            //            if (entry.Property(p.Name).IsModified)
+            //            {
+            //                object ov = entry.Property(p.Name).OriginalValue;
+            //                object cv = entry.Property(p.Name).CurrentValue;
+            //                MemberAction ma = new MemberAction
+            //                {
+            //                    MemberId = m.Id,
+            //                    EmailAddress = m.EmailAddress,
+            //                    FullName = m.Fullname,
+            //                    ActionBy = actionBy ?? m.Fullname,
+            //                    Action = actionType,// MembershipAction.MembershipActionTypes.Modification,
+            //                    PropertyChanged = p.Name,
+            //                    OldValue = ov == null ? "<null>" : ov.ToString(),
+            //                    NewValue = cv == null ? "<null>" : cv.ToString()
+            //                };
+            //                await ctx.Actions.AddAsync(ma);
+            //            }
+            //            break;
+            //    }
+            //}
+        }
         private static bool AreGroupsPresent(this Directory dir)
         {
             bool r = dir.DirectoryGroups == null || dir.DirectoryGroups.Any(dg => dg.Group == null);
@@ -167,6 +364,20 @@ namespace Fastnet.Webframe.CoreData2
                 r = false;
             }
             return r;
+        }
+        private static IEnumerable<(string property, string oldValue, string newValue)> GetChanges(EntityEntry entry)
+        {
+            var list = new List<(string property, string oldValue, string newValue)>();
+            foreach (var p in entry.CurrentValues.Properties)
+            {
+                if (entry.Property(p.Name).IsModified)
+                {
+                    object ov = entry.Property(p.Name).OriginalValue;
+                    object cv = entry.Property(p.Name).CurrentValue;
+                    list.Add((p.Name, ov == null ? "<null>" : ov.ToString(), cv == null ? "<null>" : cv.ToString()));
+                }
+            }
+            return list;
         }
     }
 }

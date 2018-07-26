@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
@@ -71,6 +72,14 @@ namespace Fastnet.Webframe.CoreData2
             //details.DateOfBirth = this.DateOfBirth?.ToString("ddMMMyyyy");
             details.PhoneNumber = this.PhoneNumber;
             return details;
+        }
+        [NotMapped]
+        public bool HasBmcMembership
+        {
+            get
+            {
+                return !string.IsNullOrWhiteSpace(this.BMCMembership);
+            }
         }
         //public override async Task<ExpandoObject> Update(dynamic data)
         //{

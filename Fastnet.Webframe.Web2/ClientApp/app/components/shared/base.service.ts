@@ -42,7 +42,10 @@ export abstract class BaseService {
             .map(r => {
                 let dr = r.json() as DataResult;
                 if (!dr.success) {
-                    console.log(`ErrorResult: ${JSON.stringify(dr)}`);
+                    if (dr.exceptionMessage !== null) {
+                        console.log(`Exception: ${JSON.stringify(dr)}`);
+                        dr.message = dr.exceptionMessage;
+                    }
                 }
                 return dr;
             })
@@ -54,8 +57,15 @@ export abstract class BaseService {
             .map(r => {
                 let dr = r.json() as DataResult;
                 if (!dr.success) {
-                    console.log(`ErrorResult: ${JSON.stringify(dr)}`);
+                    if (dr.exceptionMessage !== null) {
+                        console.log(`Exception: ${JSON.stringify(dr)}`);
+                        dr.message = dr.exceptionMessage;
+                    }
                 }
+                //if (!dr.success && dr.exceptionMessage !== null) {                    
+                //    console.log(`Exception: ${JSON.stringify(dr)}`);
+                //    //alert(`${dr.message}\n${dr.exceptionMessage}`);
+                //}
                 return dr;
             })
             .catch(this.handleError)

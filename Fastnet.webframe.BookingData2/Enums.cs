@@ -15,22 +15,7 @@ namespace Fastnet.Webframe.BookingData2
         Cancelled,
         WaitingGateway
     }
-    public enum AccomodationType
-    {
-        Bed,
-        Room,
-        Suite, // i.e. a set of rooms
-        Flat,
-        Villa,
-        Hut
-    }
-    public enum AccomodationClass
-    {
-        Standard,
-        Superior,
-        Executive,
-        Deluxe
-    }
+
     public enum OptionalExtras
     {
         Cot,

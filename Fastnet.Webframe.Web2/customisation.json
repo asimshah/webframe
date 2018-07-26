@@ -1,6 +1,9 @@
 ﻿{
   "CustomisationOptions": {
     "factory": "DonWhillansHut",
+    "MailEnabled": true,
+    "RedirectMailTo": "asimshah@hotmail.com",
+    "MailFromAddress":  "asimshah@hotmail.com",
     //"legacy": {
     //  "legacyDatabaseName": "dwh-002",
     //  "bookingDatabaseName": "dwh-booking-002",
@@ -57,101 +60,101 @@
     "bookingApp": {
       //"lodgmentName": "Don Whillans Hut",
       "rollDayManually": false,
-      "enable": true,
+      "enabled": true,
       "accomodation": [
         {
-          "accomodationtype": "hut",
+          "accomodationType": "hut",
           "name": "Entire Hut",
           "fullname": "Don Whillans Hut",
-          "accomodationclass": "standard",
+          "accomodationClass": "standard",
           "bookable": true,
           "subItemsSeparatelyBookable": true,
           "subitems": [
             {
               "accomodationclass": "standard",
-              "accomodationtype": "room",
+              "accomodationType": "room",
               "name": "Room 1",
               "bookable": false,
               "subItemsSeparatelyBookable": true,
               "subitems": [
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 1",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 2",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 3",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 4",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 5",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 6",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 7",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 8",
                   "bookable": true
                 }
               ]
             },
             {
-              "accomodationclass": "standard",
-              "accomodationtype": "room",
+              "accomodationClass": "standard",
+              "accomodationType": "room",
               "name": "Room 2",
               "bookable": true,
               "subItemsSeparatelyBookable": true,
               "subitems": [
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 9",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 10",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 11",
                   "bookable": true
                 },
                 {
-                  "accomodationtype": "bed",
-                  "accomodationclass": "standard",
+                  "accomodationType": "bed",
+                  "accomodationClass": "standard",
                   "name": "Bed 12",
                   "bookable": true
                 }
@@ -160,9 +163,7 @@
           ]
         }
       ],
-      "paymentGateway": {
-        "enable": false
-      }
+      "paymentgatewayEnable":  false
     },
     "paymentGateway": "SagePay",
     "sagePay": {

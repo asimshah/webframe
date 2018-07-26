@@ -6,16 +6,16 @@
         <div class="webframe-form">
             <div class="caption">Enter your email address and password</div>
             <div class="form-body">
-                <email-input label="Email Address" name="emailAddress" [(ngModel)]="model.emailAddress" [validator]="validators.item('emailAddress')" ></email-input>
-                <password-input label="Password" name="password"  [(ngModel)]="model.password"></password-input>
-                <div class="annotation">If you do not have a password, use "Register" below to create one.</div>
-                <div class="annotation">If you have forgotten your password, enter your email address above and then use "Reset Password" below to receive an email with a password creation link.</div>
-                <div class="command-buttons align-at-ends">
-                    <div>
+                <email-input label="Email Address" name="emailAddress" [(ngModel)]="model.emailAddress" [validator]="validators.item('emailAddress')"></email-input>
+                <password-input label="Password" name="password" [(ngModel)]="model.password"></password-input>
+                <div class="annotation">If you do not have a password, use "Register" to create one.</div>
+                <div class="annotation">If you have forgotten your password, enter your email address above and then use "Reset Password" to receive an email with a password creation link.</div>
+                <div class="command-buttons">
+                    <div class="top-row-left">
                         <button tabindex="0" class="link" [disabled]="!hasEmailAddress()" (click)="onResetPassword()">Reset Password</button>
                         <button tabindex="0" class="link" (click)="onRegister()">Register</button>
                     </div>
-                    <div>
+                    <div class="top-row-right">
                         <button tabindex="3" class="default" [disabled]="!canAttemptLogin()" (click)="onLogin()">Login</button>
                         <button tabindex="4" (click)="onCancel()">Cancel</button>
                     </div>

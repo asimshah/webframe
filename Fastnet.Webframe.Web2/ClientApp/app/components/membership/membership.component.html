@@ -7,7 +7,7 @@
         <button (click)="setMode(Modes.Member)">Members</button>
         <button (click)="setMode(Modes.Group)">Groups</button>
         <div></div>
-        <button *ngIf="mode === Modes.Member" (click)="onAddNewMember()">Add New Member</button>
+        <button *ngIf="mode === Modes.Member" (click)="onAddNewMemberClick()">Add New Member</button>
         <button *ngIf="mode === Modes.Group">Add New Group</button>
     </div>
     <div class="membership-app-panel" [ngClass]="{hidden: groupMode}">
@@ -34,41 +34,40 @@
                     <div>{{getMemberFullName(member)}}</div>
                 </div>
                 <div class="form-body">
-                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress"></email-input>
+                    <email-input label="Email Address" name="emailAddress" [(ngModel)]="member.emailAddress" [validator]="validators.item('emailAddress')"></email-input>
                     <div *ngIf="member.isAdministrator === false">
                         <text-input label="First Name" name="firstName" [(ngModel)]="member.firstName" [validator]="validators.item('firstName')"></text-input>
                         <text-input label="Last Name" name="lastName" [(ngModel)]="member.lastName" [validator]="validators.item('lastName')"></text-input>
-                        <text-input label="Password" name="password" [(ngModel)]="member.password"></text-input>
+                        <password-input *ngIf="memberIsNew" label="Password" name="password" [(ngModel)]="member.password" [validator]="validators.item('password')"></password-input>
                         <bool-input label="Disabled" name="disabled" [(ngModel)]="member.disabled"></bool-input>
                     </div>
-                    <div class="annotation no-space">
+                    <div *ngIf="!memberIsNew" class="annotation no-space">
                         <span>Created: {{member.creationDateFormatted}}</span>
                         <span *ngIf="member.lastLoginDate !== null">, Last logged in: {{member.lastLoginDateFormatted}}.</span>
                         <span *ngIf="member.lastLoginDate === null">, This member has not logged in.</span>
                     </div>
-                    <div class="annotation warning" *ngIf="member.emailAddressConfirmed === false">
+                    <div class="annotation warning" *ngIf="!memberisNew && member.emailAddressConfirmed === false">
                         <span>This email address is not confirmed. The member needs to respond to the activation email.</span>
                     </div>
                 </div>
-                <div class="command-buttons align-at-ends">
-                    <div *ngIf="member.isAdministrator === false">
-                        <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning">Delete Member</button>
-                        <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)" class="secondary">Send Activation Email</button>
-                        <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary">Send Password Reset</button>
+                <div class="command-buttons">
+                    <div class="top-row-left">
+                        <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendActivationEmailClick()">Send Activation Email</button>
+                        <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendPasswordResetClick()">Send Password Reset</button>
                     </div>
-                    <div>
-                        <button *ngIf="canShowCommand(CommandButtons.Save)" class="default">Save</button>
+                    <div class="bottom-row-left">
+                        <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning" (click)="onDeleteClick()">Delete Member</button>
+                        <button class="warning" *ngIf="canShowCommand(CommandButtons.ActivateMember)" (click)="onActivateClick()">Activate Member</button>
+                    </div>
+
+                    <div class="top-row-right">
+                        <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" (click)="onSaveClick()">Save</button>
                         <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelClick()">Cancel</button>
                     </div>
                 </div>
             </div>
-            <div>{{member | json}}</div>
-        </div>
-    </div>
-    <div class="group-app-panel hidden" [ngClass]="{hidden: !groupMode}">
-        <div class="left-panel"></div>
-        <div class="right-panel">
-            <div>This is the group app</div>
+            <!--<div>memberIsNew: {{ memberIsNew}}</div>
+            <div>{{ member | json}}</div>-->
         </div>
     </div>
     <div class="group-app-panel hidden" [ngClass]="{hidden: !groupMode}">
@@ -81,17 +80,22 @@
 
 <modal-dialog id="message-box">
     <div class="modal-overlay">
-        <div class="modal-container">
+        <div *ngIf="messageBox; else noModel" class="modal-container">
             <div class="form-body">
-                <div *ngIf="messageBox; else noModel">
-                    <div class="caption">{{messageBox.caption}}</div>
-                    <div class="message-body" [innerHTML]="messageBox.message"></div>
-                </div>
-                <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
+                <div class="caption">{{messageBox.caption}}</div>
+                <div class="message-body" [innerHTML]="messageBox.message" [ngClass]="{'error': messageBox.isAlert}"></div>
             </div>
             <div class="command-buttons align-centrally">
-                <button class="default" (click)="onCloseMessageBox()">OK</button>
+                <div *ngIf="messageBox.confirmBox === false">
+                    <button class="default" (click)="onCloseMessageBox()">OK</button>
+                </div>
+                <div *ngIf="messageBox.confirmBox === true">
+                    <button class="secondary" (click)="onConfirmMessageBox(true)">Yes</button>
+                    <button class="default" (click)="onCloseMessageBox(false)">No</button>
+                </div>
             </div>
         </div>
+        <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
     </div>
 </modal-dialog>
+

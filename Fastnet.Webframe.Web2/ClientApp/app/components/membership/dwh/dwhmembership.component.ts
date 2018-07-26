@@ -20,10 +20,10 @@ export class DwhMembershipComponent extends MembershipComponent {
         //authenticationService: AuthenticationService,
         membershipService: DWHMembershipService) {
         super(pageService, router, dialogService, membershipService);
-        console.log("DwhMembershipComponent: constructor()");
+        //console.log("DwhMembershipComponent: constructor()");
     }
     protected getNewMember(): DWHMember {
-        console.log(`returning dwh new member`);
+        //console.log(`returning dwh new member`);
         return new DWHMember();
     }
     protected setNewMemberValidators() {
@@ -33,6 +33,15 @@ export class DwhMembershipComponent extends MembershipComponent {
     protected setExistingMemberValidators() {
         super.setExistingMemberValidators();
         this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
+    }
+    public onDeleteClick() {
+        //console.log("onDeleteClick");
+        this.showConfirmDialog("Deleting a member removes all data for that member permanently (including any past and present bookings). Are you sure you want to proceed? ", (r) => {
+            if (r === true) {
+                console.log("delete requested");
+                this.deleteMember();
+            }
+        });
     }
     public getBookingInformation(): string {
         let info = "";

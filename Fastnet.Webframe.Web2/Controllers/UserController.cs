@@ -25,13 +25,19 @@ namespace Fastnet.Webframe.Web2.Controllers
         //private readonly ILogger log;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IMemberFactory memberfactory;
+        private readonly CoreDataContext coreDataContext;
         public UserController(IHostingEnvironment env, UserManager<ApplicationUser> userManager,
             IMemberFactory mch, SignInManager<ApplicationUser> signInManager,
-            CoreDataContext coreDataContext, ILogger<UserController> logger) : base(logger, env, userManager, coreDataContext)
+            CoreDataContext coreDataContext, ILogger<UserController> logger) : base(logger, env, userManager/*, coreDataContext*/)
         {
             //this.log = logger;
             this.signInManager = signInManager;
             this.memberfactory = mch;
+            this.coreDataContext = coreDataContext;
+        }
+        protected override CoreDataContext GetCoreDataContext()
+        {
+            return this.coreDataContext;
         }
         [HttpGet("sync")]
         public async Task<IActionResult> Sync()
@@ -52,11 +58,11 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> Login([FromBody]Credentials credentials)
         {
             //await Task.Delay(3);
-            this.log.LogInformation($"login with {credentials.emailAddress}, {credentials.password}");
+            //this.log.LogInformation($"login with {credentials.emailAddress}, {credentials.password}");
             var user = await userManager.FindByEmailAsync(credentials.emailAddress);
             if(user == null)
             {
-                return ErrorDataResult("InvalidCredentials");
+                return ErrorResult("InvalidCredentials");
             }
             var member = await coreDataContext.Members.FindAsync(user.Id);
             if (member.IsAdministrator || (member.EmailAddressConfirmed && !member.Disabled))
@@ -73,38 +79,40 @@ namespace Fastnet.Webframe.Web2.Controllers
                     var groupNames = await GetGroupsForMember(member);
                     await coreDataContext.SaveChangesAsync();
                     var userData = memberfactory.ToUserCredentialsDTO(member, groupNames);
-                    return SuccessDataResult(userData);
+                    log.LogInformation($"Member {member.Fullname}, {member.EmailAddress} logged in.");
+                    return SuccessResult(userData);
                 }
                 else
                 {
                     log.LogInformation($"Member {member.EmailAddress} failed to log in.");
-                    return ErrorDataResult("InvalidCredentials");
+                    return ErrorResult("InvalidCredentials");
                 }
             }
             else
             {
                 if (!member.EmailAddressConfirmed)
                 {
-                    return ErrorDataResult("AccountNotActivated");
+                    return ErrorResult("AccountNotActivated");
                 }
                 else if (member.Disabled)
                 {
-                    return ErrorDataResult("AccountIsBarred");
+                    return ErrorResult("AccountIsBarred");
                 }
             }
-            return ErrorDataResult("SystemError");
+            return ErrorResult("SystemError");
         }
         [HttpGet("logout")]
         public async Task<IActionResult> Logout()
         {
-            this.log.LogInformation($"logout requested");
+            
             if (IsAuthenticated)
             {
                 var user = await userManager.GetUserAsync(User);
                 await signInManager.SignOutAsync();
                 await userManager.UpdateSecurityStampAsync(user);
+                this.log.LogInformation($"{user.Email} logged out");
             }
-            return SuccessDataResult(null);
+            return SuccessResult(null);
         }
 
         private async Task<IEnumerable<string>> GetGroupsForMember(Member m)

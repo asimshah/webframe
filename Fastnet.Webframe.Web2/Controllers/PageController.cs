@@ -25,14 +25,20 @@ namespace Fastnet.Webframe.Web2.Controllers
         //private readonly ILogger log;
         private readonly ContentAssistant contentAssistant;
         private readonly IHostingEnvironment environment;
+        private readonly CoreDataContext coreDataContext;
         public PageController(ILogger<PageController> logger, ContentAssistant contentAssistant,
-            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager, coreDataContext)
+            IHostingEnvironment environment, UserManager<ApplicationUser> userManager, CoreDataContext coreDataContext) : base(logger, environment, userManager/*, coreDataContext*/)
         {
             //this.log = logger;
+            this.coreDataContext = coreDataContext;
             this.environment = environment;
             this.contentAssistant = contentAssistant;
             coreDataContext.ChangeTracker.AutoDetectChangesEnabled = false;
 
+        }
+        protected override CoreDataContext GetCoreDataContext()
+        {
+            return this.coreDataContext;
         }
         [HttpGet("get/page/{id}")]
         public async Task<IActionResult> GetPage(long id)

@@ -1,6 +1,9 @@
 ﻿export class MessageBox {
     caption: string = "Message";
-    message: string = "<div>No message provided</div>"
+    isAlert: boolean = false;
+    message: string = "<div>No message provided</div>";
+    confirmBox: boolean = false;
+    confirmClose: (r: boolean) => void;
 }
 export class Member {
     id: string;

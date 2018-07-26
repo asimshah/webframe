@@ -13,6 +13,7 @@ import { MembershipService } from './membership.service';
 import { MessageBox, Member } from '../shared/common.types';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { BaseComponent } from '../shared/base.component';
 
 enum CommandButtons {
     Cancel,
@@ -20,7 +21,8 @@ enum CommandButtons {
     SendPasswordReset,
     SendActivationEmail,
     AddNewMember,
-    DeleteMember
+    DeleteMember,
+    ActivateMember
 }
 
 class TabItem {
@@ -42,7 +44,7 @@ enum Modes {
     templateUrl: './membership.component.html',
     styleUrls: ['../../styles/webframe.forms.scss', './membership.component.scss']
 })
-export class MembershipComponent implements OnInit {
+export class MembershipComponent extends BaseComponent implements OnInit {
     public Modes = Modes;
     public CommandButtons = CommandButtons;
     public messageBox: MessageBox;
@@ -58,9 +60,9 @@ export class MembershipComponent implements OnInit {
     //private originalMember?: Member;
     @ViewChildren(ControlBase) controls: QueryList<ControlBase>;
     constructor(protected pageService: PageService, protected router: Router,
-        private dialogService: ModalDialogService,
-        //private authenticationService: AuthenticationService,
+        dialogService: ModalDialogService,
         protected membershipService: MembershipService) {
+        super(dialogService);
         console.log(`MembershipComponent: constructor`);
         this.mode = Modes.Member;
 
@@ -80,6 +82,92 @@ export class MembershipComponent implements OnInit {
             this.tabs.push(ti);
         }
     }
+    public onClearSearchClick() {
+        this.searchText = "";
+        this.clearTabSelection();
+        console.log("search cleared");
+    }
+    public onTabClick(tab: TabItem) {
+        this.selectTab(tab);
+    }
+    public onMemberClick(m: Member) {
+        if (this.member && this.memberHasChanges()) {
+            this.showMessageDialog("First save the current changes, or use Cancel", false, "Membership");
+        } else {
+            this.member = m;
+            this.memberIsNew = false;
+            this.saveMemberJson();
+            ControlBase.resetAll();
+            this.setExistingMemberValidators();
+        }
+    }
+    public async onSearchClick() {        
+        this.performSearch();
+    }
+    public onAddNewMemberClick() {
+        if (!this.memberIsNew) {
+            this.member = this.getNewMember();// new Member();
+            this.memberIsNew = true;
+            this.saveMemberJson();
+            this.setNewMemberValidators();
+        } else {
+            if (this.memberHasChanges()) {
+                this.showMessageDialog("First save the current changes, or use Cancel", false, "Membership");
+            }
+        }
+    }
+    public async onSaveClick() {
+        let r = await this.validateAll();
+        if (r) {
+            if (this.memberIsNew) {
+                await this.createNewMember();
+            } else {
+                await this.updateMember();
+            }
+        }
+    }
+    public async onCancelClick() {
+        if (this.memberIsNew) {
+            this.memberIsNew = false;
+        } else if (this.member && this.memberHasChanges()) {
+            let m = await this.membershipService.getMember(this.member.emailAddress);
+            this.replaceMember(m);
+        }
+        this.member = undefined;
+        this.originalMemberJson = undefined;
+    }
+    public onDeleteClick() {
+        //console.log("onDeleteClick");
+        this.showConfirmDialog("Deleting a member removes all data for that member permanently. Are you sure you want to proceed? ", async (r) => {
+            if (r === true) {
+                //console.log("delete requested");
+                await this.deleteMember();
+            }
+        });
+    }
+    public onActivateClick() {
+        this.showConfirmDialog("Directly activating a member means that the email address will not be known to be correct. Are you sure you want to proceed?", async (r) => {
+            if (r === true && this.member) {
+                await this.membershipService.activateMember(this.member);
+                this.member = undefined;
+                this.memberIsNew = false;
+                this.originalMemberJson = undefined;
+                this.performSearch();
+            }
+        });
+    }
+    public async onSendActivationEmailClick() {
+        if (this.member) {
+            await this.membershipService.sendActivationEmail(this.member);
+            this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, false, "Membership");
+        }
+    }
+    public async onSendPasswordResetClick() {
+        if (this.member) {
+            await this.membershipService.sendPasswordResetEmail(this.member);
+            this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, false, "Membership");
+        }
+    }
     public goBack() {
         this.router.navigate(['/home']);
     }
@@ -94,8 +182,25 @@ export class MembershipComponent implements OnInit {
         switch (cb) {
             case CommandButtons.DeleteMember:
             case CommandButtons.SendActivationEmail:
+                if (!this.memberIsNew) {
+                    if (this.member) {
+                        r = !this.member.isAdministrator;
+                    }
+                }
+                break
             case CommandButtons.SendPasswordReset:
-                r = !this.memberIsNew;
+                if (!this.memberIsNew) {
+                    if (this.member) {
+                        r = !this.member.isAdministrator && this.member.emailAddressConfirmed === true;
+                    }
+                }
+                break;
+            case CommandButtons.ActivateMember:
+                if (!this.memberIsNew) {
+                    if (this.member) {
+                        r = !this.member.isAdministrator && !this.member.emailAddressConfirmed;
+                    }
+                }
                 break;
             case CommandButtons.Cancel:
             case CommandButtons.Save:
@@ -111,33 +216,6 @@ export class MembershipComponent implements OnInit {
         item.selected = true;
         await this.searchMembers(true);
     }
-    public onClearSearchClick() {
-        this.searchText = "";
-        this.clearTabSelection();
-        console.log("search cleared");
-    }
-    public onTabClick(tab: TabItem) {
-        this.selectTab(tab);
-    }
-    public onMemberClick(m: Member) {
-        this.member = m;
-        this.memberIsNew = false;
-        this.saveMemberJson();
-        ControlBase.resetAll();
-        this.setExistingMemberValidators();
-    }
-    public async onSearchClick() {        
-        let tab: TabItem | undefined  = undefined;
-        if (this.searchText.length === 1) {
-            tab = this.matchesTabItem(this.searchText);
-        } 
-        if (tab) {
-            this.selectTab(tab);
-        } else {
-            this.clearTabSelection();
-            await this.searchMembers(false);
-        }
-    }
     public getMemberFullName(m: Member) {
         if (this.memberIsNew) {
             if ((!m.firstName || m.firstName.trim().length === 0) && (!m.lastName || m.lastName.trim().length === 0)) {
@@ -146,53 +224,63 @@ export class MembershipComponent implements OnInit {
         }
         return (m.firstName || "")  + ' ' + (m.lastName || "");
     }
-    public onAddNewMember() {
-        if (!this.memberIsNew) {
-            this.member = this.getNewMember();// new Member();
-            this.memberIsNew = true;
-            this.saveMemberJson();
-            this.setNewMemberValidators();
-        } else {
-            if (this.memberHasChanges()) {
-                this.showConfirmationMessage("First save the current member, or use Cancel");
-            }
-        }
-    }
-    public onCloseMessageBox() {
-        this.dialogService.close("message-box");
-    }
-    public async onSaveClick() {
-        let r = await this.validateAll();
-        if (r) {
-            if (this.memberIsNew) {
-                this.createNewMember();
-            } else {
-                this.updateMember();
-            }
-        }
-    }
-    public onCancelClick() {
-        if (this.memberIsNew) {
-            this.memberIsNew = false;
-        }
-        this.member = undefined;
-        //this.originalMember = undefined;
-        this.originalMemberJson = undefined;
-    }
+
     protected async searchMembers(prefix: boolean) {
         console.log(`search started using ${this.searchText}, prefix = ${prefix}`);
         this.memberList = await this.membershipService.getMembers(this.searchText, prefix);
+    }
+    protected async deleteMember() {
+        if (this.member) {
+            await this.membershipService.deleteMember(this.member);
+            this.member = undefined;
+            this.memberIsNew = false;
+            this.originalMemberJson = undefined;
+            this.performSearch();
+        }
     }
     protected getNewMember(): Member {
         console.log(`returning standard new member`);
         return new Member();
     }
+    private async performSearch() {
+        if (this.searchText.trim().length > 0) {
+            let tab: TabItem | undefined = undefined;
+            if (this.searchText.length === 1) {
+                tab = this.matchesTabItem(this.searchText);
+            }
+            if (tab) {
+                this.selectTab(tab);
+            } else {
+                this.clearTabSelection();
+                await this.searchMembers(false);
+            }
+        }
+    }
     private async updateMember() {
-
+        if (this.member) {
+            let cr = await this.membershipService.updateMember(this.member);
+            if (cr.success) {
+                this.saveMemberJson();
+                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, false, "Membership");
+            } else {
+                let errors = cr.errors.join("<br>");
+                this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, true, "Membership");
+            }
+        }
     }
     private async createNewMember() {
         if (this.member) {
             let cr = await this.membershipService.createNewMember(this.member);
+            if (cr.success) {
+                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, false, "Membership");
+                this.member = undefined;
+                this.memberIsNew = false;
+                this.originalMemberJson = undefined;
+                this.performSearch();
+            } else {
+                let errors = cr.errors.join("<br>");
+                this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, true, "Membership");
+            }
         }
     }
     private clearTabSelection() {
@@ -208,14 +296,20 @@ export class MembershipComponent implements OnInit {
         this.originalMemberJson = JSON.stringify(this.member);
     }
     private memberHasChanges(): boolean {
-        let text = JSON.stringify(this.member);
-        return text !==  this.originalMemberJson;
+        let r = false;
+        if (this.member) {
+            let text = JSON.stringify(this.member);
+            r = text !== this.originalMemberJson;
+        }
+        return r;
     }
-    private showConfirmationMessage(msg: string) {
-        this.messageBox = new MessageBox();
-        this.messageBox.caption = "Message";
-        this.messageBox.message = msg;
-        this.dialogService.open("message-box");
+    private replaceMember(member: Member) {
+        let index = this.memberList.findIndex((m) => {
+            return member.id === m.id;
+        });
+        if (index > 0) {
+            this.memberList[index] = member;
+        }
     }
     firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
@@ -253,7 +347,7 @@ export class MembershipComponent implements OnInit {
             let vr = cs.validationResult;
             if (vr.valid) {
                 let text: string = cs.value || "";
-                if (text.length === 0) {
+                if (text.trim().length === 0) {
                     vr.valid = false;
                     vr.message = `an Email Address is required`;
                 } else {
@@ -268,18 +362,20 @@ export class MembershipComponent implements OnInit {
             resolve(cs.validationResult);
         });
     }
-    ageValidatorAsync(cs: ControlState): Promise<ValidationResult> {
-        return new Promise<ValidationResult>((resolve) => {
-            setTimeout(() => {
-                let vr = cs.validationResult;
-                let age = cs.value || 0;
-                if (age === 99) {
+    passwordValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>(resolve => {
+            let vr = cs.validationResult;
+            let text: string = cs.value || "";
+            if (text.trim().length === 0) {
+                vr.valid = false;
+                vr.message = `a Password is required`;
+            } else {
+                if (text.trim().length < 8) {
                     vr.valid = false;
-                    vr.message = `99 not allowed`;
+                    vr.message = "minimum password length is 8 chars"
                 }
-                console.log(`${JSON.stringify(cs)}`);
-                resolve(vr);
-            }, 5000);
+            }
+            resolve(vr);
         });
     }
     async validateAll(): Promise<boolean> {
@@ -293,6 +389,7 @@ export class MembershipComponent implements OnInit {
         this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
         this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
         this.validators.add("emailAddress", new PropertyValidatorAsync((cs) => this.emailAddressValidatorAsync(cs)));
+        this.validators.add("password", new PropertyValidatorAsync((cs) => this.passwordValidatorAsync(cs)));
     }
     protected setExistingMemberValidators() {
         this.validators = new Dictionary<PropertyValidatorAsync>();

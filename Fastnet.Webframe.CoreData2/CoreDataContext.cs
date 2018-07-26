@@ -17,35 +17,38 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
+using System.Threading.Tasks;
 
 namespace Fastnet.Webframe.CoreData2
 {
-    public class DesignTimeCoreDataDbFactory : DesignTimeWebDbContextFactory<CoreDataContext>
-    {
-        protected override string GetDesignTimeConnectionString()
-        {
-            var path = @"C:\devroot\Fastnet Webframe\Fastnet.Webframe\Fastnet.Webframe.Web2";
-            var databaseFilename = @"sitedb.mdf";
-            var catalog = @"dwh-netstandard2";
-            //string path = environment.ContentRootPath;
-            string dataFolder = Path.Combine(path, "Data");
-            if (!System.IO.Directory.Exists(dataFolder))
-            {
-                System.IO.Directory.CreateDirectory(dataFolder);
-            }
-            string databaseFile = Path.Combine(dataFolder, databaseFilename);
-            SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder();
-            csb.AttachDBFilename = databaseFile;
-            csb.DataSource = ".\\SQLEXPRESS";
-            csb.InitialCatalog = catalog;
-            csb.IntegratedSecurity = true;
-            csb.MultipleActiveResultSets = true;
-            return csb.ToString();
-        }
-    }
+    //public class DesignTimeCoreDataDbFactory : DesignTimeWebDbContextFactory<CoreDataContext>
+    //{
+    //    protected override string GetDesignTimeConnectionString()
+    //    {
+    //        var path = @"C:\devroot\Fastnet Webframe\Fastnet.Webframe\Fastnet.Webframe.Web2";
+    //        var databaseFilename = @"sitedb.mdf";
+    //        var catalog = @"dwh-netstandard2";
+    //        //string path = environment.ContentRootPath;
+    //        string dataFolder = Path.Combine(path, "Data");
+    //        if (!System.IO.Directory.Exists(dataFolder))
+    //        {
+    //            System.IO.Directory.CreateDirectory(dataFolder);
+    //        }
+    //        string databaseFile = Path.Combine(dataFolder, databaseFilename);
+    //        SqlConnectionStringBuilder csb = new SqlConnectionStringBuilder();
+    //        csb.AttachDBFilename = databaseFile;
+    //        csb.DataSource = ".\\SQLEXPRESS";
+    //        csb.InitialCatalog = catalog;
+    //        csb.IntegratedSecurity = true;
+    //        csb.MultipleActiveResultSets = true;
+    //        return csb.ToString();
+    //    }
+    //}
     public class CoreDataDbInitialiser
     {
-        public static void Initialise(CoreDataContext db, ILogger log)
+        public static void Initialise(CoreDataContext db, ILogger log, IHostingEnvironment env)
         {
             //var options = db.Database.GetService<IOptions<QParaDbOptions>>();
             //var log = db.Database.GetService<ILogger<QParaDb>>() as ILogger;
@@ -68,6 +71,7 @@ namespace Fastnet.Webframe.CoreData2
             {
                 log.Trace($"\t{migration}");
             }
+            db.Seed(env);
         }
     }
     public class CoreDataDbContextFactory : WebDbContextFactory
@@ -78,12 +82,14 @@ namespace Fastnet.Webframe.CoreData2
     }
     public class CoreDataDbOptions : WebDbOptions
     {
-
+        public bool ReloadMainTemplates { get; set; }
     }
 
     public partial class CoreDataContext : WebDbContext // DbContext
     {
-        private CustomisationOptions customisation;
+        private ILogger log;
+        private IHostingEnvironment env;
+        //private CustomisationOptions customisation;
         public DbSet<Directory> Directories { get; set; }
         public DbSet<Menu> Menus { get; set; }
         //public DbSet<MenuMaster> MenuMasters { get; set; }
@@ -103,22 +109,59 @@ namespace Fastnet.Webframe.CoreData2
         public DbSet<UploadFile> UploadFiles { get; set; }
         public DbSet<ActionBase> Actions { get; set; }
         public DbSet<ApplicationAction> ApplicationActions { get; set; }
+        public DbSet<SessionAction> SessionActions { get; set; }
+        public DbSet<MemberAction> MemberActions { get; set; }
+        public DbSet<GroupAction> GroupActions { get; set; }
         //public DbSet<Recorder> Recorders { get; set; }
         //public DbSet<Record> Records { get; set; }
         public DbSet<Webtask> Webtasks { get; set; }
         public DbSet<SageTransaction> SageTransactions { get; set; }
-        public CoreDataContext(DbContextOptions<CoreDataContext> options, IOptions<CustomisationOptions> customisation, IOptions<CoreDataDbOptions> webDbOptions, IServiceProvider sp) : base(options, webDbOptions, sp)
+        public DbSet<HtmlTemplate> HtmlTemplates { get; set; }
+
+        public CoreDataContext(DbContextOptions<CoreDataContext> options, IOptions<CoreDataDbOptions> webDbOptions, IServiceProvider sp) : base(options, webDbOptions, sp)
         {
-            this.customisation = customisation.Value;
+            //this.customisation = sp?.GetRequiredService<IOptions<CustomisationOptions>>().Value;
+            //this.customisation = customisation.Value;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasDefaultSchema("std");
-            if (this.customisation.Factory != FactoryName.DonWhillansHut)
-            {
-                modelBuilder.Ignore<DWHMember>();
-            }
+            modelBuilder.Entity<ActionBase>()
+                .ToTable("ActionBases");
+
+            //modelBuilder.Entity<GroupAction>()
+            //    .Property("Action").HasColumnName("Action1");
+
+            //modelBuilder.Entity<MemberAction>()
+            //    .Property("Action").HasColumnName("Action2");
+
+            /*
+             * Note
+             * I tried to drop the DWHMember from the model using modelBuilder.Ignore but this proved to be unsatisfactory
+             * because of a complexities arising GetWebDbContext<TContext>() in Fastnet.Core.Web.WebDbContextFactory:
+             * 
+             * Recall the purpose of GetWebDbContext<TContext>() is to make it easy to obtain a database context when
+             * not running in a transient scope such as from a Controller. The prime case is when using "background" tasks
+             * as supports by Fastnet.Core.Web.ScheduledTask.
+             * 
+             * The difficulty arising in finding a way to detect whether a WebDbContext instance is being created through
+             * DependencyInjection, or through GetWebDbContext<TContext>() - I use the presence of one of the constructor parameters
+             * (specifically the IServiceProvider), i.e. if it is null or not, to separate DependencyInjection is providing
+             * the instance (when it is not null) of GetWebDbContext<TContext>() which explicitly passes it as null.
+             * This, as I say in the code, is a hack and really a more robust technique is required.
+             * The consequence is that I cannot add additional constructor parameters as then GetWebDbContext<TContext>() cannot find the constructor.
+             * There really needs to be a better way - perhaps I need to analyse each contsructor and find the one I want (but the underlying design is
+             * remains a hack).
+             * 
+             * This limitation of providing further constructor parameters means I cannot inject the customisation options instance. This means that
+             * when using GetWebDbContext<TContext>(), the DWHMember entity is no longer in the model!
+             * So I have made the DWHMember entity a permanent part of the model though really it is only used for DWH.
+             */
+            //if (this.customisation == null || this.customisation.Factory != FactoryName.DonWhillansHut)
+            //{
+            //    modelBuilder.Ignore<DWHMember>();
+            //}
             modelBuilder.Entity<Menu>()
                 .HasOne(x => x.ParentMenu)
                 .WithMany(x => x.Submenus)
@@ -188,6 +231,47 @@ namespace Fastnet.Webframe.CoreData2
                 .HasForeignKey(x => x.ToPageId);
 
             base.OnModelCreating(modelBuilder);
+        }
+        internal void Seed(IHostingEnvironment env)
+        {
+            this.env = env;
+            log = this.serviceProvider.GetService<ILogger<CoreDataContext>>();
+            log.Information("Seed() started");
+            LoadRequiredEmailTemplates();
+        }
+
+        private void LoadRequiredEmailTemplates()
+        {
+            var contentRoot = env.ContentRootPath;
+            var defaultTemplatePath = Path.Combine(contentRoot, "Default Templates");
+            LoadMainTemplates(defaultTemplatePath);
+            SaveChanges();
+        }
+        private void LoadMainTemplates(string defaultTemplatePath)
+        {
+            CoreDataDbOptions dbOptions = webDbOptions.Value as CoreDataDbOptions;
+            var reload = dbOptions.ReloadMainTemplates;
+            var mainTemplates = Path.Combine(defaultTemplatePath, "main");
+            LoadTemplateIfRequired("main", "AccountActivation-Email", mainTemplates, "AccountActivation.html", reload);
+            LoadTemplateIfRequired("main", "PasswordReset-Email", mainTemplates, "PasswordReset.html", reload);
+            LoadTemplateIfRequired("main", "EmailAddressChanged-Email", mainTemplates, "EmailAddressChanged.html", reload);
+        }
+        private void LoadTemplateIfRequired(string category, string templateName, string templatePath, string templateFilename, bool reload)
+        {
+            var item = HtmlTemplates.SingleOrDefault(x => string.Compare(category, x.Category, true) == 0 && string.Compare(templateName, x.Name, true) == 0);
+            if(item == null)
+            {
+                var htmlText = File.ReadAllText(Path.Combine(templatePath, templateFilename));
+                item = new HtmlTemplate { Category = category, Name = templateName, HtmlText = htmlText };
+                HtmlTemplates.Add(item);
+                log.Information($"Template {templateName} loaded");
+            }
+            else if(reload)
+            {
+                var htmlText = File.ReadAllText(Path.Combine(templatePath, templateFilename));
+                item.HtmlText = htmlText;
+                log.Information($"Template {templateName} reloaded");
+            }
         }
     }
 }
