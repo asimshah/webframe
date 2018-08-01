@@ -22,8 +22,11 @@ export class DwhMembershipComponent extends MembershipComponent {
         super(pageService, router, dialogService, membershipService);
         //console.log("DwhMembershipComponent: constructor()");
     }
+    //async ngOnInit() {
+    //    console.log("DWHRegisterComponent: OnInit");
+    //}
     protected getNewMember(): DWHMember {
-        //console.log(`returning dwh new member`);
+        console.log(`returning dwh new member`);
         return new DWHMember();
     }
     protected setNewMemberValidators() {

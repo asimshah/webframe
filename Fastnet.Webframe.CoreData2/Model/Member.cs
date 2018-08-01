@@ -44,7 +44,7 @@ namespace Fastnet.Webframe.CoreData2
         public bool IsAnonymous { get; set; }
         public MemberCreationMethod CreationMethod { get; set; }
         //
-        public ICollection<GroupMember> GroupMembers { get; set; }
+        public virtual ICollection<GroupMember> GroupMembers { get; set; }
         [NotMapped]
         public string Fullname
         {

@@ -202,6 +202,18 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         }
 
     }
+    static async isValid(name: string): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            if (ControlBase.allControls.containsKey(name)) {
+                let c = ControlBase.allControls.item(name);
+                let vr = await c.validate();
+                resolve(vr.valid);
+            } else {
+                throw `No control with name ${name} found`;
+            }
+            
+        });
+    }
     private tracelog(t: string) {
         if (this.trace) {
             console.log(t);
@@ -234,7 +246,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
 })
 export class TextInputControl extends ControlBase {
     @Input() label: string = '';
-    
+
     @Input() placeHolderText: string = '';
     constructor() {
         super();
@@ -309,8 +321,7 @@ export class EmailInputControl extends TextInputControl {
     //    //console.log(`focusing ..${JSON.stringify(this.element)}`);
     //    this.element.nativeElement.focus();
     //}
-    private validateEmailAsync(cs: ControlState): Promise<ValidationResult>
-    {
+    private validateEmailAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             let text: string = cs.value || "";
             if (text.length > 0) {
@@ -436,7 +447,7 @@ export class NumberInputControl extends TextInputControl {
     @Input() minNumber: number;
     @Input() maxNumber: number;
     constructor() {
-        super();        
+        super();
         this.setPrevalidator((cs) => this.validateNumberAsync(cs));
     }
     private validateNumberAsync(cs: ControlState): Promise<ValidationResult> {

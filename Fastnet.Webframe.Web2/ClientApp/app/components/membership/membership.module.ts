@@ -8,6 +8,8 @@ import { PageModule } from '../page/page.module';
 import { routing } from './membership.routing';
 import { ControlsModule } from "../controls/controls.module";
 import { ModalDialogModule } from '../modaldialog/modal-dialog.module';
+import { GroupTreeComponent } from './group-tree.component';
+import { TreeModule } from 'angular-tree-component';
 
 
 @NgModule({
@@ -17,11 +19,13 @@ import { ModalDialogModule } from '../modaldialog/modal-dialog.module';
         routing,
         PageModule,
         ControlsModule,
-        ModalDialogModule
+        ModalDialogModule,
+        TreeModule
     ],
     exports: [],
     declarations: [
-        MembershipComponent
+        MembershipComponent,
+        GroupTreeComponent
         ],
     providers: [],
 })

@@ -1,6 +1,6 @@
 {
   "Id": "modal.dialog",
-  "Version": "1.0.5",
+  "Version": "1.0.8",
   "TargetDirectory": "app\\components\\modaldialog",
   "Files": [
     "**/*.ts",

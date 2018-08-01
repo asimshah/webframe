@@ -17,8 +17,8 @@ namespace Fastnet.Webframe.CoreData2
         public PanelNames PanelName { get; set; }
         public long Page_PageId { get; set; }
         [ForeignKey("Page_PageId")]
-        public Page Page { get; set; }
-        public ICollection<Menu> Menus { get; set; }
+        public virtual Page Page { get; set; }
+        public virtual ICollection<Menu> Menus { get; set; }
         public string GetDescriptor()
         {
             if (PanelName == PanelNames.MenuPanel)

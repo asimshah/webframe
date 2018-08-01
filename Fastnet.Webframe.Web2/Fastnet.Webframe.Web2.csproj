@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.480" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.489" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -43,7 +43,12 @@
 
   <ItemGroup>
     <None Remove="ClientApp\app\app-routing.module.ts" />
+    <None Remove="ClientApp\app\components\authentication\dwh\dwhregister.module.ts" />
+    <None Remove="ClientApp\app\components\authentication\dwh\dwhregister.routing.ts" />
     <None Remove="ClientApp\app\components\authentication\login.component.ts" />
+    <None Remove="ClientApp\app\components\authentication\register.module.ts" />
+    <None Remove="ClientApp\app\components\authentication\register.routing.ts" />
+    <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\controls\controls.module.ts" />
@@ -53,6 +58,7 @@
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
     <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <None Remove="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
+    <None Remove="ClientApp\app\components\membership\group-tree.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership-placeholder.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.component.ts" />
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
@@ -92,7 +98,12 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\app\app-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\authentication.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\dwh\dwhregister.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\dwh\dwhregister.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\login.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\register.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\register.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
@@ -104,6 +115,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\group-tree.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership-placeholder.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />

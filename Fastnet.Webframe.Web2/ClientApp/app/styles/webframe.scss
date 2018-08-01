@@ -1,4 +1,5 @@
-﻿$default-backgroundColour: #1b76bc;
+﻿
+$default-backgroundColour: #1b76bc;
 $max-sitepanel-width: 840px;
 $default-bannerpanel-backgroundColour: $default-backgroundColour;
 $default-bannerpanel-foregroundColour: white;
@@ -138,7 +139,7 @@ button {
         background: none;
         border: none;
         color: $link-colour;
-        font-size: 8pt;
+        //font-size: 8pt;
 
         &:hover {
             text-decoration: underline;

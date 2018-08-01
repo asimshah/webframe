@@ -12,7 +12,7 @@ declare var getCustomisation: any;
 @Component({
     selector: 'app',
     templateUrl: './app.component.html',
-    styleUrls: ['../../styles/webframe.scss', './app.component.scss'],
+    styleUrls: ['../../../../node_modules/angular-tree-component/dist/angular-tree-component.css', '../../styles/webframe.scss', './app.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {

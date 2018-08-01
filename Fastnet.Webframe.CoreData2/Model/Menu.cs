@@ -12,15 +12,15 @@ namespace Fastnet.Webframe.CoreData2
         public string Url { get; set; }
 
         public long? Page_PageId { get; set; }
-        public Page Page { get; set; }
+        public virtual Page Page { get; set; }
 
         public long? ParentMenu_Id { get; set; }
-        public Menu ParentMenu { get; set; }
+        public virtual Menu ParentMenu { get; set; }
 
         //public long? MenuMaster_Id { get; set; }
         //public MenuMaster MenuMaster { get; set; }
 
-        public ICollection<Menu> Submenus { get; set; }
+        public virtual ICollection<Menu> Submenus { get; set; }
         public override Menu GetParent()
         {
             return ParentMenu;

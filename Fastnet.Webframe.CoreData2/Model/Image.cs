@@ -20,7 +20,7 @@ namespace Fastnet.Webframe.CoreData2
 
         public long Directory_DirectoryId { get; set; }
         [ForeignKey("Directory_DirectoryId")]
-        public Directory Directory { get; set; }
+        public virtual Directory Directory { get; set; }
         [NotMapped]
         public string MimeType
         {

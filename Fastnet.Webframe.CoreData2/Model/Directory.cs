@@ -18,12 +18,12 @@ namespace Fastnet.Webframe.CoreData2
         public long? OriginalFolderId { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-        public Directory ParentDirectory { get; set; }
-        public ICollection<Directory> SubDirectories { get; set; }
-        public ICollection<DirectoryGroup> DirectoryGroups { get; set; }
-        public ICollection<Page> Pages { get; set; }
-        public ICollection<Document> Documents { get; set; }
-        public ICollection<Image> Images { get; set; }
+        public virtual Directory ParentDirectory { get; set; }
+        public virtual ICollection<Directory> SubDirectories { get; set; }
+        public virtual ICollection<DirectoryGroup> DirectoryGroups { get; set; }
+        public virtual ICollection<Page> Pages { get; set; }
+        public virtual ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
         [NotMapped]
         public string DisplayName
         {

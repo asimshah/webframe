@@ -93,6 +93,11 @@
       "resolved": "https://registry.npmjs.org/@types/jasmine/-/jasmine-2.5.53.tgz",
       "dev": true
     },
+    "@types/lodash": {
+      "version": "4.14.115",
+      "from": "@types/lodash@>=4.14.62 <5.0.0",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.115.tgz"
+    },
     "@types/webpack-env": {
       "version": "1.13.0",
       "from": "@types/webpack-env@1.13.0",
@@ -176,6 +181,18 @@
           "from": "loader-utils@>=1.0.2 <2.0.0",
           "resolved": "https://registry.npmjs.org/loader-utils/-/loader-utils-1.1.0.tgz",
           "dev": true
+        }
+      }
+    },
+    "angular-tree-component": {
+      "version": "7.2.1",
+      "from": "angular-tree-component@latest",
+      "resolved": "https://registry.npmjs.org/angular-tree-component/-/angular-tree-component-7.2.1.tgz",
+      "dependencies": {
+        "lodash": {
+          "version": "4.17.10",
+          "from": "lodash@>=4.17.5 <5.0.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.10.tgz"
         }
       }
     },
@@ -2476,6 +2493,16 @@
       "version": "0.5.1",
       "from": "mkdirp@>=0.5.1 <0.6.0",
       "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.1.tgz"
+    },
+    "mobx": {
+      "version": "3.6.2",
+      "from": "mobx@>=3.6.2 <4.0.0",
+      "resolved": "https://registry.npmjs.org/mobx/-/mobx-3.6.2.tgz"
+    },
+    "mobx-angular": {
+      "version": "2.1.1",
+      "from": "mobx-angular@2.1.1",
+      "resolved": "https://registry.npmjs.org/mobx-angular/-/mobx-angular-2.1.1.tgz"
     },
     "ms": {
       "version": "2.0.0",

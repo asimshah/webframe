@@ -16,13 +16,13 @@ namespace Fastnet.Webframe.CoreData2
         public PageType Type { get; set; }
         public long DirectoryId { get; set; }
         public bool IsLandingPage { get; set; }
-        public PageMarkup PageMarkup { get; set; }
-        public Directory Directory { get; set; }
+        public virtual PageMarkup PageMarkup { get; set; }
+        public virtual Directory Directory { get; set; }
         //public ICollection<MenuMaster> MenuMasters { get; set; }
-        public ICollection<Menu> Menus { get; set; }
-        public ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these document
-        public ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these document
-        public ICollection<PagePage> BackLinks { get; set; } // this page is hyperlinked from these pages
+        public virtual ICollection<Menu> Menus { get; set; }
+        public virtual ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these document
+        public virtual ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these document
+        public virtual ICollection<PagePage> BackLinks { get; set; } // this page is hyperlinked from these pages
         [NotMapped]
         public string Url
         {
@@ -173,14 +173,14 @@ namespace Fastnet.Webframe.CoreData2
     {
         public long PageId { get; set; }
         public long DocumentId { get; set; }
-        public Page Page { get; set; }
-        public Document Document { get; set; }
+        public virtual Page Page { get; set; }
+        public virtual Document Document { get; set; }
     }
     public class PagePage
     {
         public long FromPageId { get; set; }
         public long ToPageId { get; set; }
-        public Page FromPage { get; set; }
-        public Page ToPage { get; set; }
+        public virtual Page FromPage { get; set; }
+        public virtual Page ToPage { get; set; }
     }
 }

@@ -4,13 +4,7 @@ import { ModalDialogService } from './modal-dialog.service';
 import { getOriginalError } from '@angular/core/src/errors';
 import { Subject } from 'rxjs/Subject';
 
-//export interface IWaitOnResult {
-//    //setResult(val: boolean): void;
-//    close: (v: boolean) => void;
-//}
-
 @Component({
-    //moduleId: module.id.toString(),
     selector: 'modal-dialog',
     template: '<ng-content></ng-content>',
     styleUrls: ['./modal-dialog.component.scss'],
@@ -19,15 +13,11 @@ import { Subject } from 'rxjs/Subject';
 export class ModalDialogComponent implements OnInit, OnDestroy {
     @Input() id: string;
     private element: HTMLElement;
-
-    //yesNoResult: Subject<boolean> = new Subject<boolean>();
     private hasClosed: boolean = false;
     constructor(protected modalDialogService: ModalDialogService, protected el: ElementRef) {
-        //console.log(`ModalDialogComponent constructor`);
         this.element = el.nativeElement;
     }
     ngOnInit(): void {
-        //console.log("ModalDialogComponent: ngOnInit()");
         let modal = this;
         if (!this.id) {
             console.log("modal must have an id");
@@ -37,14 +27,13 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
         body.appendChild(this.element);
         this.element.addEventListener('click', (e) => {
             let target = <HTMLElement>e.target;
-            //let closest = <HTMLElement>target.closest('.modal-dialog-body');
             let closest = <HTMLElement>target.closest('.modal-container');
             if (!closest) {
                 //modal.close();
             }
         });
         this.modalDialogService.add(this);
-        //console.log(`ModalComponent ngOnInit() finished`);
+
     }
     ngOnDestroy(): void {
         this.modalDialogService.remove(this.id);
@@ -52,7 +41,7 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
     }
     public open(depth: number) {
         this.element.style.display = "block";
-        let overlay = this.getOverlay();// <HTMLElement>document.querySelector(`#${this.id} .modal-overlay`);
+        let overlay = this.getOverlay();
         overlay.style.zIndex = (1000 + depth.toString());
         let body = document.querySelectorAll("body");
         if (body !== null) {
@@ -70,14 +59,6 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
         }
         this.hasClosed = true;
     }
-    //public onYes() {
-    //    this.yesNoResult.next(true);
-    //    this.close();
-    //}
-    //public onNo() {
-    //    this.yesNoResult.next(false);
-    //    this.close();
-    //}
     private getOverlay(): HTMLElement {
         let overlay = <HTMLElement>document.querySelector(`#${this.id} .modal-overlay`);
         if (overlay == null) {

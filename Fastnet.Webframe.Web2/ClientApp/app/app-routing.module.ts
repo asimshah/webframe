@@ -15,17 +15,22 @@ import { AuthenticationService } from './components/authentication/authenticatio
 import { MembershipService } from './components/membership/membership.service';
 import { DWHMembershipService } from './components/membership/dwh/dwhmembership.service';
 import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
-//import { MembershipComponent } from './components/membership/membership.component';
-//import { DwhMembershipComponent } from './components/membership/dwh/dwhmembership.component';
+import { RegisterComponent } from './components/authentication/register.component';
+import { ResetPasswordComponent } from './components/authentication/resetpassword.component';
+import { ActivateComponent } from './components/authentication/activate.component';
 
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     { path: 'logout', component: HomeComponent },
-    { path: 'page/:id', component: HomeComponent},
+    { path: 'page/:id', component: HomeComponent },
     { path: 'login', component: LoginComponent },
+
+    { path: 'passwordreset/:id/:code', component: ResetPasswordComponent },
     //{ path: 'membership', component: MembershipPlaceholderComponent},
+    { path: 'register', loadChildren: './components/authentication/register.module#RegisterModule' },
+    { path: 'activate/:id/:code', component: ActivateComponent },
     { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard], canActivate: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },
@@ -38,6 +43,7 @@ const appRoutes: Routes = [
     // and replace loadchildren of the target route with theload of the custom route
     // e.g. replace loadchildren of 'membership' with loadchildren of dwhmembership
     { path: 'dwhmembership', loadChildren: './components/membership/dwh/dwhmembership.module#DwhMembershipModule', canLoad: [AdminGuard] },
+    { path: 'dwhregister', loadChildren: './components/authentication/dwh/dwhregister.module#DwhRegisterModule' },
 ];
 
 @NgModule({
@@ -61,6 +67,6 @@ const appRoutes: Routes = [
         DWHMembershipService
     ]
 })
-export class AppRoutingModule  {
+export class AppRoutingModule {
 
 }

@@ -11,8 +11,8 @@ namespace Fastnet.Webframe.CoreData2
         public long DirectoryId { get; set; }
         //[Key, Column(Order = 1)]
         public long GroupId { get; set; }        
-        public Directory Directory { get; set; }
-        public Group Group { get; set; }
+        public virtual Directory Directory { get; set; }
+        public virtual Group Group { get; set; }
         //[Mapped]
         public Permission Permission { get; set; }
         [NotMapped]

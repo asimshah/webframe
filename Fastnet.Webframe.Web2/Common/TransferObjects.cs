@@ -23,6 +23,19 @@ namespace Fastnet.Webframe.Web2
             ToMemberDTO(dto, member);
             return dto;
         }
+        public static GroupDTO ToDTO(this Group group)
+        {
+            var dto = new GroupDTO
+            {
+                GroupId = group.GroupId,
+                Description = group.Description,
+                Name = group.Name,
+                ParentGroupId = group.ParentGroupId,
+                Weight = group.Weight,
+                Type = group.Type
+            };
+            return dto;
+        }
         private static void FromMemberDTO(MemberDTO dto, Member member)
         {
             member.FirstName = dto.FirstName;
@@ -72,5 +85,18 @@ namespace Fastnet.Webframe.Web2
     {
         public MemberDTO Member { get; set; }
         public IEnumerable<string> Groups { get; set; }
+    }
+    public class GroupDTO
+    {
+        public long GroupId { get; set; }
+        public long? ParentGroupId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int Weight { get; set; }
+        public GroupTypes Type { get; set; }
+    }
+    public class MemberIdList
+    {
+        public string[] Ids { get; set; }
     }
 }

@@ -10,40 +10,22 @@ export class AdminGuard implements CanActivate, CanLoad {
     canLoad() {
         console.log(`admin-guard.canLoad()`);
         return this.checkAccess();
-        //let isAdmin = this.authenticationService.isAdministrator();
-        //if (!isAdmin) {
-        //    console.log(`admin-guard.canLoad(): permission denied`);
-        //    this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true });
-        //    return false;
-        //} else {
-        //    console.log(`admin-guard.canLoad(): permission granted`);
-        //    return true;
-        //}
-        //return true;
     }
-    canActivate(): boolean {
+    canActivate() {
         console.log(`admin-guard.canActivate()`);
         return this.checkAccess();
-        //let isAdmin = this.authenticationService.isAdministrator();
-        //if (!isAdmin) {
-        //    console.log(`admin-guard.canActivate(): permission denied`);
-        //    this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true });
-        //    return false;
-        //} else {
-        //    console.log(`admin-guard.canActivate(): permission granted`);
-        //    return true;
-        //}
-
     }
-    private checkAccess(): boolean {
-        let isAdmin = this.authenticationService.isAdministrator();
-        if (!isAdmin) {
-            console.log(`permission denied`);
-            this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true });
-            return false;
-        } else {
-            console.log(`permission granted`);
-            return true;
-        }
+    private checkAccess(): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            let isAdmin = await this.authenticationService.isAdministrator();
+            if (!isAdmin) {
+                console.log(`permission denied`);
+                this.router.navigate(['permissiondenied', 'This feature is restricted.', 'false'], { skipLocationChange: true });
+                resolve(false);
+            } else {
+                console.log(`permission granted`);
+                resolve(true);
+            }
+        });
     }
 }

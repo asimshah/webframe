@@ -11,6 +11,6 @@ namespace Fastnet.Webframe.CoreData2
         public string Guid { get; set; }
         public long TotalChunks { get; set; }
         public long BinaryLength { get; set; }
-        public ICollection<FileChunk> FileChunks { get; set; }
+        public virtual ICollection<FileChunk> FileChunks { get; set; }
     }
 }

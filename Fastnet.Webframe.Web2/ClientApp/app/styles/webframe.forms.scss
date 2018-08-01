@@ -4,8 +4,7 @@ $annotation-colour: #152eea;
 .webframe-form, modal-dialog {
     font-size: 16px;
     padding: 0.5em;
-
-
+    width: 100%;
 
     .caption {
         margin-top: 0;
@@ -16,8 +15,6 @@ $annotation-colour: #152eea;
             font-size: 0.8em;
         }
     }
-
-
 
     .annotation {
         font-size: 12px;
@@ -35,6 +32,9 @@ $annotation-colour: #152eea;
     margin-bottom: 0.5em;
 }
 modal-dialog {
+    .modal-container {
+        width: 75%;
+    }
     .caption {
         padding-left: 0.25em;
         padding-right: 0.25em;

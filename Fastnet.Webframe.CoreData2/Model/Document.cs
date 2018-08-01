@@ -21,8 +21,8 @@ namespace Fastnet.Webframe.CoreData2
         public string MimeType { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-        public ICollection<PageDocument> PageDocuments { get; set; } // these pages hyperlink to this document
-        public Directory Directory { get; set; }
+        public virtual ICollection<PageDocument> PageDocuments { get; set; } // these pages hyperlink to this document
+        public virtual Directory Directory { get; set; }
         [NotMapped]
         public string Url
         {

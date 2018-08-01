@@ -22,7 +22,7 @@ namespace Fastnet.Webframe.CoreData2
         public byte[] MiddleThumbNail { get; set; }
         [Timestamp]
         public byte[] TimeStamp { get; set; }
-        public Page Page { get; set; }
+        public virtual Page Page { get; set; }
         [NotMapped]
         public System.DateTime LastModifiedOn
         {

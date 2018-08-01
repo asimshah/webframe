@@ -9,6 +9,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ControlsModule } from '../../controls/controls.module';
 import { ModalDialogModule } from '../../modaldialog/modal-dialog.module';
+import { GroupTreeComponent } from '../group-tree.component';
+import { TreeModule } from 'angular-tree-component';
 
 @NgModule({
     imports: [
@@ -17,12 +19,14 @@ import { ModalDialogModule } from '../../modaldialog/modal-dialog.module';
         routing,
         PageModule,
         ControlsModule,
-        ModalDialogModule
+        ModalDialogModule,
+        TreeModule
     ],
     exports: [],
     //declarations: [MembershipComponent, DwhMembershipComponent],
     declarations: [
-        DwhMembershipComponent
+        DwhMembershipComponent,
+        GroupTreeComponent
     ],
     providers: [],
 })

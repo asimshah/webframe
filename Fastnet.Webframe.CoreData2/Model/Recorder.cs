@@ -10,6 +10,6 @@ namespace Fastnet.Webframe.CoreData2
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string RecorderId { get; set; } // from a guid
         public DateTime StartedOn { get; set; }
-        public ICollection<Record> Records { get; set; }
+        public virtual ICollection<Record> Records { get; set; }
     }
 }

@@ -1,0 +1,21 @@
+﻿<div class="SitePanel">
+    <div class="BannerPanel">
+        <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
+    </div>
+    <div class="ContentPanel">
+        <div>
+            <div class="caption">Account Activation</div>
+            <div *ngIf="activationComplete">
+                <div *ngIf="activationResult">
+                    <p>Your account has been successfully activated. You may now <a [routerLink]="['/login']">login</a>.</p>
+                </div>
+                <div *ngIf="!activationResult">
+                    <p>Activation has failed.</p>
+                    <p>If you need help with activation please contact the site administrator.</p>
+                </div>
+            </div>
+            <a [routerLink]="['/home']">Home</a>
+        </div>
+
+    </div>
+</div>

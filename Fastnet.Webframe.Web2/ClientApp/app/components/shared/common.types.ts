@@ -1,10 +1,4 @@
-﻿export class MessageBox {
-    caption: string = "Message";
-    isAlert: boolean = false;
-    message: string = "<div>No message provided</div>";
-    confirmBox: boolean = false;
-    confirmClose: (r: boolean) => void;
-}
+﻿
 export class Member {
     id: string;
     isAdministrator: boolean;
@@ -27,4 +21,19 @@ export class Member {
         this.phoneNumber = "";
         this.disabled = false;
     }
+}
+export enum GroupTypes {
+    None = 0,
+    User = 1,
+    System = 2,
+    SystemDefinedMembers = 4
+}
+export class Group {
+    groupId: number;
+    parentGroupId?: number;
+    name: string;
+    description: string;
+    weight: number;
+    type: GroupTypes;
+    //subGroups: Group[] = [];
 }

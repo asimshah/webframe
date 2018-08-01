@@ -8,6 +8,6 @@ namespace Fastnet.Webframe.CoreData2
         public long Sequence { get; set; }
         public DateTime RecordedOn { get; set; }
         public string Text { get; set; }
-        public Recorder Recorder { get; set; }
+        public virtual Recorder Recorder { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace Fastnet.Webframe.Web2
                     cc.factory = FactoryName.DonWhillansHut;
                     List<RouteRedirection> rds = new List<RouteRedirection>();
                     rds.Add(new RouteRedirection { fromRoute = "membership", toRoute = "dwhmembership" });
+                    rds.Add(new RouteRedirection { fromRoute = "register", toRoute = "dwhregister" });
                     cc.routeRedirections = rds;
                     break;
             }

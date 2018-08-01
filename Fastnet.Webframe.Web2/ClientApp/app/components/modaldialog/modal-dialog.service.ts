@@ -2,6 +2,14 @@
 import { ModalDialogComponent } from './modal-dialog.component';
 import { ControlBase } from '../controls/controls.component';
 
+export class MessageBox {
+    caption: string = "Message";
+    isAlert: boolean = false;
+    message: string = "<div>No message provided</div>";
+    confirmBox: boolean = false;
+    confirmClose: (r: boolean) => void;
+}
+
 @Injectable()
 export class ModalDialogService {
     private openModalsCount: number = 0;
@@ -25,24 +33,10 @@ export class ModalDialogService {
             if (name) {
                 ControlBase.focus(name);
             }
-            //return m;
         } else {
             alert(`no modal-dialog found with id ${id}`)
         }
-        //return m as ModalDialogComponent;
     }
-    //public async openAndWait<M extends IWaitOnResult>(id: string, model: M, name: string | undefined = undefined): Promise<void> {
-    //    console.log(`ModalDialogService: open() with ${id}, focus on ${name}`);
-    //    let m = this.modals.find((item) => item.id === id);
-    //    if (m !== undefined) {
-    //        this.openModalsCount++;
-    //        console.log(`opening (with wait) modal ${id}, depth is ${this.openModalsCount}`);
-    //        m.openAndWait(model, this.openModalsCount);
-    //        if (name) {
-    //            ControlBase.focus(name);
-    //        }
-    //    }
-    //}
     public close(id: string): void {
         let m = this.modals.find((item) => item.id === id);
         if (m !== undefined) {

@@ -6,6 +6,11 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
+
+export class ServiceResult {
+    success: boolean;
+    errors: string[]
+}
 class DataResult {
     data: any;
     exceptionMessage: string;

@@ -5,10 +5,10 @@ import { EmailValidator, FormControl } from '@angular/forms';
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
 import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
 import { PageKeys, PageService } from '../shared/page.service';
-import { ControlState, PasswordInputControl, PropertyValidatorAsync, ValidationResult } from '../controls/controls.component';
+import { ControlState, PasswordInputControl, PropertyValidatorAsync, ValidationResult, ControlBase } from '../controls/controls.component';
 import { Dictionary } from '../types/dictionary.types';
-import { MessageBox } from '../shared/common.types';
-import { BaseComponent } from '../shared/base.component';
+//import { MessageBox } from '../shared/common.types';
+import { BaseComponent, nothingOnClose } from '../shared/base.component';
 
 class LoginModel {
     message: string;
@@ -29,8 +29,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
         dialogService: ModalDialogService,
-        private pageService: PageService) {
-        super(dialogService);
+        pageService: PageService) {
+        super(pageService, dialogService);
         this.usernameKey = `${this.nameSpace}-last-used-email`;
         this.model = new Credentials();
         this.validators = new Dictionary<PropertyValidatorAsync>();
@@ -44,9 +44,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
             this.passwordElement.focus();
         }
     }
-    getPageId() {               
-        return this.bannerPageId;
-    }
+
     async onLogin(): Promise<void> {
         let lr = await this.authenticationService.login(this.model);
         switch (lr) {
@@ -67,11 +65,21 @@ export class LoginComponent extends BaseComponent implements OnInit {
                 break;
         }
     }
-    onResetPassword() {
-        this.showMessageDialog("Reset password feature not implemented yet.");
+    async onResetPassword() {
+        let r = await ControlBase.isValid("password");
+        if (r === true) {
+            await this.authenticationService.sendPasswordReset(this.model.emailAddress);
+            this.showMessageDialog(`A password reset email has been sent to ${this.model.emailAddress}`, (r) => {
+                this.router.navigate(['home']);
+            }, false, "Message");
+
+        }
+        //this.router.navigate(['resetpassword']);
+        //this.showMessageDialog("Reset password feature not implemented yet.");
     }
     onRegister() {
-        this.showMessageDialog("Registration feature not implemented yet.");
+        this.router.navigate(['register']);
+        //this.showMessageDialog("Registration feature not implemented yet.");
     }
     onCancel(): void {
         this.router.navigate(['home']);

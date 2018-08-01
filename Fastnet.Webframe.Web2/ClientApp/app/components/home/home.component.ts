@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.canQueryPages = false;// !this.RunningInNode();
     }
     async ngOnInit() {
-        console.log(`HomeComponent: ${this.router.url}, ${this.route.snapshot.url[0].path}`);
+        //console.log(`HomeComponent: ${this.router.url}, ${this.route.snapshot.url[0].path}`);
         if (this.route.snapshot.url[0].path.toLowerCase() == 'logout') {
             await this.authenticationService.logout();
             this.router.navigate(['home']); // we need this to ensure that the logout has completed
@@ -88,6 +88,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                 switch (routeName) {
                     case "home":
                     case "login":
+                    case "register":
+                    case "resetpassword":
                         this.routeTo(e, routeName);
                         break;
                     //case "logout": route this back to server as we need to ensure full reset

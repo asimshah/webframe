@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+﻿import { Component, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
 //import { Dictionary} from '../shared/dictionary.types';
@@ -10,10 +10,11 @@ import {
 } from '../controls/controls.component';
 import { Dictionary } from '../types/dictionary.types';
 import { MembershipService } from './membership.service';
-import { MessageBox, Member } from '../shared/common.types';
+import { Member, Group, GroupTypes } from '../shared/common.types';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../authentication/authentication.service';
-import { BaseComponent } from '../shared/base.component';
+import { BaseComponent, nothingOnClose } from '../shared/base.component';
+import { GroupTreeComponent } from './group-tree.component';
 
 enum CommandButtons {
     Cancel,
@@ -39,15 +40,22 @@ enum Modes {
     Group
 }
 
+class groupMember {
+    id: string;
+    selected: boolean;
+    name: string;
+}
+
 @Component({
+
     selector: 'webframe-membership',
     templateUrl: './membership.component.html',
     styleUrls: ['../../styles/webframe.forms.scss', './membership.component.scss']
 })
 export class MembershipComponent extends BaseComponent implements OnInit {
+    public GroupTypes = GroupTypes;
     public Modes = Modes;
     public CommandButtons = CommandButtons;
-    public messageBox: MessageBox;
     public validators: Dictionary<PropertyValidatorAsync>;
     public mode: Modes;
     public bannerPageId: number | null;
@@ -57,20 +65,25 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public memberIsNew: boolean;
     public memberList: Member[];
     private originalMemberJson?: string;
-    //private originalMember?: Member;
-    @ViewChildren(ControlBase) controls: QueryList<ControlBase>;
-    constructor(protected pageService: PageService, protected router: Router,
+    // above member related stuff
+    // below group related stuff
+    @ViewChild(GroupTreeComponent) private groupTree: GroupTreeComponent;
+    public groupIsNew: boolean = false;    
+    public selectedGroup?: Group;
+    private selectedGroupJson: string;
+    private parentGroup: Group; // set when groupIsNew === true
+    public groupMembers: groupMember[];
+    constructor(pageService: PageService, protected router: Router,
         dialogService: ModalDialogService,
         protected membershipService: MembershipService) {
-        super(dialogService);
+        super(pageService, dialogService);
         console.log(`MembershipComponent: constructor`);
         this.mode = Modes.Member;
 
     }
     async ngOnInit() {
+        super.ngOnInit();
         console.log(`MembershipComponent: ngOnInit`);
-        this.bannerPageId = await this.pageService.getDefaultBanner();
-        //await this.authenticationService.sync();
         let letters = [
             "A", "B", "C", "D", "E", "F", "G", "H",
             "I", "J", "K", "L", "M", "N", "O", "P",
@@ -92,7 +105,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public onMemberClick(m: Member) {
         if (this.member && this.memberHasChanges()) {
-            this.showMessageDialog("First save the current changes, or use Cancel", false, "Membership");
+            this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
         } else {
             this.member = m;
             this.memberIsNew = false;
@@ -106,17 +119,17 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public onAddNewMemberClick() {
         if (!this.memberIsNew) {
-            this.member = this.getNewMember();// new Member();
+            this.member = this.getNewMember();
             this.memberIsNew = true;
             this.saveMemberJson();
             this.setNewMemberValidators();
         } else {
             if (this.memberHasChanges()) {
-                this.showMessageDialog("First save the current changes, or use Cancel", false, "Membership");
+                this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
             }
         }
     }
-    public async onSaveClick() {
+    public async onSaveMemberClick() {
         let r = await this.validateAll();
         if (r) {
             if (this.memberIsNew) {
@@ -126,7 +139,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             }
         }
     }
-    public async onCancelClick() {
+    public async onCancelMemberClick() {
         if (this.memberIsNew) {
             this.memberIsNew = false;
         } else if (this.member && this.memberHasChanges()) {
@@ -136,7 +149,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         this.member = undefined;
         this.originalMemberJson = undefined;
     }
-    public onDeleteClick() {
+    public onDeleteMemberClick() {
         //console.log("onDeleteClick");
         this.showConfirmDialog("Deleting a member removes all data for that member permanently. Are you sure you want to proceed? ", async (r) => {
             if (r === true) {
@@ -145,7 +158,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             }
         });
     }
-    public onActivateClick() {
+    public onActivateMemberClick() {
         this.showConfirmDialog("Directly activating a member means that the email address will not be known to be correct. Are you sure you want to proceed?", async (r) => {
             if (r === true && this.member) {
                 await this.membershipService.activateMember(this.member);
@@ -159,15 +172,16 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public async onSendActivationEmailClick() {
         if (this.member) {
             await this.membershipService.sendActivationEmail(this.member);
-            this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, false, "Membership");
+            this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
         }
     }
     public async onSendPasswordResetClick() {
         if (this.member) {
             await this.membershipService.sendPasswordResetEmail(this.member);
-            this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, false, "Membership");
+            this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
         }
     }
+
     public goBack() {
         this.router.navigate(['/home']);
     }
@@ -176,6 +190,16 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public setMode(mode: Modes) {
         this.mode = mode;
+        this.validators = new Dictionary<PropertyValidatorAsync>();
+        this.selectedGroup = undefined;
+        this.selectedGroupJson = "";
+        this.groupMembers = [];
+        switch (this.mode) {
+            case Modes.Group:
+                break;
+            case Modes.Member:
+                break;
+        }
     }
     public canShowCommand(cb: CommandButtons): boolean {
         let r = false;
@@ -224,7 +248,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         }
         return (m.firstName || "")  + ' ' + (m.lastName || "");
     }
-
     protected async searchMembers(prefix: boolean) {
         console.log(`search started using ${this.searchText}, prefix = ${prefix}`);
         this.memberList = await this.membershipService.getMembers(this.searchText, prefix);
@@ -242,6 +265,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         console.log(`returning standard new member`);
         return new Member();
     }
+    
+
     private async performSearch() {
         if (this.searchText.trim().length > 0) {
             let tab: TabItem | undefined = undefined;
@@ -261,10 +286,10 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             let cr = await this.membershipService.updateMember(this.member);
             if (cr.success) {
                 this.saveMemberJson();
-                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, false, "Membership");
+                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, nothingOnClose, false, "Membership");
             } else {
                 let errors = cr.errors.join("<br>");
-                this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, true, "Membership");
+                this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
             }
         }
     }
@@ -272,14 +297,14 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         if (this.member) {
             let cr = await this.membershipService.createNewMember(this.member);
             if (cr.success) {
-                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, false, "Membership");
+                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, nothingOnClose, false, "Membership");
                 this.member = undefined;
                 this.memberIsNew = false;
                 this.originalMemberJson = undefined;
                 this.performSearch();
             } else {
                 let errors = cr.errors.join("<br>");
-                this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, true, "Membership");
+                this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
             }
         }
     }
@@ -311,6 +336,157 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.memberList[index] = member;
         }
     }
+    //
+    public isSystemGroup(): boolean {
+        return this.selectedGroup && (this.selectedGroup.type & GroupTypes.System) > 0 ? true : false;
+    }
+    public membersSystemGenerated(): boolean {
+        return this.selectedGroup && (this.selectedGroup.type & GroupTypes.SystemDefinedMembers) > 0 ? true : false;
+    }
+    public canAddSubGroups(): boolean {
+        let r = false;
+        if (this.groupIsNew === false) {
+            if (this.selectedGroup) {
+                if ((this.selectedGroup.type & GroupTypes.User) > 0 && !this.groupHasChanges()) {
+                    r = true;
+                } else if (this.isSystemGroup() && this.selectedGroup.name === "AllMembers") {
+                    r = true;
+                }
+            }
+        }
+        console.log(`canAddSubGroups(): result = ${r}`);
+        return r;
+    }
+    public canDeleteGroup(): boolean {
+        let r = false;
+        if (this.groupIsNew === false && this.selectedGroup) {
+            r = (this.selectedGroup.type & GroupTypes.User) > 0;
+        }
+        return r;
+    }
+    public canAddMembers(): boolean {
+        return this.selectedGroup && ((this.selectedGroup.type & GroupTypes.User) > 0) || !this.membersSystemGenerated() ? true : false;
+    }
+    public canShowMembers(): boolean {
+        return !this.membersSystemGenerated() && !this.groupIsNew;
+    }
+    public countSelectedGroupMembers(): number {
+        let count = 0;
+        if (this.groupMembers) {
+            for (let gm of this.groupMembers) {
+                if (gm.selected) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    async onSelectedGroup(group: Group) {
+        this.selectedGroup = group;
+        console.log(`user selected group ${group.name}`);
+        if (!this.isSystemGroup()) {
+            this.selectedGroupJson = JSON.stringify(this.selectedGroup);
+            this.validators = new Dictionary<PropertyValidatorAsync>();
+            this.validators.add("name", new PropertyValidatorAsync((cs) => this.nameValidatorAsync(cs)));
+            this.validators.add("description", new PropertyValidatorAsync((cs) => this.descriptionValidatorAsync(cs)));
+        }
+        else {
+            this.selectedGroupJson = "";
+        }
+        if (!this.membersSystemGenerated()) {
+            let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
+            this.groupMembers = [];
+            for (let m of members) {
+                this.groupMembers.push({ id: m.id, name: `${m.firstName} ${m.lastName} (${m.emailAddress})`, selected: false });
+            }
+            //this.groupMembers = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
+        }
+    }
+
+    public onSelectGroupMembers(tf: boolean) {
+        if (this.groupMembers) {
+            for (let gm of this.groupMembers) {
+                gm.selected = tf;
+            }
+        }
+    }
+    onAddSubGroup() {
+        if (this.selectedGroup) {
+            this.parentGroup = this.selectedGroup;
+            this.selectedGroup = new Group();
+            this.selectedGroup.parentGroupId = this.parentGroup.groupId;
+            this.selectedGroup.type = GroupTypes.User;
+            this.selectedGroup.weight = this.parentGroup.weight;
+            this.selectedGroupJson = JSON.stringify(this.selectedGroup);
+            this.groupIsNew = true;
+        }
+    }
+    onAddMemberToGroup() {
+
+    }
+    onRemoveMembersFromGroup() {
+
+    }
+    async onDeleteGroupClick() {
+        if (this.selectedGroup && !this.groupIsNew) {
+            this.showConfirmDialog(`Deleting a group is irreversible. Are you sure you want to proceed?`, async (r) => {
+                if (r === true && this.selectedGroup) {
+                    await this.membershipService.deleteGroup(this.selectedGroup);
+                    this.removeGroupFromTree();
+                    this.selectedGroup = undefined;                    
+                }
+            }, true, "Message");
+        }
+    }
+    async onSaveGroupClick() {
+        if (this.groupIsNew) {
+            await this.createNewGroup();
+            this.addGroupToTree();
+            this.selectedGroupJson = JSON.stringify(this.selectedGroup);
+            this.groupIsNew = false;
+
+        } else {
+            await this.updateGroup();
+        }
+        this.selectedGroupJson = JSON.stringify(this.selectedGroup);
+    }
+    onCancelGroupClick() {
+        if (this.groupIsNew) {
+            this.selectedGroup = this.parentGroup;
+            this.selectedGroupJson = JSON.stringify(this.selectedGroup);
+            this.groupIsNew = false;
+        }
+    }
+    groupHasChanges() {
+        let r = false;
+        if (this.selectedGroup) {
+            let text = JSON.stringify(this.selectedGroup);
+            r = text !== this.selectedGroupJson;
+        }
+        return r;
+    }
+    private async createNewGroup() {
+        if (this.selectedGroup) {
+            let id = await this.membershipService.createGroup(this.selectedGroup);
+            this.selectedGroup.groupId = id;
+        }
+    }
+    private addGroupToTree() {
+        if (this.selectedGroup) {
+            this.groupTree.addGroup(this.selectedGroup);
+        }
+    }
+    private removeGroupFromTree() {
+        if (this.selectedGroup) {
+            this.groupTree.removeGroup(this.selectedGroup);
+        }
+    }
+    private async updateGroup() {
+        if (this.selectedGroup) {
+            await this.membershipService.updateGroup(this.selectedGroup);
+        }
+    }
+    //
     firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
             let vr = cs.validationResult;
@@ -318,11 +494,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             if (text.length === 0) {
                 vr.valid = false;
                 vr.message = `a First Name is required`;
-            } else if (text.startsWith("z")) {
-                vr.valid = false;
-                vr.message = `a First Name cannot begin with z`;
-            }
-            console.log(`${JSON.stringify(cs)}`);
+            } 
+            //console.log(`${JSON.stringify(cs)}`);
             resolve(cs.validationResult);
         });
     }
@@ -333,11 +506,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             if (text.length === 0) {
                 vr.valid = false;
                 vr.message = `a Last Name is required`;
-            } else if (text.startsWith("z")) {
-                vr.valid = false;
-                vr.message = `a Last Name cannot begin with z`;
-            }
-            console.log(`${JSON.stringify(cs)}`);
+            } 
+            //console.log(`${JSON.stringify(cs)}`);
             resolve(cs.validationResult);
         });
     }
@@ -376,6 +546,30 @@ export class MembershipComponent extends BaseComponent implements OnInit {
                 }
             }
             resolve(vr);
+        });
+    }
+    nameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            let vr = cs.validationResult;
+            let text = cs.value || "";
+            if (text.length === 0) {
+                vr.valid = false;
+                vr.message = `a Group Name is required`;
+            }
+            //console.log(`${JSON.stringify(cs)}`);
+            resolve(cs.validationResult);
+        });
+    }
+    descriptionValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>((resolve) => {
+            let vr = cs.validationResult;
+            let text = cs.value || "";
+            if (text.length === 0) {
+                vr.valid = false;
+                vr.message = `a Group Description is required`;
+            }
+            //console.log(`${JSON.stringify(cs)}`);
+            resolve(cs.validationResult);
         });
     }
     async validateAll(): Promise<boolean> {

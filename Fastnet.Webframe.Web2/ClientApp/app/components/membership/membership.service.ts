@@ -1,12 +1,10 @@
 ﻿import { Injectable } from "@angular/core";
-import { BaseService } from "../shared/base.service";
+import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
-import { Member } from "../shared/common.types";
+import { Member, Group } from "../shared/common.types";
+import { ValidationResult, ControlState } from "../controls/controls.component";
 
-export class ServiceResult {
-    success: boolean;
-    errors: string[]
-}
+
 
 @Injectable()
 export class MembershipService extends BaseService {
@@ -57,6 +55,26 @@ export class MembershipService extends BaseService {
             resolve();
         });
     }
+    async newEmailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+        return new Promise<ValidationResult>(async resolve => {
+            let vr = cs.validationResult;
+            if (vr.valid) {
+                let text: string = cs.value || "";
+                if (text.trim().length === 0) {
+                    vr.valid = false;
+                    vr.message = `an Email Address is required`;
+                } else {
+                    text = text.toLocaleLowerCase();
+                    let r = await this.validateEmailAddress(text);
+                    if (r === false) {
+                        vr.valid = false;
+                        vr.message = `this Email Address is already in use`;
+                    }
+                }
+            }
+            resolve(cs.validationResult);
+        });
+    }
     async validateEmailAddress(address: string): Promise<boolean> {
         return new Promise<boolean>(async resolve => {
             let dr = await this.query(`membershipapi/validate/email/${address}`);
@@ -68,6 +86,56 @@ export class MembershipService extends BaseService {
             let result = await this.post(`membershipapi/validate/prop/${name}`, values);
             let success = result.data;
             resolve({ success: success, message: result.message });
+        });
+    }
+    //
+    // now the group stuff
+    //
+    async getGroups(parentId?: number): Promise<Group[]> {
+        let query = parentId ? `membershipapi/get/groups/${parentId}` : `membershipapi/get/groups`;
+        return new Promise<Group[]>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } else {
+                resolve([]);
+            }
+        });
+    }
+    async getGroupMembers(groupId: number): Promise<Member[]> {
+        let query = `membershipapi/get/group/members/${groupId}`;
+        return new Promise<Member[]>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } else {
+                resolve([]);
+            }
+        });
+    }
+    async createGroup(group: Group): Promise<number> {
+        let query = `membershipapi/create/group`;
+        return new Promise<number>(async resolve => {
+            let result = await this.post(query, group); 
+            if (result.success) {
+                resolve(result.data);
+            } else {
+                resolve();
+            }
+        });
+    }
+    async deleteGroup(group: Group): Promise<void> {
+        let query = `membershipapi/delete/group`;
+        return new Promise<void>(async resolve => {
+            let result = await this.post(query, group);
+            resolve();
+        });
+    }
+    async updateGroup(group: Group): Promise<void> {
+        let query = `membershipapi/update/group`;
+        return new Promise<void>(async resolve => {
+            let result = await this.post(query, group);
+            resolve();
         });
     }
     protected buildSearchQuery(searchText: string, prefix: boolean): string {

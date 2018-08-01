@@ -1,7 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
-import { BaseService } from '../shared/base.service';
+import { BaseService, ServiceResult } from '../shared/base.service';
 import { Member } from '../shared/common.types';
 
 export class Credentials {
@@ -25,8 +25,55 @@ export class AuthenticationService extends BaseService {
     initialised: boolean = false;
     constructor(http: Http) {
         super(http);
-        //setTimeout(this.sync, 10);
+        //setTimeout(async () => { await this.sync(); }, 10);
         console.log("new AuthenticationService instance created");
+    }
+    async register(member: Member): Promise<ServiceResult> {
+        let query = "user/register";
+        return new Promise<ServiceResult>(async resolve => {
+            let result = await this.post(query, member);
+            if (result.success) {
+                resolve({ success: true, errors: [] });
+            } else {
+                let errors = result.message.split("|");
+                resolve({ success: false, errors: errors });
+            }
+        });
+
+    }
+    async activate(id: string, code: string): Promise<boolean> {
+        let query = `user/activate/${id}/${code}`;
+        return new Promise<boolean>(async resolve => {
+            let sr = await this.query(query);
+            resolve(sr.success);
+        });
+    }
+    async sendPasswordReset(emailAddress: string) {
+        let query = `user/send/passwordreset`;
+        return new Promise<void>(async resolve => {
+            var data = { emailAddress: emailAddress };
+            await this.post(query, data);
+            resolve();
+        });
+    }
+    async getMemberForPasswordChange(id: string, code: string): Promise<Member | null> {
+        let query = `user/get/member/${id}/${code}`;
+        return new Promise<Member | null>(async resolve => {
+            let sr = await this.query(query);
+            if (sr.success) {
+                resolve(sr.data as Member);
+            }
+            else {
+                resolve(null);
+            }
+        });
+    }
+    async changePassword(member: Member) {
+        let query = "user/change/password";
+        return new Promise<void>(async resolve => {
+            let result = await this.post(query, member);
+            resolve();
+        });
     }
     public async login(credentials: Credentials): Promise<LoginResult> {
         let lr: LoginResult = LoginResult.Unknown;
@@ -60,21 +107,27 @@ export class AuthenticationService extends BaseService {
     public async logout(): Promise<void> {
         let result = await this.query("user/logout");
     }
-    public isAuthenticated(): boolean {
-        return this.currentUser !== null;
+    public async isAuthenticated(): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            await this.sync();
+            resolve(this.currentUser !== null);
+        });
     }
     public isAdministrator() {
         return this.isMemberOf("Administrators");
     }
-    public isMemberOf(group: string): boolean {
-        let r = false;
-        if (this.currentUser !== null) {
-            if (this.currentUser.groups.find(x => x === group)) {
-                r = true;
+    public isMemberOf(group: string): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            await this.sync();
+            let r = false;
+            if (this.currentUser !== null) {
+                if (this.currentUser.groups.find(x => x === group)) {
+                    r = true;
+                }
             }
-        }
-        console.log(`${group} against ${JSON.stringify(this.currentUser)}, result = ${r}`);
-        return r;
+            console.log(`${group} against ${JSON.stringify(this.currentUser)}, result = ${r}`);
+            resolve(r);
+        });
     }
     //public async isMemberOf(group: string): Promise<boolean> {
     //    return new Promise<boolean>(async resolve => {
