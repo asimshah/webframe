@@ -10,7 +10,7 @@ import {
 } from '../controls/controls.component';
 import { Dictionary } from '../types/dictionary.types';
 import { MembershipService } from './membership.service';
-import { Member, Group, GroupTypes } from '../shared/common.types';
+import { Member, Group, GroupTypes, MemberIdList } from '../shared/common.types';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { BaseComponent, nothingOnClose } from '../shared/base.component';
@@ -47,7 +47,6 @@ class groupMember {
 }
 
 @Component({
-
     selector: 'webframe-membership',
     templateUrl: './membership.component.html',
     styleUrls: ['../../styles/webframe.forms.scss', './membership.component.scss']
@@ -73,6 +72,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     private selectedGroupJson: string;
     private parentGroup: Group; // set when groupIsNew === true
     public groupMembers: groupMember[];
+    public candidateMembers: groupMember[];
     constructor(pageService: PageService, protected router: Router,
         dialogService: ModalDialogService,
         protected membershipService: MembershipService) {
@@ -336,6 +336,13 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.memberList[index] = member;
         }
     }
+    private async showCandidateMembers() {
+        if (this.selectedGroup) {
+            let members = await this.membershipService.getCandidateMembers(this.selectedGroup);
+            this.candidateMembers = this.toGroupMembers(members);
+            this.dialogService.open("candidate-members");
+        }
+    }
     //
     public isSystemGroup(): boolean {
         return this.selectedGroup && (this.selectedGroup.type & GroupTypes.System) > 0 ? true : false;
@@ -370,17 +377,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public canShowMembers(): boolean {
         return !this.membersSystemGenerated() && !this.groupIsNew;
     }
-    public countSelectedGroupMembers(): number {
-        let count = 0;
-        if (this.groupMembers) {
-            for (let gm of this.groupMembers) {
-                if (gm.selected) {
-                    count++;
-                }
-            }
-        }
-        return count;
-    }
     async onSelectedGroup(group: Group) {
         this.selectedGroup = group;
         console.log(`user selected group ${group.name}`);
@@ -395,10 +391,11 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         }
         if (!this.membersSystemGenerated()) {
             let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
-            this.groupMembers = [];
-            for (let m of members) {
-                this.groupMembers.push({ id: m.id, name: `${m.firstName} ${m.lastName} (${m.emailAddress})`, selected: false });
-            }
+            this.groupMembers = this.toGroupMembers(members);
+            //this.groupMembers = [];
+            //for (let m of members) {
+            //    this.groupMembers.push({ id: m.id, name: `${m.firstName} ${m.lastName} (${m.emailAddress})`, selected: false });
+            //}
             //this.groupMembers = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
         }
     }
@@ -421,11 +418,42 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.groupIsNew = true;
         }
     }
-    onAddMemberToGroup() {
-
+    async onRequestAddMemberToGroup() {
+        await this.showCandidateMembers();
     }
-    onRemoveMembersFromGroup() {
-
+    async onRemoveMembersFromGroup() {
+        if (this.selectedGroup) {
+            let list = new MemberIdList();
+            list.Ids = [];
+            for (let m of this.groupMembers) {
+                if (m.selected === true) {
+                    list.Ids.push(m.id);
+                }
+            }
+            await this.membershipService.removeGroupMembers(this.selectedGroup, list);
+            let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
+            this.groupMembers = this.toGroupMembers(members);
+        }
+    }
+    onCancelAddMembersClick() {
+        this.candidateMembers = [];
+        this.dialogService.close("candidate-members");
+    }
+    async onAddMembersClick() {
+        if (this.selectedGroup) {
+            let list = new MemberIdList();
+            list.Ids = [];
+            for (let m of this.candidateMembers) {
+                if (m.selected === true) {
+                    list.Ids.push(m.id);
+                }
+            }
+            await this.membershipService.addGroupMembers(this.selectedGroup, list);
+            let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
+            this.groupMembers = this.toGroupMembers(members);
+        }
+        this.candidateMembers = [];
+        this.dialogService.close("candidate-members");
     }
     async onDeleteGroupClick() {
         if (this.selectedGroup && !this.groupIsNew) {
@@ -465,6 +493,15 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         }
         return r;
     }
+    countSelectedMembers(list: groupMember[]): number {
+        let count = 0;
+        for (let gm of list) {
+            if (gm.selected) {
+                count++;
+            }
+        }
+        return count;
+    }
     private async createNewGroup() {
         if (this.selectedGroup) {
             let id = await this.membershipService.createGroup(this.selectedGroup);
@@ -486,6 +523,14 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             await this.membershipService.updateGroup(this.selectedGroup);
         }
     }
+    private toGroupMembers(list: Member[]): groupMember[] {
+        let groupMembers = [];
+        for (let m of list) {
+            groupMembers.push({ id: m.id, name: `${m.firstName} ${m.lastName} (${m.emailAddress})`, selected: false });
+        }
+        return groupMembers;
+    }
+
     //
     firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {

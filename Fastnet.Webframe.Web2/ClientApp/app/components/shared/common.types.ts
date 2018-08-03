@@ -37,3 +37,7 @@ export class Group {
     type: GroupTypes;
     //subGroups: Group[] = [];
 }
+export class MemberIdList {
+    Ids: string[];
+}
+

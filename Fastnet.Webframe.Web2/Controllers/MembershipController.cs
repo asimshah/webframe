@@ -416,8 +416,6 @@ namespace Fastnet.Webframe.Web2.Controllers
             try
             {
                 var group = await coreDataContext.Groups
-                    //.Include(x => x.Children)
-                    //.Include(x => x.GroupMembers)
                     .SingleOrDefaultAsync(x => x.GroupId == groupId);
                 if (group != null)
                 {
@@ -434,12 +432,18 @@ namespace Fastnet.Webframe.Web2.Controllers
                                 Member = m
                             };
                             await coreDataContext.GroupMembers.AddAsync(gm);
-
-                            foreach(var cg in group.Descendants)
+                            await coreDataContext.RecordChanges(group, this.GetCurrentMember().Fullname, GroupAction.GroupActionTypes.MemberAddition, m);
+                            log.Information($"Member {m.FirstName} {m.LastName} added to group {group.Name}");
+                            foreach (var cg in group.Descendants)
                             {
                                 //await coreDataContext.Entry(cg).Collection(x => x.GroupMembers).LoadAsync();
                                 var childGroupsWithMember = cg.GroupMembers.Where(x => x.MemberId == m.Id).ToArray();
                                 coreDataContext.GroupMembers.RemoveRange(childGroupsWithMember);
+                                foreach (var item in childGroupsWithMember)
+                                {
+                                    await coreDataContext.RecordChanges(item.Group, this.GetCurrentMember().Fullname, GroupAction.GroupActionTypes.MemberRemoval, item.Member);
+                                    log.Information($"Member {item.Member.FirstName} {item.Member.LastName} removed from group {item.Group.Name}");
+                                }
                             }
                         }
                     }
@@ -471,6 +475,8 @@ namespace Fastnet.Webframe.Web2.Controllers
                     if (gm != null)
                     {
                         coreDataContext.GroupMembers.Remove(gm);
+                        await coreDataContext.RecordChanges(gm.Group, this.GetCurrentMember().Fullname, GroupAction.GroupActionTypes.MemberRemoval, gm.Member);
+                        log.Information($"Member {gm.Member.FirstName} {gm.Member.LastName} removed from group {gm.Group.Name}");
                     }
                     else
                     {

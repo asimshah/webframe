@@ -204,3 +204,20 @@
         }
     }
 }
+
+#candidate-members {
+    .modal-container {
+        width: 65%;
+
+    }
+    .member-list {
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+        max-height: 60vh;
+        overflow-y: scroll;
+        .member-item {
+            display: flex;
+            align-items: center;
+        }
+    }
+}

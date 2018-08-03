@@ -1,10 +1,8 @@
 ﻿import { Injectable } from "@angular/core";
 import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
-import { Member, Group } from "../shared/common.types";
+import { Member, Group, MemberIdList } from "../shared/common.types";
 import { ValidationResult, ControlState } from "../controls/controls.component";
-
-
 
 @Injectable()
 export class MembershipService extends BaseService {
@@ -135,6 +133,31 @@ export class MembershipService extends BaseService {
         let query = `membershipapi/update/group`;
         return new Promise<void>(async resolve => {
             let result = await this.post(query, group);
+            resolve();
+        });
+    }
+    async getCandidateMembers(group: Group): Promise<Member[]> {
+        let query = `membershipapi/get/candidatemembers/${group.groupId}`;
+        return new Promise<Member[]>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } else {
+                resolve([]);
+            }
+        });
+    }
+    async addGroupMembers(group: Group, list: MemberIdList): Promise<void> {
+        let query = `membershipapi/add/groupmembers/${group.groupId}`;
+        return new Promise<void>(async resolve => {
+            let result = await this.post(query, list);
+            resolve();
+        });
+    }
+    async removeGroupMembers(group: Group, list: MemberIdList): Promise<void> {
+        let query = `membershipapi/remove/groupmembers/${group.groupId}`;
+        return new Promise<void>(async resolve => {
+            let result = await this.post(query, list);
             resolve();
         });
     }

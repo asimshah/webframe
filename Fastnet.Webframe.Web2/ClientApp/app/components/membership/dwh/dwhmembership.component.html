@@ -123,8 +123,8 @@
                         </div>
                     </div>
                     <div *ngIf="canAddMembers()" class="button-panel">
-                        <button class="default" (click)="onAddMemberToGroup()">Add Member</button>
-                        <button class="default" [disabled]="countSelectedGroupMembers() === 0" (click)="onRemoveMembersFromGroup()">Remove Member(s)</button>
+                        <button class="default" (click)="onRequestAddMemberToGroup()">Add Member</button>
+                        <button class="default" [disabled]="countSelectedMembers(groupMembers) === 0" (click)="onRemoveMembersFromGroup()">Remove Member(s)</button>
                     </div>
                 </div>
                 <!--<pre>{{selectedGroup | json}}</pre>
@@ -152,5 +152,26 @@
             </div>
         </div>
         <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
+    </div>
+</modal-dialog>
+<modal-dialog id="candidate-members">
+    <div class="modal-overlay">
+        <div *ngIf="candidateMembers" class="modal-container">
+            <div class="form-body">
+                <div class="caption">Select Member(s)</div>
+                <div class="member-list">
+                    <div *ngFor="let m of candidateMembers" class="member-item">
+                        <bool-input [(ngModel)]="m.selected"></bool-input>
+                        <div>{{m.name}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="command-buttons align-centrally">
+                <div >
+                    <button class="secondary" [ngClass]="{disabled: countSelectedMembers(candidateMembers) === 0}" (click)="onAddMembersClick()" >OK</button>
+                    <button class="default" (click)="onCancelAddMembersClick()" >Cancel</button>
+                </div>
+            </div>
+        </div>
     </div>
 </modal-dialog>
