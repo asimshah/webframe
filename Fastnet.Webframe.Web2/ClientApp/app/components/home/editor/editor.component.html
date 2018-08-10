@@ -1,5 +1,5 @@
 <div class="SitePanel" (click)="onSitePanelClick($event)">
-    <!--<div *ngIf="isEditor" class="edit-panel command-buttons">
+    <div  class="edit-panel command-buttons">
         <div class="top-row-left">
             <button class="default small">Edit this page</button>
         </div>
@@ -7,7 +7,7 @@
             <button class="secondary small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
             <button class="default small" >Save Changes</button>
         </div>
-    </div>-->
+    </div>
     <div *ngIf="member" class="login-status">
         <div class="login-name">{{member.name}}</div>
     </div>
@@ -30,7 +30,7 @@
         </div>
     </div>
 </div>
-<!--<modal-dialog id="site-content-browser">
+<modal-dialog id="site-content-browser">
     <div class="modal-overlay">
         <div class="modal-container">
             <div class="form-body">
@@ -53,5 +53,5 @@
             </div>
         </div>
     </div>
-</modal-dialog>-->
+</modal-dialog>
 

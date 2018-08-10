@@ -6,6 +6,43 @@ $default-sitepanel-width: 840px;
     height: 100%;
 }
 
+.SitePanel {
+    /*.edit-panel {
+        background-color: black;
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+    }*/
+
+    .login-status {
+        z-index: 333;
+        /*&.enable {
+            display: block;
+        }
+
+        &:not(.enable) {
+            display: none;
+        }*/
+        position: relative;
+
+        .login-name {
+            text-decoration: none;
+            /*cursor: pointer;*/
+            /*&:hover {
+                text-decoration: underline;
+            }*/
+        }
+
+        div {
+            position: absolute;
+            right: 0;
+            top: 60px;
+            margin-right: 4px;
+            background: transparent;
+            color: white;
+        }
+    }
+}
+
 .BannerPanel {
     position: relative; // allows child elements to be positioned absolutely
     webframe-sidebarmenu {
@@ -13,12 +50,15 @@ $default-sitepanel-width: 840px;
     }
 }
 
+
+
 @media all and (max-width: 748px) {
     .BannerPanel {
         webframe-sidebarmenu {
             display: block;
         }
     }
+
     .SitePanel {
         .MenuPanel {
             display: none;

@@ -9,10 +9,10 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { HomeComponent } from './components/home/home.component';
 import { PageNotFoundComponent } from './components/home/pagenotfound.component';
-import { EditorComponent } from './components/home/editor/editor.component';
+//import { EditorComponent } from './components/home/editor/editor.component';
 import { PageModule } from './components/page/page.module';
-import { MenuComponent } from './components/home/menu.component';
-import { SidebarMenuComponent } from './components/home/sidebarmenu.component';
+//import { MenuComponent } from './components/home/menu.component';
+//import { SidebarMenuComponent } from './components/home/sidebarmenu.component';
 import { LoginComponent } from './components/authentication/login.component';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
 import { ControlsModule } from "./components/controls/controls.module";
@@ -22,16 +22,18 @@ import { ResetPasswordComponent } from './components/authentication/resetpasswor
 import { RegisterComponent } from './components/authentication/register.component';
 import { ActivateComponent } from './components/authentication/activate.component';
 import { TreeModule } from 'angular-tree-component';
+import { LogoutComponent } from './components/authentication/logout.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         HomeComponent,
         PageNotFoundComponent,
-        MenuComponent,
-        SidebarMenuComponent,
-        EditorComponent,
+        //MenuComponent,
+        //SidebarMenuComponent,
+        //EditorComponent,
         LoginComponent,
+        LogoutComponent,
         ResetPasswordComponent,
         RegisterComponent,
         ActivateComponent,

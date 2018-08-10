@@ -50,7 +50,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
         switch (lr) {
             case LoginResult.Succeeded:
                 localStorage.setItem(this.usernameKey, this.model.emailAddress);
-                this.router.navigate(['home']);
+                if (this.authenticationService.isEditor()) {
+                    this.router.navigate(['edit', '0']);
+                } else {
+                    this.router.navigate(['home']);
+                }
                 break;
             case LoginResult.CredentialsInvalid:
                 this.showMessageDialog(`The email address and/or password is incorrect. Please try again, or cancel.`);

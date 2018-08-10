@@ -55,6 +55,7 @@ namespace Fastnet.Webframe.Web2
             dto.IsAdministrator = member.IsAdministrator;
             dto.FirstName = member.FirstName;
             dto.LastName = member.LastName;
+            dto.Name = member.Fullname;
             dto.EmailAddress = member.EmailAddress;
             dto.EmailAddressConfirmed = member.EmailAddressConfirmed;
             dto.PhoneNumber = member.PhoneNumber;
@@ -73,6 +74,7 @@ namespace Fastnet.Webframe.Web2
         public bool EmailAddressConfirmed { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Name { get; set; }
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime CreationDate { get; set; }
@@ -98,5 +100,11 @@ namespace Fastnet.Webframe.Web2
     public class MemberIdList
     {
         public string[] Ids { get; set; }
+    }
+    public class DirectoryDTO
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public int SubdirectoryCount { get; set; }
     }
 }

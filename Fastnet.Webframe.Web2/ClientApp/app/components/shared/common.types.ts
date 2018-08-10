@@ -6,6 +6,7 @@ export class Member {
     emailAddressConfirmed: boolean;
     firstName: string;
     lastName: string;
+    name: string
     password: string;
     phoneNumber: string;
     creationDate?: Date;

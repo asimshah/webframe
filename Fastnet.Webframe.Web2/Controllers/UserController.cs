@@ -218,7 +218,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 {
                     await signInManager.SignOutAsync();
                 }
-                var result = await signInManager.PasswordSignInAsync(user, credentials.password,  false, false);
+                var result = await signInManager.PasswordSignInAsync(user, credentials.password,  true, false);
                 if(result.Succeeded)
                 {
                     member.LastLoginDate = DateTime.UtcNow;

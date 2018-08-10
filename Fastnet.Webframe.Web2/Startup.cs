@@ -88,7 +88,9 @@ namespace Fastnet.Webframe.Web2
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.HttpOnly = true;
-                options.Cookie.Expiration = TimeSpan.FromMinutes(30);
+                //options.ExpireTimeSpan = TimeSpan.FromSeconds(10);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.Cookie.Expiration = TimeSpan.FromMinutes(15);
                 //*NB* so that users always see the access denied page if they are required to be authenticated
                 // in practice, such access is caught in angular routeguard
                 options.LoginPath = "/Home/AccessDenied";// "/login";               
@@ -98,36 +100,6 @@ namespace Fastnet.Webframe.Web2
                 {
                     OnRedirectToLogin = c => { return CheckForUnauthorized(c); },
                     OnRedirectToAccessDenied = c => { return CheckForUnauthorized(c); }
-                    //OnRedirectToLogout = c =>
-                    //{
-                    //    log.Debug($"OnRedirectToLogout");
-                    //    return Task.CompletedTask;
-                    //},
-                    //OnSignedIn = c =>
-                    //{
-                    //    log.Information($"{c.Principal.Identity.Name} logged in");
-                    //    return Task.CompletedTask;
-                    //},
-                    //OnSigningOut = c =>
-                    //{
-                    //    log.Information($"{c.HttpContext.User.Identity.Name} logged out");
-                    //    return Task.CompletedTask;
-                    //},
-                    //OnRedirectToReturnUrl = c =>
-                    //{
-                    //    log.Debug($"OnRedirectToReturnUrl");
-                    //    return Task.CompletedTask;
-                    //},
-                    //OnSigningIn = c =>
-                    //{
-                    //    log.Debug($"OnSigningIn");
-                    //    return Task.CompletedTask;
-                    //},
-                    //OnValidatePrincipal = c =>
-                    //{
-                    //    log.Debug($"OnSigningIn");
-                    //    return Task.CompletedTask;
-                    //}
                 };
             });
 

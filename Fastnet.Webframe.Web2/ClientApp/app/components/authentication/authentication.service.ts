@@ -15,7 +15,7 @@ export enum LoginResult {
     AccountIsBarred,
     Unknown
 }
-class userData {
+export class userData {
     member: Member;
     groups: string[];
 }
@@ -106,6 +106,12 @@ export class AuthenticationService extends BaseService {
     }
     public async logout(): Promise<void> {
         let result = await this.query("user/logout");
+        if (this.currentUser) {
+            console.log(`${this.currentUser.member.name} logged out`);
+        } else {
+            console.log(`<no user> logged out`);
+        }
+        this.currentUser = null;
     }
     public async isAuthenticated(): Promise<boolean> {
         return new Promise<boolean>(async resolve => {
@@ -113,10 +119,20 @@ export class AuthenticationService extends BaseService {
             resolve(this.currentUser !== null);
         });
     }
-    public isAdministrator() {
+    public async isAdministrator() {
         return this.isMemberOf("Administrators");
     }
-    public isMemberOf(group: string): Promise<boolean> {
+    public async isEditor(): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            let result = await this.isMemberOf("Administrators");
+            if (!result) {
+                result = await this.isMemberOf("Editors");
+            }
+            //console.log(`isEditor result is ${result}`);
+            resolve(result);
+        });
+    }
+    public async isMemberOf(group: string): Promise<boolean> {
         return new Promise<boolean>(async resolve => {
             await this.sync();
             let r = false;
@@ -125,7 +141,7 @@ export class AuthenticationService extends BaseService {
                     r = true;
                 }
             }
-            console.log(`${group} against ${JSON.stringify(this.currentUser)}, result = ${r}`);
+            //console.log(`${group} against ${JSON.stringify(this.currentUser)}, result = ${r}`);
             resolve(r);
         });
     }

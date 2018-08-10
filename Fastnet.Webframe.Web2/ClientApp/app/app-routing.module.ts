@@ -18,12 +18,15 @@ import { MembershipPlaceholderComponent } from './components/membership/membersh
 import { RegisterComponent } from './components/authentication/register.component';
 import { ResetPasswordComponent } from './components/authentication/resetpassword.component';
 import { ActivateComponent } from './components/authentication/activate.component';
+import { ContentService } from './components/shared/content.service';
+import { EditorGuard } from './components/routeguards/editor-guard.service';
+import { LogoutComponent } from './components/authentication/logout.component';
 
 
 const appRoutes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'logout', component: HomeComponent },
+    { path: 'logout', component: LogoutComponent},
     { path: 'page/:id', component: HomeComponent },
     { path: 'login', component: LoginComponent },
 
@@ -35,6 +38,7 @@ const appRoutes: Routes = [
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },
     { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule', canLoad: [AdminGuard] },
+    { path: 'edit/:id', loadChildren: './components/home/editor/editor.module#EditorModule', canLoad:[EditorGuard], canActivate:[EditorGuard] },
     { path: 'permissiondenied/:msg/:allowLogin', component: PermissionDeniedComponent },
     { path: 'pagenotfound', component: PageNotFoundComponent },
     { path: '**', redirectTo: 'home' },
@@ -58,11 +62,12 @@ const appRoutes: Routes = [
     ],
     providers: [
         AdminGuard,
+        EditorGuard,
         MemberGuard,
         ConfigService,
         AuthenticationService,
-        //ModalDialogService,
         PageService,
+        ContentService,
         MembershipService,
         DWHMembershipService
     ]

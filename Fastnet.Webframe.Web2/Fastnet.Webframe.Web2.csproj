@@ -18,7 +18,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastnet.Core.Web" Version="1.0.489" />
+    <PackageReference Include="Fastnet.Core.Web" Version="1.0.493" />
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -46,6 +46,7 @@
     <None Remove="ClientApp\app\components\authentication\dwh\dwhregister.module.ts" />
     <None Remove="ClientApp\app\components\authentication\dwh\dwhregister.routing.ts" />
     <None Remove="ClientApp\app\components\authentication\login.component.ts" />
+    <None Remove="ClientApp\app\components\authentication\logout.component.ts" />
     <None Remove="ClientApp\app\components\authentication\register.module.ts" />
     <None Remove="ClientApp\app\components\authentication\register.routing.ts" />
     <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
@@ -53,6 +54,8 @@
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\controls\controls.module.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
+    <None Remove="ClientApp\app\components\home\editor\editor.module.ts" />
+    <None Remove="ClientApp\app\components\home\editor\editor.routing.ts" />
     <None Remove="ClientApp\app\components\home\menu.component.ts" />
     <None Remove="ClientApp\app\components\home\page.service.ts" />
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
@@ -67,11 +70,13 @@
     <None Remove="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\page\page.module.ts" />
+    <None Remove="ClientApp\app\components\routeguards\editor-guard.service.ts" />
     <None Remove="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <None Remove="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
     <None Remove="ClientApp\app\components\shared\common.types.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
+    <None Remove="ClientApp\app\components\shared\content.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -101,6 +106,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\authentication\dwh\dwhregister.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\dwh\dwhregister.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\login.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\authentication\logout.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\register.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\register.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\authentication\resetpassword.component.ts" />
@@ -110,8 +116,10 @@
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\menu.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\sidebarmenu.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\page\menu.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\page\sidebarmenu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.types.ts" />
@@ -120,9 +128,11 @@
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\routeguards\editor-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\common.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.types.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\content.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />

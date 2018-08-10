@@ -37,7 +37,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> ClientInformation()
         {
             var bi = this.Request.FromBody<browserInfo>();
-            log.Information($"browser is {bi.Name}, {bi.Version}");
+            log.Information($"browser is {bi.Name}, {bi.Version}, authenticated = {IsAuthenticated}");
             var id = this.HttpContext.Session.GetString("SessionId");
             if (string.IsNullOrWhiteSpace(id))
             {

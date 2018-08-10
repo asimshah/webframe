@@ -60,6 +60,9 @@
             &:hover {
                 color: var(--search-hover-colour, orange);
             }
+            span {
+                align-self: center;
+            }
         }
 
         &.clear-button {
