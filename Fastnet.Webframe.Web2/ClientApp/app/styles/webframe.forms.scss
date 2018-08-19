@@ -45,3 +45,12 @@ modal-dialog {
         width: 33%;
     }
 }
+#error-box {
+    .error-list {
+        margin-top: 0.5em;
+        font-size: larger;
+        .error-msg {
+            font-style: italic;
+        }
+    }
+}

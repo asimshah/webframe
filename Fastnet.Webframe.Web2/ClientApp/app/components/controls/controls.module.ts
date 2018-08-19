@@ -15,6 +15,8 @@ import {
     BoolEnumInputControl,
     DropDownControl
 } from "./controls.component";
+import { DateInput2Control } from './date-input.component';
+import { TreeViewComponent } from './tree-view.component';
 
 @NgModule({
     imports: [
@@ -29,10 +31,12 @@ import {
         EmailInputControl,
         NumberInputControl,
         DateInputControl,
+        DateInput2Control,
         BoolInputControl,
         EnumInputControl,
         BoolEnumInputControl,
-        DropDownControl
+        DropDownControl,
+        TreeViewComponent
     ],
     declarations: [
         TextInputControl,
@@ -42,10 +46,12 @@ import {
         EmailInputControl,
         NumberInputControl,
         DateInputControl,
+        DateInput2Control,
         BoolInputControl,
         EnumInputControl,
         BoolEnumInputControl,
-        DropDownControl
+        DropDownControl,
+        TreeViewComponent
     ],
     providers: [],
 })

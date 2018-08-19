@@ -94,20 +94,18 @@ button {
     $warning-colour: red;
     $secondary-colour: green;
     $link-colour: #30b0e9;
-    border: 1px solid $button-colour;
+    border: 1px solid $default-button-background;
     border-radius: 0.25em;
     padding-left: 0.5em;
     padding-right: 0.5em;
     height: 28px;
-    background-color: $button-background;
-    color: $button-colour;
-
-    &.default {
-        border: 1px solid $default-button-background;
-        background-color: $default-button-background;
-        color: $button-background;
+    background-color: $default-button-background;
+    color: $button-background;
+    &.cancel {
+        border: 1px solid $button-background;
+        background-color: $button-background;
+        color: $button-colour;
     }
-
     &.secondary {
         border: 1px solid $secondary-colour;
         background-color: $secondary-colour;
@@ -140,7 +138,6 @@ button {
         border: none;
         color: $link-colour;
         //font-size: 8pt;
-
         &:hover {
             text-decoration: underline;
         }
@@ -186,6 +183,10 @@ button {
         margin-bottom: 0.25em;
     }
 }
+.message-body {
+    margin: 0.5em;
+}
+
 /*.command-buttons {
     margin-top: 0.5em;
     display: flex;

@@ -2,7 +2,8 @@
 @import "../themes/modal-dialog.theme.scss";
 @import "modal-dialog.variables.scss";
 
-modal-dialog {
+
+modal-dialog, message-box {
     /* modals are hidden by default */
     display: none;
     //width: 80%;
@@ -33,6 +34,7 @@ modal-dialog {
                 margin-top: 0.5em;
                 display: flex;
                 align-items: center;
+                background-color: transparent;
 
                 button {
                     margin-top: 0.25em;
@@ -41,6 +43,10 @@ modal-dialog {
 
                 &.align-centrally {
                     justify-content: center;
+                    > button {
+                        margin-left: 0.125em;
+                        margin-right: 0.125em;
+                    }
                 }
 
                 &.align-at-ends {
@@ -70,8 +76,35 @@ modal-dialog {
             }
         }
     }
+    button {
+        &.cancel {
+            border: 1px solid #808080;
+        }
+    }
 }
 
+modal-dialog {
+    .modal-container {
+    width: 75%;
+    }
+}
+message-box {
+    .modal-container {
+        width: 50%;
+    }
+
+    .caption {
+        font-size: 20px;
+        font-weight: bold;
+        background-color: cornflowerblue;
+        color: white;
+        padding: 5px 10px;
+
+        &.warning {
+            background-color: red;
+        }
+    }
+}
 @media all and (max-width: 748px) {
     modal-dialog {
         .modal-overlay {

@@ -36,6 +36,47 @@ namespace Fastnet.Webframe.Web2
             };
             return dto;
         }
+        public static PageDTO ToDTO(this Page page)
+        {
+            var dto = new PageDTO
+            {
+                Type = ContentType.Page,
+                Id = page.PageId,
+                Url = page.Url,
+                Name = page.Name,
+                IconUrl = page.GetTypeImageUrl(),
+                PageType = page.Type,
+                LandingPage = page.IsLandingPage,
+                LandingPageIconUrl = Page.GetLandingPageImageUrl(),
+                PageTypeTooltip = page.GetTypeTooltip()
+            };
+            return dto;
+        }
+        public static DocumentDTO ToDTO(this Document doc)
+        {
+            var dto = new DocumentDTO
+            {
+                Type = ContentType.Document,
+                Id = doc.DocumentId,
+                Url = doc.Url,
+                Name = doc.Name,
+                IconUrl = doc.GetTypeImageUrl(),
+            };
+            return dto;
+        }
+        public static ImageDTO ToDTO(this Image image)
+        {
+            var dto = new ImageDTO
+            {
+                Type = ContentType.Image,
+                Id = image.ImageId,
+                Url = image.Url,
+                Name = image.Name,
+                IconUrl = image.GetImageTypeImage(),
+                Size = image.Size
+            };
+            return dto;
+        }
         private static void FromMemberDTO(MemberDTO dto, Member member)
         {
             member.FirstName = dto.FirstName;
@@ -65,6 +106,7 @@ namespace Fastnet.Webframe.Web2
             dto.CreationDateFormatted = member.CreationDate.ToUKDefaultWithTime();
             dto.LastLoginDateFormatted = member.LastLoginDate?.ToUKDefaultWithTime();
         }
+
     }
     public class MemberDTO
     {
@@ -104,7 +146,50 @@ namespace Fastnet.Webframe.Web2
     public class DirectoryDTO
     {
         public long Id { get; set; }
+        public long? ParentId { get; set; }
         public string Name { get; set; }
         public int SubdirectoryCount { get; set; }
+    }
+    public enum ContentType {
+        Page,
+        Document,
+        Image
+    }
+    public interface IDirectoryItem
+    {
+        ContentType Type { get; set; }
+        long Id { get; set; }
+        string Url { get; set; }
+        string Name { get; set; }
+        string IconUrl { get; set; }
+    }
+    public class PageDTO : IDirectoryItem
+    {
+        public ContentType Type { get ; set; }
+        public long Id { get ; set; }
+        public string Url { get; set ; }
+        public string Name { get ; set ; }
+        public string IconUrl { get; set; }
+        public PageType PageType { get; set; }
+        public bool LandingPage { get; set; }
+        public string LandingPageIconUrl { get; set; }
+        public string PageTypeTooltip { get; set; }
+    }
+    public class DocumentDTO : IDirectoryItem
+    {
+        public ContentType Type { get; set; }
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string Name { get; set; }
+        public string IconUrl { get; set; }
+    }
+    public class ImageDTO : IDirectoryItem
+    {
+        public ContentType Type { get; set; }
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string Name { get; set; }
+        public string IconUrl { get; set; }
+        public string Size { get; set; }
     }
 }

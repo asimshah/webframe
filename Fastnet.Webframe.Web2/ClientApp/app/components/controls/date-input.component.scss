@@ -1,0 +1,199 @@
+﻿@import "shared.component.scss";
+
+.set-disabled {
+    pointer-events: none;
+    $disabled-color: #dadada;
+
+    label {
+        color: $disabled-color;
+
+        &.selected {
+            span:first-child {
+                border: 0.0625em solid $disabled-color !important;
+            }
+
+            span:nth-child(2) {
+                border: 0.0625em solid $disabled-color !important;
+                background-color: $disabled-color !important;
+            }
+
+            span:last-child {
+                color: $disabled-color !important;
+            }
+        }
+    }
+}
+
+:host {
+    width: 100%;
+    display: block;
+}
+
+
+span.label {
+    @extend .label-above;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0;
+}
+
+.date-input {
+    position: relative;
+
+    .input-box {
+        border: 1px solid #808080;
+        border-radius: 0.25em;
+
+        &.not-valid {
+            border: 1px solid $error-colour;
+        }
+
+        &.not-valid:focus-within {
+            border: 1px solid #808080;
+        }
+
+        > div:first-child {
+            display: flex;
+            align-items: center;
+        }
+
+        input {
+            @extend .input-box;
+            width: 100%;
+            border: none;
+            border-radius: 0;
+
+            &:focus {
+                outline: none;
+                border: none;
+            }
+
+            &.disabled {
+                @extend .set-disabled;
+            }
+        }
+
+        button {
+            color: black;
+            background: transparent;
+
+            &:hover {
+                color: orange;
+            }
+        }
+
+        .not-visible {
+            visibility: hidden;
+        }
+    }
+
+    .calendar {
+        $size: 300px;
+        /*height: $size;*/
+        /*width: $size;*/
+        border: 1px solid #808080;
+        border-radius: 0.25em;
+        margin-top: 0.1em;
+        position: absolute;
+        background-color: white;
+        z-index: 999;
+
+        .calendar-list {
+            display: flex;
+
+            .calendar-month {
+                min-width: 200px;
+                margin: 0.25em;
+
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    /*border: 1px solid #808080;*/
+                    border-radius: 0.25em;
+                    margin: 0.25em;
+                    white-space: nowrap;
+                    .month-year {
+                        display: flex;
+                        align-items: center;
+                        > span {
+                            margin-right: 0.25em;
+                        }
+                    }
+                    > span {
+                        margin: 0.25em;
+
+                        &.blank-icon {
+                            color: transparent;
+                        }
+
+                        &.back-icon, &.forward-icon {
+                            color: #07ca07;
+                            cursor: pointer;
+
+                            &:hover {
+                                color: orange;
+                            }
+                        }
+                    }
+                }
+
+                .calendar-days {
+                    display: grid;
+                    grid-template-columns: repeat(7, 24px);
+                    justify-content: center;
+                    $gutter: 0.1em;
+
+                    .column-padding {
+                        padding-left: $gutter;
+                        padding-right: $gutter * 2;
+                        margin: $gutter;
+                    }
+
+                    .day-header {
+                        @extend .column-padding;
+                        font-weight: normal;
+                        font-size: smaller;
+                    }
+
+                    .calendar-day {
+                        font-size: smaller;
+                        text-align: right;
+
+
+                        .day-cell {
+                            @extend .column-padding;
+                            width: 21px;
+                            height: 21px;
+                            display: flex;
+                            justify-content: flex-end;
+                            align-items: center;
+                            border-radius: $gutter * 2;
+
+                            &.disabled {
+                                background-color: #d4d4d4;
+                                color: white;
+                            }
+
+                            &.normal {
+                                //border: 1px solid black;
+                                cursor: pointer;
+
+                                &.selected {
+                                    border: 1px solid black;
+                                }
+
+                                &:hover {
+                                    background-color: cornflowerblue;
+                                    color: white;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+

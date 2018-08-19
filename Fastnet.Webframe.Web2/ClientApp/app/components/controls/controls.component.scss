@@ -1,7 +1,9 @@
 ﻿@import "shared.component.scss";
 
+:host {
+    display: block;
+}
 .text-error {
-    font-size: smaller;
     font-style: italic;
     color: $error-colour;
 }

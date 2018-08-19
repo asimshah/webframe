@@ -147,14 +147,22 @@ namespace Fastnet.Webframe.Web2.Controllers
             var m = await coreDataContext.Members.SingleOrDefaultAsync(x => string.Compare(x.EmailAddress, cr.emailAddress, true) == 0);
             if(m != null)
             {
-                m.PasswordResetCode = Guid.NewGuid().ToString();
-                m.PasswordResetEmailSentDate = DateTime.UtcNow;
-                await mailHelper.SendPasswordResetAsync(m.EmailAddress, m.Id, m.PasswordResetCode);
-                await coreDataContext.RecordChanges(m, m.Fullname, MemberAction.MemberActionTypes.PasswordResetRequest);
-                await coreDataContext.SaveChangesAsync();
-                log.Information($"Member {m.Fullname}, {m.EmailAddress}, password reset email sent");
+                if (m.IsAdministrator)
+                {
+                    return ErrorResult("Password reset is not availble for this email address");
+                }
+                else
+                {
+                    m.PasswordResetCode = Guid.NewGuid().ToString();
+                    m.PasswordResetEmailSentDate = DateTime.UtcNow;
+                    await mailHelper.SendPasswordResetAsync(m.EmailAddress, m.Id, m.PasswordResetCode);
+                    await coreDataContext.RecordChanges(m, m.Fullname, MemberAction.MemberActionTypes.PasswordResetRequest);
+                    await coreDataContext.SaveChangesAsync();
+                    log.Information($"Member {m.Fullname}, {m.EmailAddress}, password reset email sent");
+                    return SuccessResult();
+                }
             }
-            return SuccessResult();
+            return ErrorResult("This email address is not known");
         }
         [HttpGet("get/member/{id}/{code}")] 
         public async Task<IActionResult> GetMember(string id, string code)

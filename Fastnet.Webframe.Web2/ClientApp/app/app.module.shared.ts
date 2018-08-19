@@ -19,9 +19,9 @@ import { ControlsModule } from "./components/controls/controls.module";
 import { ModalDialogModule } from './components/modaldialog/modal-dialog.module';
 import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
 import { ResetPasswordComponent } from './components/authentication/resetpassword.component';
-import { RegisterComponent } from './components/authentication/register.component';
+//import { RegisterComponent } from './components/authentication/register.component';
 import { ActivateComponent } from './components/authentication/activate.component';
-import { TreeModule } from 'angular-tree-component';
+//import { TreeModule } from 'angular-tree-component';
 import { LogoutComponent } from './components/authentication/logout.component';
 
 @NgModule({
@@ -35,7 +35,7 @@ import { LogoutComponent } from './components/authentication/logout.component';
         LoginComponent,
         LogoutComponent,
         ResetPasswordComponent,
-        RegisterComponent,
+        //RegisterComponent,
         ActivateComponent,
         PermissionDeniedComponent,
         MembershipPlaceholderComponent
@@ -48,7 +48,7 @@ import { LogoutComponent } from './components/authentication/logout.component';
         AppRoutingModule,
         ControlsModule,
         ModalDialogModule,
-        TreeModule
+        //TreeModule
     ],
     providers: [
         

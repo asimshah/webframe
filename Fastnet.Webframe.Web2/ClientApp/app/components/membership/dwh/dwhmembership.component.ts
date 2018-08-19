@@ -7,6 +7,7 @@ import { DWHMembershipService } from './dwhmembership.service';
 import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.component';
+import { MessageBoxResult } from '../../modaldialog/message-box.component';
 
 @Component({
     selector: 'webframe-dwhmembership',
@@ -39,8 +40,9 @@ export class DwhMembershipComponent extends MembershipComponent {
     }
     public onDeleteClick() {
         //console.log("onDeleteClick");
-        this.showConfirmDialog("Deleting a member removes all data for that member permanently (including any past and present bookings). Are you sure you want to proceed? ", (r) => {
-            if (r === true) {
+        //this.showConfirmDialog("Deleting a member removes all data for that member permanently (including any past and present bookings). Are you sure you want to proceed? ", (r) => {
+        this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ", (r) => {
+            if (r === MessageBoxResult.ok) {
                 console.log("delete requested");
                 this.deleteMember();
             }

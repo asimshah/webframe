@@ -47,9 +47,12 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
         if (r === true) {
             this.member.password = this.password;
             await this.authenticationService.changePassword(this.member);
-            this.showMessageDialog("Your password has been changed. You may now login using your new password", (r) => {
+            this.dialogService.showMessageBox("reset-message", () => {
                 this.router.navigate(['login']);
-            }, false, "Message");
+            });
+            //this.showMessageDialog("Your password has been changed. You may now login using your new password", (r) => {
+            //    this.router.navigate(['login']);
+            //}, false, "Message");
         }
     }
     onCancel() {

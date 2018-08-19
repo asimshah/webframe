@@ -1,7 +1,7 @@
 ﻿import {
     ElementRef, Renderer2, Component, forwardRef,
     Input, Output, EventEmitter, ViewChild, ViewChildren, QueryList,
-    ViewEncapsulation, OnInit, AfterViewInit
+    ViewEncapsulation, OnInit, AfterViewInit, OnDestroy
 } from '@angular/core';
 import {
     NG_VALUE_ACCESSOR, NG_VALIDATORS,
@@ -42,19 +42,20 @@ export class PropertyValidatorAsync {
     }
 }
 
-export class ControlBase implements ControlValueAccessor, AfterViewInit {
-    private static allControls: Dictionary<ControlBase> = new Dictionary<ControlBase>();
+export class ControlBase implements ControlValueAccessor, AfterViewInit, OnDestroy {
+
+    protected static allControls: Dictionary<ControlBase> = new Dictionary<ControlBase>();
     private trace: boolean = false;
     private _disabled: boolean = false;
     protected innerValue: string = '';
     protected isTouched: boolean = false;
-    //@Input() focus: any | undefined;
     @Input() name: string;
     @ViewChild('focusable') focusableElement: ElementRef; // set this on the html element that should receive focus
     public vr: ValidationResult = { valid: true, message: '' };
     protected onTouchedCallback: () => void = noop;
     protected onChangeCallback: (_: any) => void = noop;
     protected localChangeCallBack: (_: any) => void = noop;
+    protected afterValidationCallBack: () => void = noop;
     @Input() validator: PropertyValidatorAsync;
     protected preValidator: PropertyValidatorAsync;
     get value(): any {
@@ -68,19 +69,25 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
             this.localChangeCallBack(v);
             this.onChangeCallback(v);
             this.doValidation();
+            this.afterValidationCallBack();
         }
     }
     constructor() {
-
+        //console.log(`ControlBase: constructor`);
+    }
+    ngOnDestroy(): void {
+        //console.log(`ControlBase: ngOnDestroy(): name is ${this.name}`);
+        //console.trace();
+        ControlBase.allControls.remove(this.name);
     }
     ngAfterViewInit(): void {
         if (ControlBase.allControls.containsKey(this.name)) {
-            //alert(`a control named ${this.name} already exists`);
-            ControlBase.allControls.remove(this.name);
+            throw new Error(`a control named ${this.name} already exists`);
+            //alert(`a control named ${this.name} already exists - controls must have a unique name`);
+            //ControlBase.allControls.remove(this.name);
         }
         ControlBase.allControls.add(this.name, this);
-        //console.log(`name is ${this.name}`);
-
+        //console.log(`ControlBase: name is ${this.name}, count is ${ControlBase.allControls.count}`);
     }
     focus() {
         //console.log(`focusing ..${JSON.stringify(this.element)}`);
@@ -104,9 +111,9 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         this.onChangeCallback = fn;
     }
     registerOnTouched(fn: any): void {
-        this.onTouchedCallback = () => {
+        this.onTouchedCallback = async () => {
             this.isTouched = true;
-            this.doValidation();
+            await this.doValidation();
             fn();
         }
     }
@@ -114,19 +121,26 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
         this.trace = v;
     }
     private async doValidation() {
-        //console.log("doValidation() called");
+        //console.log("doValidation() 1");
         let cs = new ControlState();
         cs.value = this.value;
         cs.touched = this.isTouched;
         if (cs.touched) {
-            if (this.preValidator) {
-                this.vr = await this.preValidator.validator(cs);
-            }
-            if (this.validator) {
-                //console.log(`calling property validator with ${JSON.stringify(cs)}`);
-                this.vr = await this.validator.validator(cs);
-                //console.log(`${JSON.stringify(this.vr)}`);
-            }
+            setTimeout(async () => {
+                try {
+                    if (this.preValidator) {
+                        this.vr = await this.preValidator.validator(cs);
+                    }
+                    if (this.validator) {
+                        //console.log(`calling property validator with ${JSON.stringify(cs)}`);
+                        this.vr = await this.validator.validator(cs);
+                        //console.log(`${JSON.stringify(this.vr)}`);
+                    }
+                } catch (e) {
+                    //console.log(`Exception in doValidation()`);
+                    throw e;
+                }
+            }, 0);
         }
     }
     /**
@@ -153,7 +167,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
                 cs.value = this.value;
                 this.validator.validator(cs).then((r) => {
                     this.vr = r;
-                    console.log(`${JSON.stringify(this.vr)}`);
+                    //console.log(`${JSON.stringify(this.vr)}`);
                     resolve(r);
                 });
             } else {
@@ -198,7 +212,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
             let c = ControlBase.allControls.item(name);
             c.focus();
         } else {
-            console.log(`control with name ${name} not found`)
+            throw `control with name ${name} not found`;
         }
 
     }
@@ -211,7 +225,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit {
             } else {
                 throw `No control with name ${name} found`;
             }
-            
+
         });
     }
     private tracelog(t: string) {
@@ -297,7 +311,7 @@ export class MultilineTextInput extends TextInputControl {
                 <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
             </div>
         </div>`,
-    styleUrls: ['./controls.component.scss'],
+    styleUrls: ['./controls.component.scss', './email-input.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -664,7 +678,7 @@ export class ListItem {
 export class DropDownControl extends TextInputControl {
     @Input() items: ListItem[] = [];
     @Input() label: string;// = '';
-    //@Output() change = new EventEmitter();
+    @Output() change = new EventEmitter<string>();
     selectedValue: any;// number;
     constructor() {
         super();
@@ -680,6 +694,7 @@ export class DropDownControl extends TextInputControl {
     modelChange(val: any) {
         this.value = val;// +this.value;
         console.log(`modelChange(): ${JSON.stringify(this.value)} (called with ${JSON.stringify(val)})`);
+        this.change.emit(this.value);
     }
     selectChange(e: Event) {
         //this.change.emit(e);

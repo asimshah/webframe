@@ -8,8 +8,9 @@ import { PageModule } from '../page/page.module';
 import { routing } from './membership.routing';
 import { ControlsModule } from "../controls/controls.module";
 import { ModalDialogModule } from '../modaldialog/modal-dialog.module';
-import { GroupTreeComponent } from './group-tree.component';
-import { TreeModule } from 'angular-tree-component';
+//import { GroupTreeComponent } from './group-tree.component';
+//import { TreeModule } from 'angular-tree-component';
+import { MembershipSharedModule } from './membership.shared.module';
 
 
 @NgModule({
@@ -20,12 +21,13 @@ import { TreeModule } from 'angular-tree-component';
         PageModule,
         ControlsModule,
         ModalDialogModule,
-        TreeModule
+        //TreeModule,
+        MembershipSharedModule
     ],
     exports: [],
     declarations: [
         MembershipComponent,
-        GroupTreeComponent
+        //GroupTreeComponent
         ],
     providers: [],
 })

@@ -15,6 +15,7 @@ import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { BaseComponent, nothingOnClose } from '../shared/base.component';
 import { GroupTreeComponent } from './group-tree.component';
+import { MessageBoxResult } from '../modaldialog/message-box.component';
 
 enum CommandButtons {
     Cancel,
@@ -55,6 +56,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public GroupTypes = GroupTypes;
     public Modes = Modes;
     public CommandButtons = CommandButtons;
+    public message: string;
+    public errors: string[];
     public validators: Dictionary<PropertyValidatorAsync>;
     public mode: Modes;
     public bannerPageId: number | null;
@@ -67,7 +70,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     // above member related stuff
     // below group related stuff
     @ViewChild(GroupTreeComponent) private groupTree: GroupTreeComponent;
-    public groupIsNew: boolean = false;    
+    public groupIsNew: boolean = false;
     public selectedGroup?: Group;
     private selectedGroupJson: string;
     private parentGroup: Group; // set when groupIsNew === true
@@ -105,7 +108,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public onMemberClick(m: Member) {
         if (this.member && this.memberHasChanges()) {
-            this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
+            this.showMessage("First save the current changes, or use Cancel");
+            //this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
         } else {
             this.member = m;
             this.memberIsNew = false;
@@ -114,7 +118,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.setExistingMemberValidators();
         }
     }
-    public async onSearchClick() {        
+    public async onSearchClick() {
         this.performSearch();
     }
     public onAddNewMemberClick() {
@@ -125,7 +129,8 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.setNewMemberValidators();
         } else {
             if (this.memberHasChanges()) {
-                this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
+                this.showMessage("First save the current changes, or use Cancel");
+                //this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
             }
         }
     }
@@ -150,17 +155,22 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         this.originalMemberJson = undefined;
     }
     public onDeleteMemberClick() {
-        //console.log("onDeleteClick");
-        this.showConfirmDialog("Deleting a member removes all data for that member permanently. Are you sure you want to proceed? ", async (r) => {
-            if (r === true) {
-                //console.log("delete requested");
-                await this.deleteMember();
+        this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ", (r) => {
+            if (r === MessageBoxResult.ok) {
+                console.log("delete requested");
+                this.deleteMember();
             }
         });
+        //this.showConfirmDialog("Deleting a member removes all data for that member permanently. Are you sure you want to proceed? ", async (r) => {
+        //    if (r === true) {
+        //        //console.log("delete requested");
+        //        await this.deleteMember();
+        //    }
+        //});
     }
     public onActivateMemberClick() {
-        this.showConfirmDialog("Directly activating a member means that the email address will not be known to be correct. Are you sure you want to proceed?", async (r) => {
-            if (r === true && this.member) {
+        this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ", async (r) => {
+            if (r === MessageBoxResult.ok && this.member) {
                 await this.membershipService.activateMember(this.member);
                 this.member = undefined;
                 this.memberIsNew = false;
@@ -168,20 +178,30 @@ export class MembershipComponent extends BaseComponent implements OnInit {
                 this.performSearch();
             }
         });
+        //this.showConfirmDialog("Directly activating a member means that the email address will not be known to be correct. Are you sure you want to proceed?", async (r) => {
+        //    if (r === true && this.member) {
+        //        await this.membershipService.activateMember(this.member);
+        //        this.member = undefined;
+        //        this.memberIsNew = false;
+        //        this.originalMemberJson = undefined;
+        //        this.performSearch();
+        //    }
+        //});
     }
     public async onSendActivationEmailClick() {
         if (this.member) {
             await this.membershipService.sendActivationEmail(this.member);
-            this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
+            this.showMessage(`An activation email has been sent to ${this.member.emailAddress}`);
+            //this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
         }
     }
     public async onSendPasswordResetClick() {
         if (this.member) {
             await this.membershipService.sendPasswordResetEmail(this.member);
-            this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
+            this.showMessage(`An password reset email has been sent to ${this.member.emailAddress}`);
+            //this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
         }
     }
-
     public goBack() {
         this.router.navigate(['/home']);
     }
@@ -246,7 +266,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
                 return "(new member)";
             }
         }
-        return (m.firstName || "")  + ' ' + (m.lastName || "");
+        return (m.firstName || "") + ' ' + (m.lastName || "");
     }
     protected async searchMembers(prefix: boolean) {
         console.log(`search started using ${this.searchText}, prefix = ${prefix}`);
@@ -265,7 +285,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         console.log(`returning standard new member`);
         return new Member();
     }
-    
+
 
     private async performSearch() {
         if (this.searchText.trim().length > 0) {
@@ -286,10 +306,14 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             let cr = await this.membershipService.updateMember(this.member);
             if (cr.success) {
                 this.saveMemberJson();
-                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, nothingOnClose, false, "Membership");
+                this.showMessage(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`);
+                //this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, nothingOnClose, false, "Membership");
             } else {
-                let errors = cr.errors.join("<br>");
-                this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
+                this.errors = cr.errors;
+                this.message = "`Membership record was not updated";
+                this.dialogService.showMessageBox("error-box");
+                //let errors = cr.errors.join("<br>");
+                //this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
             }
         }
     }
@@ -297,14 +321,19 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         if (this.member) {
             let cr = await this.membershipService.createNewMember(this.member);
             if (cr.success) {
-                this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, nothingOnClose, false, "Membership");
+                this.showMessage(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`);
+                //this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, nothingOnClose, false, "Membership");
                 this.member = undefined;
                 this.memberIsNew = false;
                 this.originalMemberJson = undefined;
                 this.performSearch();
             } else {
-                let errors = cr.errors.join("<br>");
-                this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
+                this.errors = cr.errors;
+                this.message = "Membership record was not created";
+                this.dialogService.showMessageBox("error-box");
+                //let errors = cr.errors.join("<br>");
+
+                //this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
             }
         }
     }
@@ -457,13 +486,21 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     async onDeleteGroupClick() {
         if (this.selectedGroup && !this.groupIsNew) {
-            this.showConfirmDialog(`Deleting a group is irreversible. Are you sure you want to proceed?`, async (r) => {
-                if (r === true && this.selectedGroup) {
+            this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ", async (r) => {
+                if (r === MessageBoxResult.ok && this.selectedGroup) {
                     await this.membershipService.deleteGroup(this.selectedGroup);
                     this.removeGroupFromTree();
-                    this.selectedGroup = undefined;                    
+                    this.selectedGroup = undefined;
                 }
-            }, true, "Message");
+            });
+
+            //this.showConfirmDialog(`Deleting a group is irreversible. Are you sure you want to proceed?`, async (r) => {
+            //    if (r === true && this.selectedGroup) {
+            //        await this.membershipService.deleteGroup(this.selectedGroup);
+            //        this.removeGroupFromTree();
+            //        this.selectedGroup = undefined;
+            //    }
+            //}, true, "Message");
         }
     }
     async onSaveGroupClick() {
@@ -539,7 +576,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             if (text.length === 0) {
                 vr.valid = false;
                 vr.message = `a First Name is required`;
-            } 
+            }
             //console.log(`${JSON.stringify(cs)}`);
             resolve(cs.validationResult);
         });
@@ -551,7 +588,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             if (text.length === 0) {
                 vr.valid = false;
                 vr.message = `a Last Name is required`;
-            } 
+            }
             //console.log(`${JSON.stringify(cs)}`);
             resolve(cs.validationResult);
         });
@@ -639,5 +676,11 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         return list.find((item, i) => {
             return item.value === value;
         });
+    }
+    //
+    protected showMessage(message: string, onClose?: (r?: MessageBoxResult) => void) {
+        //console.log(`called with ${message}`);
+        this.message = message;
+        this.dialogService.showMessageBox("message-box", onClose);
     }
 }

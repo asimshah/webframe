@@ -9,34 +9,22 @@
                 <email-input label="Email Address" name="emailAddress" [(ngModel)]="model.emailAddress" [validator]="validators.item('emailAddress')"></email-input>
                 <password-input label="Password" name="password" [(ngModel)]="model.password"></password-input>
                 <div class="annotation">If you do not have a password, use "Register" to create one.</div>
-                <div class="annotation">If you have forgotten your password, enter your email address above and then use "Reset Password" to receive an email with a password creation link.</div>
+                <div class="annotation">If you have forgotten your password, enter your email address above</div>
+                <div class="annotation">and then use "Reset Password" to receive an email with a password creation link.</div>
                 <div class="command-buttons">
                     <div class="top-row-left">
                         <button tabindex="0" class="link" [disabled]="!hasEmailAddress()" (click)="onResetPassword()">Reset Password</button>
                         <button tabindex="0" class="link" (click)="onRegister()">Register</button>
                     </div>
                     <div class="top-row-right">
-                        <button tabindex="3" class="default" [disabled]="!canAttemptLogin()" (click)="onLogin()">Login</button>
-                        <button tabindex="4" (click)="onCancel()">Cancel</button>
+                        <button tabindex="3"  [disabled]="!canAttemptLogin()" (click)="onLogin()">Login</button>
+                        <button tabindex="4" class="cancel" (click)="onCancel()">Cancel</button>
                     </div>
                 </div>
             </div>
+            <message-box id="login-message" caption="Message" >
+                <div class="message-body">{{message}}</div>
+            </message-box>
         </div>
     </div>
 </div>
-<modal-dialog id="message-box">
-    <div class="modal-overlay">
-        <div class="modal-container">
-            <div class="form-body">
-                <div *ngIf="messageBox; else noModel">
-                    <div class="caption">{{messageBox.caption}}</div>
-                    <div class="message-body" [innerHTML]="messageBox.message"></div>
-                </div>
-                <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
-            </div>
-            <div class="command-buttons align-centrally">
-                <button class="default" (click)="onCloseMessageBox()">OK</button>
-            </div>
-        </div>
-    </div>
-</modal-dialog>

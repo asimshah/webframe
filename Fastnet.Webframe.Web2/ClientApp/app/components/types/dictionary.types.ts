@@ -3,7 +3,7 @@
 }
 export class Dictionary<T> {
     private items: IDictionary<T> = {};
-    private count: number = 0;
+    public count: number = 0;
     public add(key: string, item: T) {
         if (!this.containsKey(key)) {
             this.count++;
@@ -17,7 +17,7 @@ export class Dictionary<T> {
         if (this.containsKey(key)) {
             let val = this.items[key];
             delete this.items[key];
-            this.count++;
+            this.count--;
             return val;
         }
         return null;

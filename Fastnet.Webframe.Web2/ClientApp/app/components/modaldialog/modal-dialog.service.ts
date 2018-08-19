@@ -1,7 +1,12 @@
 ﻿import { Injectable } from '@angular/core';
 import { ModalDialogComponent } from './modal-dialog.component';
 import { ControlBase } from '../controls/controls.component';
+import { MessageBoxResult, MessageBoxComponent } from './message-box.component';
+//import { MessageBoxResult, MessageBoxComponent } from './message-box.component';
 
+export interface IOpenWithClose {
+    openWithClose(depth: number, onClose?: (r: MessageBoxResult) => void): void;
+}
 export class MessageBox {
     caption: string = "Message";
     isAlert: boolean = false;
@@ -29,7 +34,7 @@ export class ModalDialogService {
         if (m !== undefined) {
             this.openModalsCount++;
             //console.log(`opening modal ${id}, depth is ${this.openModalsCount}`);
-            m.open(this.openModalsCount);
+            m.openDialog(this.openModalsCount);
             if (name) {
                 ControlBase.focus(name);
             }
@@ -40,8 +45,26 @@ export class ModalDialogService {
     public close(id: string): void {
         let m = this.modals.find((item) => item.id === id);
         if (m !== undefined) {
-            m.close();
+            m.closeDialog();
             --this.openModalsCount;
         }
+    }
+    public showMessageBox(id: string, onClose?: (r: MessageBoxResult) => void) {
+        //console.log(`ModalDialogService: open() with ${id}, focus on ${name}`);
+        let m = this.modals.find((item) => item.id === id);
+        if (m !== undefined && this.isIOpenDialogWithClosure(m)) {            
+            this.openModalsCount++;
+            //console.log(`opening message-box ${id}, depth is ${this.openModalsCount}`);
+            let mx: IOpenWithClose = m;
+            mx.openWithClose(this.openModalsCount, onClose);
+            if (name) {
+                ControlBase.focus(name);
+            }
+        } else {
+            alert(`no message-box found with id ${id}`)
+        }
+    }
+    private isIOpenDialogWithClosure(object: any): object is IOpenWithClose {
+        return (<MessageBoxComponent>object).openWithClose !== undefined;
     }
 }

@@ -1,6 +1,6 @@
 {
   "Id": "standard.types",
-  "Version": "1.0.5",
+  "Version": "1.0.7",
   "TargetDirectory": "app\\components\\types",
   "Files": [
     "**/*.ts",

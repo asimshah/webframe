@@ -23,6 +23,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     private nameSpace = "webframe-";
     public bannerPageId: number | null;
     public model: Credentials;
+    public message: string;
     private usernameKey: string;
     public validators: Dictionary<PropertyValidatorAsync>;
     @ViewChild(PasswordInputControl) passwordElement: PasswordInputControl;
@@ -57,13 +58,13 @@ export class LoginComponent extends BaseComponent implements OnInit {
                 }
                 break;
             case LoginResult.CredentialsInvalid:
-                this.showMessageDialog(`The email address and/or password is incorrect. Please try again, or cancel.`);
+                this.showMessage(`The email address and/or password is incorrect. Please try again, or cancel.`);
                 break;
             case LoginResult.AccountIsBarred:
-                this.showMessageDialog(`This account is disabled - please contact the administrator.`);
+                this.showMessage(`This account is disabled - please contact the administrator.`);
                 break;
             case LoginResult.AccountNotActivated:
-                this.showMessageDialog(`This account is not active - please contact the administrator.`);
+                this.showMessage(`This account is not active - please contact the administrator.`);
                 break;
             default:
                 break;
@@ -72,11 +73,20 @@ export class LoginComponent extends BaseComponent implements OnInit {
     async onResetPassword() {
         let r = await ControlBase.isValid("password");
         if (r === true) {
-            await this.authenticationService.sendPasswordReset(this.model.emailAddress);
-            this.showMessageDialog(`A password reset email has been sent to ${this.model.emailAddress}`, (r) => {
-                this.router.navigate(['home']);
-            }, false, "Message");
+            let result = await this.authenticationService.sendPasswordReset(this.model.emailAddress);
+            if (result.success) {
+                this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`, () => {
+                    this.router.navigate(['home']);
+                });
+            } else {
+                this.showMessage(result.errors[0]);
+            }
+            //this.showMessageDialog(`A password reset email has been sent to ${this.model.emailAddress}`, (r) => {
+            //    this.router.navigate(['home']);
+            //}, false, "Message");
 
+        } else {
+            this.showMessage("Please provide a valid email first");
         }
         //this.router.navigate(['resetpassword']);
         //this.showMessageDialog("Reset password feature not implemented yet.");
@@ -109,6 +119,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
 
     canAttemptLogin() {
         return this.hasEmailAddress() && this.hasPassword();
+    }
+    private showMessage(message: string, onClose?: () => void) {
+        console.log(`called with ${message}`);
+        this.message = message;
+        this.dialogService.showMessageBox("login-message", onClose);
     }
     //showMessageDialog(message: string) {
     //    //this.loginModel = new LoginModel();

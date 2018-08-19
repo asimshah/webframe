@@ -9,12 +9,18 @@ import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../co
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 
+class registrationModel {
+    member: DWHMember;
+    passwordConfirmation: string;
+}
+
 @Component({
     selector: 'webframe-register',
     templateUrl: './dwhregister.component.html',
     styleUrls: ['../../../styles/webframe.forms.scss', './dwhregister.component.scss']
 })
 export class DwhRegisterComponent extends RegisterComponent {
+    public model: registrationModel;
     constructor(pageService: PageService, dialogService: ModalDialogService, membershipService: DWHMembershipService,
         authenticationService: AuthenticationService, router: Router) {
         super(pageService, dialogService, membershipService, authenticationService, router);

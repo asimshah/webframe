@@ -1,11 +1,12 @@
 ﻿
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 import { HomeComponent } from '../home.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { PageService } from '../../shared/page.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { AdminGuard } from '../../routeguards/admin-guard.service';
+import { ContentBrowserComponent } from './content-browser.component';
 
 @Component({
         selector: 'webframe-editor',
@@ -14,6 +15,8 @@ import { AdminGuard } from '../../routeguards/admin-guard.service';
     encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent extends HomeComponent {
+    contentBrowserOpen: boolean = false;
+    @ViewChild("contentBrowser") contentBrowser: ContentBrowserComponent;
     constructor(router: Router,
         route: ActivatedRoute,
         dialogService: ModalDialogService,
@@ -43,10 +46,11 @@ export class EditorComponent extends HomeComponent {
         }
     }
     onOpenSiteContentBrowser() {
-        this.dialogService.open("site-content-browser");
+        //this.dialogService.open("site-content-browser");
+        this.contentBrowser.open();
     }
     onCloseSiteContentBrowser() {
-        this.dialogService.close("site-content-browser");
+        //this.dialogService.close("site-content-browser");
     }
     //onSitePanelClick(e: Event) {
     //    console.log(`editor component: sitepanel click ${e.currentTarget}, ${e.target}`);

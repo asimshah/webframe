@@ -1,0 +1,42 @@
+﻿@import "../../modaldialog/modal-dialog.variables.scss";
+
+:host {
+    @extend .modal-dialog-settings;
+
+    .modal-container {
+        width: 75%;
+
+        .command-buttons {
+            border-top: 1px solid lightgray;
+        }
+
+        .form-body {
+            .caption {
+                background-color: cornflowerblue;
+                color: white;
+                padding: 0.25em;
+                margin-bottom: 0.25em;
+            }
+
+            .content-browser-panel {
+                display: grid;
+                grid-template-columns: 1fr 2fr;
+
+                .tree-view {
+                    padding: 0.25em;
+                    min-height: 25vh;
+                    border: 1px solid white;
+                }
+
+                .content-view {
+                    padding: 0.25em;
+                    border-left: 1px solid lightgray;
+                    //border-radius: 0.25em;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+

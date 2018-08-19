@@ -9,8 +9,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ControlsModule } from '../../controls/controls.module';
 import { ModalDialogModule } from '../../modaldialog/modal-dialog.module';
-import { GroupTreeComponent } from '../group-tree.component';
-import { TreeModule } from 'angular-tree-component';
+//import { GroupTreeComponent } from '../group-tree.component';
+//import { TreeModule } from 'angular-tree-component';
+import { MembershipSharedModule } from '../membership.shared.module';
+
 
 @NgModule({
     imports: [
@@ -20,13 +22,14 @@ import { TreeModule } from 'angular-tree-component';
         PageModule,
         ControlsModule,
         ModalDialogModule,
-        TreeModule
+        //TreeModule,
+        MembershipSharedModule
     ],
     exports: [],
     //declarations: [MembershipComponent, DwhMembershipComponent],
     declarations: [
         DwhMembershipComponent,
-        GroupTreeComponent
+        //GroupTreeComponent
     ],
     providers: [],
 })

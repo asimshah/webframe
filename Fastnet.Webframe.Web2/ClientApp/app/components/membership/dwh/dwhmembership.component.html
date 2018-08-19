@@ -98,14 +98,14 @@
                             <button class="cancel" (click)="onCancelGroupClick()">Cancel</button>
                         </div>
                         <div class="top-row-left">
-                            <button class="warning" (click)="onDeleteGroupClick()">Delete</button>
+                            <button *ngIf="!groupIsNew" class="warning" (click)="onDeleteGroupClick()">Delete</button>
                             <div class="annotation" *ngIf="groupHasChanges()">There are changes</div>
                         </div>
                     </div>
                 </div>
                 <div *ngIf="canShowMembers()" class="group-member-panel">
                     <div class="group-members">
-                        <div class="caption-row">
+                        <div *ngIf="groupMembers.length > 0"  class="caption-row">
                             <div class="label">Members:</div>
                             <div>
                                 <button class="secondary" (click)="onSelectGroupMembers(true)">Select All</button>
@@ -113,13 +113,13 @@
                             </div>
                         </div>
                         <div *ngIf="groupMembers.length > 0" class="member-list">
-                            <div *ngFor="let m of groupMembers" class="member-item">
-                                <bool-input [(ngModel)]="m.selected"></bool-input>
+                            <div *ngFor="let m of groupMembers; let i = index" class="member-item">
+                                <bool-input [name]="'m-'+i.toString()" [(ngModel)]="m.selected"></bool-input>
                                 <div>{{m.name}})</div>
                             </div>
                         </div>
                         <div *ngIf="groupMembers.length === 0">
-                            <div>There no members</div>
+                            <div>There are no members</div>
                         </div>
                     </div>
                     <div *ngIf="canAddMembers()" class="button-panel">
@@ -132,9 +132,19 @@
             </div>
         </div>
     </div>
+    <message-box id="message-box" caption="Membership">
+        <div class="message-body" >{{message}}</div>
+    </message-box>
+    <message-box id="error-box" caption="Membership Error" [warning]="true" >
+        <div class="message-body">
+            <div >{{message}}</div>
+            <div class="error-list">Error(s):</div>
+            <div class="error-msg" *ngFor="let err of errors">{{err}}</div>
+        </div>
+    </message-box>
 </div>
 
-<modal-dialog id="message-box">
+<!--<modal-dialog id="message-box">
     <div class="modal-overlay">
         <div *ngIf="messageBox; else noModel"  class="modal-container">
             <div class="form-body">
@@ -153,7 +163,7 @@
         </div>
         <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
     </div>
-</modal-dialog>
+</modal-dialog>-->
 <modal-dialog id="candidate-members">
     <div class="modal-overlay">
         <div *ngIf="candidateMembers" class="modal-container">

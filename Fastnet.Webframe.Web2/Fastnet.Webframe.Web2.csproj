@@ -53,6 +53,8 @@
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\controls\controls.module.ts" />
+    <None Remove="ClientApp\app\components\controls\tree-view.component.ts" />
+    <None Remove="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.module.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.routing.ts" />
@@ -67,6 +69,7 @@
     <None Remove="ClientApp\app\components\membership\membership.module.ts" />
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
     <None Remove="ClientApp\app\components\membership\membership.service.ts" />
+    <None Remove="ClientApp\app\components\membership\membership.shared.module.ts" />
     <None Remove="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\page\page.module.ts" />
@@ -115,9 +118,12 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\tree-view.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\membership\membership.shared.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\sidebarmenu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\dwh\dwhmembership.component.ts" />
@@ -143,6 +149,57 @@
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\base.service.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Icons\AudioSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\bannerpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\centrepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\CssSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\DotxSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\ExcelSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\homepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\leftpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\panelwire.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\PdfSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\PowerPointSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\rightpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\UnknownSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\VideoSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Icons\WordSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

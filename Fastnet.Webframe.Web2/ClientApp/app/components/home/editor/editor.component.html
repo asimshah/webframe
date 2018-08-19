@@ -7,6 +7,7 @@
             <button class="secondary small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
             <button class="default small" >Save Changes</button>
         </div>
+        <content-browser id="cb-1" #contentBrowser  ></content-browser>
     </div>
     <div *ngIf="member" class="login-status">
         <div class="login-name">{{member.name}}</div>
@@ -30,7 +31,7 @@
         </div>
     </div>
 </div>
-<modal-dialog id="site-content-browser">
+<!--<modal-dialog id="site-content-browser">
     <div class="modal-overlay">
         <div class="modal-container">
             <div class="form-body">
@@ -53,5 +54,5 @@
             </div>
         </div>
     </div>
-</modal-dialog>
+</modal-dialog>-->
 

@@ -12,8 +12,9 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ModalDialogComponent implements OnInit, OnDestroy {
     @Input() id: string;
-    private element: HTMLElement;
-    private hasClosed: boolean = false;
+    protected element: HTMLElement;
+    protected hasClosed: boolean = false;
+    
     constructor(protected modalDialogService: ModalDialogService, protected el: ElementRef) {
         this.element = el.nativeElement;
     }
@@ -39,7 +40,7 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
         this.modalDialogService.remove(this.id);
         this.element.remove();
     }
-    public open(depth: number) {
+    public openDialog(depth: number) {
         this.element.style.display = "block";
         let overlay = this.getOverlay();
         overlay.style.zIndex = (1000 + depth.toString());
@@ -47,9 +48,9 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
         if (body !== null) {
             body[0].classList.add('modal-dialog-open');
         }
-
+        this.afterOpen();
     }
-    public close(): void {
+    public closeDialog(): void {
         this.element.style.display = "none";
         let overlay = this.getOverlay();
         overlay.style.zIndex = "0";
@@ -58,6 +59,9 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
             body[0].classList.remove('modal-dialog-open');
         }
         this.hasClosed = true;
+    }
+    public afterOpen() {
+
     }
     private getOverlay(): HTMLElement {
         let overlay = <HTMLElement>document.querySelector(`#${this.id} .modal-overlay`);

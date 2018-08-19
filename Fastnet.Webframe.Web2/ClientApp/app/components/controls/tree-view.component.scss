@@ -1,0 +1,35 @@
+﻿:host {
+    font-family: inherit;
+}
+ul {
+    padding-left: 20px;
+    &.level-0 {
+        padding-left: 0;
+    }
+}
+
+li {
+    list-style:none;
+}
+$selectedColor: #549254;
+.tree-node {
+    display: flex;
+    align-items: center;
+}
+.tree-icon {
+    margin-right: 0.25em;
+}
+.item-text {
+    padding: 0.25em;
+    border-radius: 0.25em;
+
+    &.selected {
+        border: 1px solid $selectedColor;
+        background-color: $selectedColor;
+        color: white;
+    }
+
+    &:hover {
+        border: 1px solid #808080;
+    }
+}

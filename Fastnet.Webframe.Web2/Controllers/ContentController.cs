@@ -21,7 +21,7 @@ namespace Fastnet.Webframe.Web2.Controllers
     public class ContentController : BaseController
     {
         private readonly CoreDataContext coreDataContext;
-        public ContentController(ILogger logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager,
+        public ContentController(ILogger<ContentController> logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager,
             CoreDataContext coreDataContext) : base(logger, env, userManager)
         {
             this.coreDataContext = coreDataContext;
@@ -45,7 +45,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 }
                 var directories = coreDataContext.Directories.Where(d => d.ParentDirectory.DirectoryId == id.Value)
                     .OrderBy(x => x.Name)
-                    .Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, SubdirectoryCount = x.SubDirectories.Count() });
+                    .Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, ParentId = x.ParentDirectoryId, SubdirectoryCount = x.SubDirectories.Count() });
                 return SuccessResult(directories);
             }
             catch (Exception xe)
@@ -53,6 +53,16 @@ namespace Fastnet.Webframe.Web2.Controllers
                 log.Error(xe);
                 return ExceptionResult(xe);
             }
+        }
+        [HttpGet("get/files/{id}")]
+        public async Task<IActionResult> GetDirectoryContent(long id)
+        {
+            var directory = await coreDataContext.Directories.FindAsync(id);
+            var pages = directory.Pages.ToArray();
+            var documents = directory.Documents.ToArray();
+            var images = directory.Images.ToArray();
+            log.Information($"Directory {directory.Name}, {pages.Count()} pages, {documents.Count()} documents, {images.Count()} images");
+            return SuccessResult();
         }
     }
 }

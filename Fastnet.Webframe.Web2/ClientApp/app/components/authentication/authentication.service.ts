@@ -48,12 +48,17 @@ export class AuthenticationService extends BaseService {
             resolve(sr.success);
         });
     }
-    async sendPasswordReset(emailAddress: string) {
+    async sendPasswordReset(emailAddress: string): Promise<ServiceResult> {
         let query = `user/send/passwordreset`;
-        return new Promise<void>(async resolve => {
+        return new Promise<ServiceResult>(async resolve => {
             var data = { emailAddress: emailAddress };
-            await this.post(query, data);
-            resolve();
+            let dr = await this.post(query, data);
+            if (dr.success) {
+                resolve({success: true, errors: []});
+            } else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+
         });
     }
     async getMemberForPasswordChange(id: string, code: string): Promise<Member | null> {
@@ -82,8 +87,8 @@ export class AuthenticationService extends BaseService {
         // method instantiates a userData with a Member instance
         let result = await this.post("user/login", credentials);
         if (!result.success) {
-            console.log(`login failed: ${result.exceptionMessage}`);
-            switch (result.exceptionMessage) {
+            console.log(`login failed: ${result.message}`);
+            switch (result.message) {
                 case "InvalidCredentials":
                     lr = LoginResult.CredentialsInvalid;
                     break;

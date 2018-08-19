@@ -18,7 +18,7 @@ import { MembershipPlaceholderComponent } from './components/membership/membersh
 import { RegisterComponent } from './components/authentication/register.component';
 import { ResetPasswordComponent } from './components/authentication/resetpassword.component';
 import { ActivateComponent } from './components/authentication/activate.component';
-import { ContentService } from './components/shared/content.service';
+//import { ContentService } from './components/shared/content.service';
 import { EditorGuard } from './components/routeguards/editor-guard.service';
 import { LogoutComponent } from './components/authentication/logout.component';
 
@@ -67,7 +67,7 @@ const appRoutes: Routes = [
         ConfigService,
         AuthenticationService,
         PageService,
-        ContentService,
+        //ContentService,
         MembershipService,
         DWHMembershipService
     ]
