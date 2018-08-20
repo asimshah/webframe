@@ -20,12 +20,36 @@
 
             .content-browser-panel {
                 display: grid;
-                grid-template-columns: 1fr 2fr;
+                grid-template-columns: 1fr 2.5fr;
 
                 .tree-view {
-                    padding: 0.25em;
+                    padding-top: 0;
+                    padding-bottom: 0.25em;
+                    padding-left: 0.25em;
+                    padding-right: 0.25em;
                     min-height: 25vh;
                     border: 1px solid white;
+                    border-radius: 0.2em;
+
+                    .directory-commands {
+                        display: grid;
+                        grid-template-columns: auto auto;
+                        background-color: lightgray;
+                        padding-top: 0.125em;
+                        padding-bottom: 0.25em;
+                        padding-left: 0.25em;
+                        padding-right: 0.25em;
+                        margin-bottom: 0.25em;
+
+                        div:last-child {
+                            text-align: right;
+                        }
+
+                        button.small {
+                            height: auto;
+                            font-size: 10px;
+                        }
+                    }
                 }
 
                 .content-view {
@@ -36,6 +60,27 @@
                 }
             }
         }
+    }
+}
+#new-directory {
+    .modal-container {
+        width: 50%;
+        //min-height: 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .form-body {
+        padding-left: 1em;
+        padding-right: 1em;
+        padding-top: 0.5em;
+        padding-bottom: 1em;
+    }
+
+    .caption {
+        padding: 0.25em;
+        margin-bottom: 0.25em;
     }
 }
 

@@ -41,7 +41,7 @@ namespace Fastnet.Webframe.CoreData2
             if (m != null)
             {
                 await ctx.Entry(m).Collection(x => x.GroupMembers).LoadAsync();
-                foreach(var item in m.GroupMembers)
+                foreach (var item in m.GroupMembers)
                 {
                     await ctx.Entry(item).Reference(x => x.Group).LoadAsync();
                 }
@@ -77,7 +77,7 @@ namespace Fastnet.Webframe.CoreData2
                 await coreDataContext.Entry(dir).Reference(r => r.ParentDirectory).LoadAsync();
                 await coreDataContext.LoadParentsAsync(dir.ParentDirectory);
             }
-            
+
         }
         public static async Task LoadGroups(this CoreDataContext coreDataContext, Directory dir, LoadMethods loadMethod = LoadMethods.UseLoad)
         {
@@ -119,7 +119,8 @@ namespace Fastnet.Webframe.CoreData2
         }
         public static async Task LoadGroupMembersAsync(this CoreDataContext coreDataContext, Group group)
         {
-            if(!group.AreMembersPresent()) {
+            if (!group.AreMembersPresent())
+            {
                 await coreDataContext.LoadGroupChildren(group);
                 foreach (var g in group.SelfAndDescendants)
                 {
@@ -177,7 +178,7 @@ namespace Fastnet.Webframe.CoreData2
                 RedirectedTo = redirectedTo,
                 MailTemplate = templateName,
                 MailDisabled = mailDisabled,
-                Remark = remark, 
+                Remark = remark,
                 Failure = failure
             };
             await ctx.Actions.AddAsync(ma);
@@ -185,7 +186,7 @@ namespace Fastnet.Webframe.CoreData2
         public static async Task RecordChanges(this CoreDataContext ctx, Group group, string actionBy, GroupAction.GroupActionTypes actionType, Member m = null)
         {
             GroupAction ga = null;
-            switch(actionType)
+            switch (actionType)
             {
                 case GroupAction.GroupActionTypes.Deletion:
                 case GroupAction.GroupActionTypes.New:
@@ -200,7 +201,7 @@ namespace Fastnet.Webframe.CoreData2
                     break;
                 case GroupAction.GroupActionTypes.Modification:
                     var changes = GetChanges(ctx.Entry(group));
-                    foreach(var (property, oldValue, newValue) in changes)
+                    foreach (var (property, oldValue, newValue) in changes)
                     {
                         ga = new GroupAction
                         {
@@ -217,7 +218,7 @@ namespace Fastnet.Webframe.CoreData2
                     break;
                 case GroupAction.GroupActionTypes.MemberAddition:
                 case GroupAction.GroupActionTypes.MemberRemoval:
-                    if(m != null)
+                    if (m != null)
                     {
                         ga = new GroupAction
                         {
@@ -262,9 +263,9 @@ namespace Fastnet.Webframe.CoreData2
                     break;
             }
             var changes = GetChanges(ctx.Entry(m));
-            foreach(var (property, oldValue, newValue) in changes)
+            foreach (var (property, oldValue, newValue) in changes)
             {
-                switch(property)
+                switch (property)
                 {
                     case "EmailAddressConfirmed":
                     case "ActivationCode":
@@ -289,39 +290,117 @@ namespace Fastnet.Webframe.CoreData2
                         break;
                 }
             }
-            //var entry = ctx.Entry(m);
-            //foreach (var p in entry.CurrentValues.Properties)
-            //{
-            //    switch (p.Name)
-            //    {
-            //        case "EmailAddressConfirmed":
-            //        case "ActivationCode":
-            //        case "ActivationEmailSentDate":
-            //        case "PasswordResetCode":
-            //        case "PasswordResetEmailSentDate":
-            //        case "PlainPassword":
-            //            break;
-            //        default:
-            //            if (entry.Property(p.Name).IsModified)
-            //            {
-            //                object ov = entry.Property(p.Name).OriginalValue;
-            //                object cv = entry.Property(p.Name).CurrentValue;
-            //                MemberAction ma = new MemberAction
-            //                {
-            //                    MemberId = m.Id,
-            //                    EmailAddress = m.EmailAddress,
-            //                    FullName = m.Fullname,
-            //                    ActionBy = actionBy ?? m.Fullname,
-            //                    Action = actionType,// MembershipAction.MembershipActionTypes.Modification,
-            //                    PropertyChanged = p.Name,
-            //                    OldValue = ov == null ? "<null>" : ov.ToString(),
-            //                    NewValue = cv == null ? "<null>" : cv.ToString()
-            //                };
-            //                await ctx.Actions.AddAsync(ma);
-            //            }
-            //            break;
-            //    }
-            //}
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Directory dir, string actionBy, FolderAction.EditingActionTypes actionType)
+        {
+            switch (actionType)
+            {
+                case EditingAction.EditingActionTypes.NewFolder:
+                case EditingAction.EditingActionTypes.FolderDeleted:
+                    var fa1 = new FolderAction
+                    {
+                        Action = actionType,
+                        ActionBy = actionBy,
+                        Name = dir.DisplayName
+                    };
+                    await ctx.Actions.AddAsync(fa1);
+                    break;
+                case EditingAction.EditingActionTypes.FolderModified:
+                    var changes = GetChanges(ctx.Entry(dir));
+                    foreach (var (property, oldValue, newValue) in changes)
+                    {
+                        switch(property)
+                        {
+                            default:
+                                FolderAction fa2 = new FolderAction
+                                {
+                                    ActionBy = actionBy,
+                                    Action = actionType,
+                                    PropertyChanged = property,
+                                    OldValue = oldValue,
+                                    NewValue = newValue
+                                };
+                                await ctx.Actions.AddAsync(fa2);
+                                break;
+                        }
+                    }
+                    break;
+            }
+            await ctx.SaveChangesAsync();
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Image image, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
+        {
+            switch(actionType)
+            {
+                case EditingAction.EditingActionTypes.NewImage:
+                case EditingAction.EditingActionTypes.ImageDeleted:
+                case EditingAction.EditingActionTypes.ImageReplaced:
+                    var fa = new FolderAction
+                    {
+                        Action = actionType,
+                        ActionBy = actionBy,
+                        Name = $"{container.FullName}\\{image.Name}"
+                    };
+                    await ctx.Actions.AddAsync(fa);
+                    break;
+            }
+            await ctx.SaveChangesAsync();
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Document doc, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
+        {
+            switch (actionType)
+            {
+                case EditingAction.EditingActionTypes.NewDocument:
+                case EditingAction.EditingActionTypes.DocumentReplaced:
+                case EditingAction.EditingActionTypes.DocumentDeleted:
+                    var fa = new FolderAction
+                    {
+                        Action = actionType,
+                        ActionBy = actionBy,
+                        Name = $"{container.FullName}\\{doc.Name}"
+                    };
+                    await ctx.Actions.AddAsync(fa);
+                    break;
+            }
+            await ctx.SaveChangesAsync();
+        }
+        public static async Task RecordChanges(this CoreDataContext ctx, Page page, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
+        {
+            switch (actionType)
+            {
+                case EditingAction.EditingActionTypes.NewPage:
+                case EditingAction.EditingActionTypes.PageDeleted:
+                case EditingAction.EditingActionTypes.PageContentModified:
+                    var fa = new FolderAction
+                    {
+                        Action = actionType,
+                        ActionBy = actionBy,
+                        Name = $"{container.FullName}\\{page.Url}"
+                    };
+                    await ctx.Actions.AddAsync(fa);
+                    break;
+                case EditingAction.EditingActionTypes.PageModified:
+                    var changes = GetChanges(ctx.Entry(page));
+                    foreach (var (property, oldValue, newValue) in changes)
+                    {
+                        switch (property)
+                        {
+                            default:
+                                FolderAction fa2 = new FolderAction
+                                {
+                                    ActionBy = actionBy,
+                                    Action = actionType,
+                                    PropertyChanged = property,
+                                    OldValue = oldValue,
+                                    NewValue = newValue
+                                };
+                                await ctx.Actions.AddAsync(fa2);
+                                break;
+                        }
+                    }
+                    break;
+            }
+            await ctx.SaveChangesAsync();
         }
         private static bool AreGroupsPresent(this Directory dir)
         {
@@ -348,16 +427,16 @@ namespace Fastnet.Webframe.CoreData2
         {
             bool r = true;
             if (group.AreChildrenPresent())
-            { 
-                foreach(var g in group.SelfAndDescendants)
+            {
+                foreach (var g in group.SelfAndDescendants)
                 {
-                    if(group.GroupMembers == null || group.GroupMembers.Any(x => x.Member == null))
+                    if (group.GroupMembers == null || group.GroupMembers.Any(x => x.Member == null))
                     {
                         r = false;
                         break;
                     }
                 }
-                
+
             }
             else
             {

@@ -3,8 +3,32 @@
         <div class="form-body">
             <div class="caption">Site Content Browser</div>
             <div class="content-browser-panel">
+
                 <div class="tree-view">
-                    <!--<tree-root  #groupTree [nodes]="directoryNodes" [options]="treeOptions"  (activate)="onActivate($event)"></tree-root>-->
+                    <div class="directory-commands">
+                        <div>
+                            <button title="Delete selected directory" class="small warning" [ngClass]="{disabled: !canExecute(ContentCommands.DeleteDirectory)}">Delete</button>
+                        </div>
+                        <div>
+                            <button title="Show selected directory properties" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.ShowDirectoryProperties)}">Properties</button>
+                            <button title="Add a subdirectory to the selected directory" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.AddSubdirectory)}" (click)="onAddDirectory()" >Add</button>
+                            <modal-dialog id="new-directory">
+                                <div class="modal-overlay">
+                                    <div *ngIf="subdirectory !== null" class="modal-container">
+                                        <div class="caption">{{getNewDirectoryCaption()}}</div>
+                                        <div class="form-body">
+                                            <text-input label="Subdirectory Name:" name="sdname" [(ngModel)]="subdirectory.name" [validator]="nameValidator"></text-input>
+                                        </div>
+                                        <div class="command-buttons align-centrally">
+                                            <button>OK</button>
+                                            <button class="cancel" (click)="onCancelNewDirectory()">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </modal-dialog>
+                        </div>
+                    </div>
+                    <tree-view [nodes]="directoryNodes" (selected)="onTreeNodeSelected($event)"></tree-view>
                 </div>
                 <div class="content-view">
                     content here

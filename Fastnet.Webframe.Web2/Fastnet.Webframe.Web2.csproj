@@ -79,7 +79,6 @@
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
     <None Remove="ClientApp\app\components\shared\common.types.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
-    <None Remove="ClientApp\app\components\shared\content.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -138,7 +137,6 @@
     <TypeScriptCompile Include="ClientApp\app\components\shared\common.types.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\config.types.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\shared\content.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\page.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\pagenotfound.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.component.ts" />

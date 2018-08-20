@@ -77,6 +77,16 @@ namespace Fastnet.Webframe.Web2
             };
             return dto;
         }
+        public static DirectoryDTO ToDTO(this Directory dir)
+        {
+            return new DirectoryDTO
+            {
+                Id = dir.DirectoryId,
+                Name = dir.Name,
+                ParentId = dir.ParentDirectoryId,
+                SubdirectoryCount = dir.SubDirectories.Count()
+            };
+        }
         private static void FromMemberDTO(MemberDTO dto, Member member)
         {
             member.FirstName = dto.FirstName;
@@ -150,7 +160,8 @@ namespace Fastnet.Webframe.Web2
         public string Name { get; set; }
         public int SubdirectoryCount { get; set; }
     }
-    public enum ContentType {
+    public enum ContentType
+    {
         Page,
         Document,
         Image
@@ -165,10 +176,10 @@ namespace Fastnet.Webframe.Web2
     }
     public class PageDTO : IDirectoryItem
     {
-        public ContentType Type { get ; set; }
-        public long Id { get ; set; }
-        public string Url { get; set ; }
-        public string Name { get ; set ; }
+        public ContentType Type { get; set; }
+        public long Id { get; set; }
+        public string Url { get; set; }
+        public string Name { get; set; }
         public string IconUrl { get; set; }
         public PageType PageType { get; set; }
         public bool LandingPage { get; set; }

@@ -1,6 +1,6 @@
 {
   "Id": "html.controls",
-  "Version": "1.0.14",
+  "Version": "1.0.15",
   "TargetDirectory": "app\\components\\controls",
   "Files": [
     "**/*.ts",

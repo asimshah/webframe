@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fastnet.Core;
+using Fastnet.Core.Web;
 using Fastnet.Webframe.CoreData2;
 using Fastnet.Webframe.IdentityData2;
 using Microsoft.AspNetCore.Authorization;
@@ -26,7 +27,6 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             this.coreDataContext = coreDataContext;
         }
-
         protected override CoreDataContext GetCoreDataContext()
         {
             return this.coreDataContext;
@@ -45,7 +45,9 @@ namespace Fastnet.Webframe.Web2.Controllers
                 }
                 var directories = coreDataContext.Directories.Where(d => d.ParentDirectory.DirectoryId == id.Value)
                     .OrderBy(x => x.Name)
-                    .Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, ParentId = x.ParentDirectoryId, SubdirectoryCount = x.SubDirectories.Count() });
+                    .ToArray()
+                    .Select(x => x.ToDTO());
+                    //.Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, ParentId = x.ParentDirectoryId, SubdirectoryCount = x.SubDirectories.Count() });
                 return SuccessResult(directories);
             }
             catch (Exception xe)
@@ -63,6 +65,107 @@ namespace Fastnet.Webframe.Web2.Controllers
             var images = directory.Images.ToArray();
             log.Information($"Directory {directory.Name}, {pages.Count()} pages, {documents.Count()} documents, {images.Count()} images");
             return SuccessResult();
+        }
+        [HttpPost("create/directory")]
+        public async Task<IActionResult> CreateDirectory()
+        {
+            try
+            {
+                var dto = Request.FromBody<DirectoryDTO>();
+                if (dto.ParentId.HasValue)
+                {
+                    var parent = await coreDataContext.Directories.FindAsync(dto.ParentId.Value);
+                    var existingNames = parent.SubDirectories.Select(x => x.Name.ToLower());
+                    if (!existingNames.Contains(dto.Name, StringComparer.CurrentCultureIgnoreCase))
+                    {
+                        var dir = new Directory
+                        {
+                            ParentDirectory = parent,
+                            Name = dto.Name
+                        };
+                        await coreDataContext.Directories.AddAsync(dir);
+                        await coreDataContext.RecordChanges(dir, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.NewFolder);
+                        await coreDataContext.SaveChangesAsync();
+                        return SuccessResult(dir.ToDTO());
+                    }
+                    else
+                    {
+                        return ErrorResult($"A directory called {dto.Name} already exists");
+                    }
+                }
+                else
+                {
+                    return ExceptionResult(new Exception("Parent Directory not specified"));
+                }
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpPost("delete/directory/{id}")]
+        public async Task<IActionResult> DeleteDirectory(long id)
+        {
+            try
+            {
+                var dir = await coreDataContext.Directories.FindAsync(id);
+                if (dir != null && dir.ParentDirectory != null)
+                {
+                    await DeleteDirectory(dir);
+                    await coreDataContext.SaveChangesAsync();
+                    return SuccessResult();
+                }
+                else
+                {
+                    return ExceptionResult(new Exception("Invalid directory key"));
+                }
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        private async Task DeleteDirectory(Directory dir)
+        {
+            foreach(var sd in dir.SubDirectories.ToArray())
+            {
+                await DeleteDirectory(sd);
+            }
+            foreach(var page in dir.Pages.ToArray())
+            {
+                await DeletePage(page, dir);
+            }
+            foreach (var doc in dir.Documents.ToArray())
+            {
+                await DeleteDocument(doc, dir);
+            }
+            foreach (var image in dir.Images.ToArray())
+            {
+                await DeleteImage(image, dir);
+            }
+            coreDataContext.Directories.Remove(dir);
+            await coreDataContext.RecordChanges(dir, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.FolderDeleted);
+        }
+        private async Task DeletePage(Page page, Directory container)
+        {
+            var pm = page.PageMarkup;
+            coreDataContext.PageMarkups.Remove(pm);
+            coreDataContext.Pages.Remove(page);
+            await coreDataContext.RecordChanges(page, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.PageDeleted, container);
+        }
+        private async Task DeleteDocument(Document doc, Directory container)
+        {
+            var pageDocs = doc.PageDocuments.ToArray();
+            coreDataContext.PageDocuments.RemoveRange(pageDocs);
+            coreDataContext.Documents.Remove(doc);
+            await coreDataContext.RecordChanges(doc, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.DocumentDeleted, container);
+        }
+        private async Task DeleteImage(Image image, Directory container)
+        {
+            coreDataContext.Images.Remove(image);
+            await coreDataContext.RecordChanges(image, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.ImageDeleted, container);
         }
     }
 }

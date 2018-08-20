@@ -101,6 +101,10 @@ button {
     height: 28px;
     background-color: $default-button-background;
     color: $button-background;
+    &.small {
+        height: auto;
+        font-size: 10px;
+    }
     &.cancel {
         border: 1px solid $button-background;
         background-color: $button-background;
@@ -130,6 +134,7 @@ button {
         cursor: none;
         pointer-events: none;
         background-color: $disabled-colour;
+        border-color: $disabled-colour;
         color: $button-background;
     }
 

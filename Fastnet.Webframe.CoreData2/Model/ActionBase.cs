@@ -111,7 +111,19 @@ namespace Fastnet.Webframe.CoreData2
             [Description("Restriction Modfied")]
             RestrictionModified,
             [Description("Restriction Removed")]
-            RestrictionRemoved
+            RestrictionRemoved,
+            [Description("New Document")]
+            NewDocument,
+            [Description("Document Deleted")]
+            DocumentReplaced,
+            [Description("Document replaced")]
+            DocumentDeleted,
+            [Description("New Image")]
+            NewImage,
+            [Description("Image Replaced")]
+            ImageReplaced,
+            [Description("Image Deleted")]
+            ImageDeleted
         }
         [Column("Action")]
         public EditingActionTypes Action { get; set; }
