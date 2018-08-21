@@ -112,6 +112,7 @@ namespace Fastnet.Webframe.CoreData2
         public DbSet<SessionAction> SessionActions { get; set; }
         public DbSet<MemberAction> MemberActions { get; set; }
         public DbSet<GroupAction> GroupActions { get; set; }
+        public DbSet<FolderAction> FolderActions { get; set; }
         //public DbSet<Recorder> Recorders { get; set; }
         //public DbSet<Record> Records { get; set; }
         public DbSet<Webtask> Webtasks { get; set; }

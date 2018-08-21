@@ -60,11 +60,24 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> GetDirectoryContent(long id)
         {
             var directory = await coreDataContext.Directories.FindAsync(id);
-            var pages = directory.Pages.ToArray();
-            var documents = directory.Documents.ToArray();
-            var images = directory.Images.ToArray();
-            log.Information($"Directory {directory.Name}, {pages.Count()} pages, {documents.Count()} documents, {images.Count()} images");
-            return SuccessResult();
+            if (directory != null)
+            {
+                var dto = new ContentDTO
+                {
+                    Pages = directory.Pages.ToArray().Select(p => p.ToDTO()).ToArray(),
+                    Documents = directory.Documents.ToArray().Select(d => d.ToDTO()).ToArray(),
+                    Images = directory.Images.ToArray().Select(x => x.ToDTO()).ToArray()
+                };
+                //var pages = directory.Pages.ToArray();
+                //var documents = directory.Documents.ToArray();
+                //var images = directory.Images.ToArray();
+                //log.Information($"Directory {directory.Name}, {pages.Count()} pages, {documents.Count()} documents, {images.Count()} images");
+                return SuccessResult(dto);
+            }
+            else
+            {
+                return ExceptionResult(new Exception($"Directory id {id} not found"));
+            }
         }
         [HttpPost("create/directory")]
         public async Task<IActionResult> CreateDirectory()

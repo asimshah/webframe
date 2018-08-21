@@ -178,6 +178,12 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit, OnDestr
     private reset() {
         this.vr = new ValidationResult();
     }
+    static async areAllValid(): Promise<boolean> {
+        return new Promise<boolean>(async resolve => {
+            let badCount = await ControlBase.validateAll();
+            resolve(badCount.length === 0);
+        });
+    }
     /**
      * returns a count of invalid controls 
      */

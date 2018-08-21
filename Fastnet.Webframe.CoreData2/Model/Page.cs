@@ -59,33 +59,33 @@ namespace Fastnet.Webframe.CoreData2
             }
             return null;
         }
-        public static string GetLandingPageImageUrl()
-        {
-            return "/content/images/homepage.png";
-        }
-        public string GetTypeImageUrl()
-        {
-            string r = null;
-            switch (this.Type)
-            {
-                case PageType.Centre:
-                    r = "/Content/images/centrepage.png";
-                    break;
-                case PageType.Left:
-                    r = "/Content/images/leftpage.png";
-                    break;
-                case PageType.Right:
-                    r = "/Content/images/rightpage.png";
-                    break;
-                case PageType.Banner:
-                    r = "/Content/images/bannerpage.png";
-                    break;
-                default:
-                    r = "/Content/images/panelwire.jpg";
-                    break;
-            }
-            return r;
-        }
+        //public static string GetLandingPageImageUrl()
+        //{
+        //    return "/content/images/homepage.png";
+        //}
+        //public string GetTypeImageUrl()
+        //{
+        //    string r = null;
+        //    switch (this.Type)
+        //    {
+        //        case PageType.Centre:
+        //            r = "/Content/images/centrepage.png";
+        //            break;
+        //        case PageType.Left:
+        //            r = "/Content/images/leftpage.png";
+        //            break;
+        //        case PageType.Right:
+        //            r = "/Content/images/rightpage.png";
+        //            break;
+        //        case PageType.Banner:
+        //            r = "/Content/images/bannerpage.png";
+        //            break;
+        //        default:
+        //            r = "/Content/images/panelwire.jpg";
+        //            break;
+        //    }
+        //    return r;
+        //}
         public string GetTypeTooltip()
         {
             string r = null;

@@ -38,16 +38,17 @@ namespace Fastnet.Webframe.Web2
         }
         public static PageDTO ToDTO(this Page page)
         {
+
             var dto = new PageDTO
             {
                 Type = ContentType.Page,
                 Id = page.PageId,
                 Url = page.Url,
                 Name = page.Name,
-                IconUrl = page.GetTypeImageUrl(),
+                IconUrl = page.GetIconUrl(),// page.GetTypeImageUrl(),
                 PageType = page.Type,
                 LandingPage = page.IsLandingPage,
-                LandingPageIconUrl = Page.GetLandingPageImageUrl(),
+                LandingPageIconUrl = "/icons/homepage.png", // Page.GetLandingPageImageUrl(),
                 PageTypeTooltip = page.GetTypeTooltip()
             };
             return dto;
@@ -60,7 +61,7 @@ namespace Fastnet.Webframe.Web2
                 Id = doc.DocumentId,
                 Url = doc.Url,
                 Name = doc.Name,
-                IconUrl = doc.GetTypeImageUrl(),
+                IconUrl = doc.GetIconUrl()
             };
             return dto;
         }
@@ -72,7 +73,7 @@ namespace Fastnet.Webframe.Web2
                 Id = image.ImageId,
                 Url = image.Url,
                 Name = image.Name,
-                IconUrl = image.GetImageTypeImage(),
+                IconUrl = "/icons/image.png",//image.GetImageTypeImage(),
                 Size = image.Size
             };
             return dto;
@@ -84,7 +85,7 @@ namespace Fastnet.Webframe.Web2
                 Id = dir.DirectoryId,
                 Name = dir.Name,
                 ParentId = dir.ParentDirectoryId,
-                SubdirectoryCount = dir.SubDirectories.Count()
+                SubdirectoryCount = dir.SubDirectories != null ? dir.SubDirectories.Count() : 0
             };
         }
         private static void FromMemberDTO(MemberDTO dto, Member member)
@@ -116,7 +117,73 @@ namespace Fastnet.Webframe.Web2
             dto.CreationDateFormatted = member.CreationDate.ToUKDefaultWithTime();
             dto.LastLoginDateFormatted = member.LastLoginDate?.ToUKDefaultWithTime();
         }
-
+        private static string GetIconUrl(this Page page)
+        {
+            string r = null;
+            switch (page.Type)
+            {
+                case PageType.Centre:
+                    r = "/icons/centrepage.png";
+                    break;
+                case PageType.Left:
+                    r = "/icons/leftpage.png";
+                    break;
+                case PageType.Right:
+                    r = "/icons/rightpage.png";
+                    break;
+                case PageType.Banner:
+                    r = "/icons/bannerpage.png";
+                    break;
+                default:
+                    r = "/icons/panelwire.jpg";
+                    break;
+            }
+            return r;
+        }
+        private static string GetIconUrl(this Document doc)
+        {
+            string r = null;
+            switch (doc.Extension)
+            {
+                default:
+                    r = "/icons/unknownsmall.png";
+                    break;
+                case ".mp3":
+                    r = "/icons/audiosmall.png";
+                    break;
+                case ".css":
+                    r = "/icons/csssmall.png";
+                    break;
+                case ".dotx":
+                    r = "/icons/dotxsmall.png";
+                    break;
+                case ".xls":
+                case ".xlsx":
+                    r = "/icons/excelsmall.png";
+                    break;
+                case ".pdf":
+                    r = "/icons/pdfsmall.png";
+                    break;
+                case ".ppt":
+                case ".pptx":
+                    r = "/icons/powerpointsmall.png";
+                    break;
+                case ".doc":
+                case ".docx":
+                    r = "/icons/wordsmall.png";
+                    break;
+                case ".mp4":
+                case ".mpg":
+                case ".mpeg":
+                case ".avi":
+                case ".flv":
+                case ".mov":
+                case ".wmc":
+                    r = "/icons/videosmall.png";
+                    break;
+            }
+            return r;
+        }
     }
     public class MemberDTO
     {
@@ -166,7 +233,13 @@ namespace Fastnet.Webframe.Web2
         Document,
         Image
     }
-    public interface IDirectoryItem
+    public class ContentDTO
+    {
+        public PageDTO[] Pages { get; set; }
+        public DocumentDTO[] Documents { get; set; }
+        public ImageDTO[] Images { get; set; }
+    }
+    public interface IContentDTO
     {
         ContentType Type { get; set; }
         long Id { get; set; }
@@ -174,7 +247,7 @@ namespace Fastnet.Webframe.Web2
         string Name { get; set; }
         string IconUrl { get; set; }
     }
-    public class PageDTO : IDirectoryItem
+    public class PageDTO : IContentDTO
     {
         public ContentType Type { get; set; }
         public long Id { get; set; }
@@ -186,7 +259,7 @@ namespace Fastnet.Webframe.Web2
         public string LandingPageIconUrl { get; set; }
         public string PageTypeTooltip { get; set; }
     }
-    public class DocumentDTO : IDirectoryItem
+    public class DocumentDTO : IContentDTO
     {
         public ContentType Type { get; set; }
         public long Id { get; set; }
@@ -194,7 +267,7 @@ namespace Fastnet.Webframe.Web2
         public string Name { get; set; }
         public string IconUrl { get; set; }
     }
-    public class ImageDTO : IDirectoryItem
+    public class ImageDTO : IContentDTO
     {
         public ContentType Type { get; set; }
         public long Id { get; set; }

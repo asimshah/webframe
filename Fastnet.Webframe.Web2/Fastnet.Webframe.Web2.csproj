@@ -39,6 +39,22 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\css\custom.css" />
+    <Content Remove="wwwroot\Icons\AudioSmall.png" />
+    <Content Remove="wwwroot\Icons\bannerpage.png" />
+    <Content Remove="wwwroot\Icons\centrepage.png" />
+    <Content Remove="wwwroot\Icons\CssSmall.png" />
+    <Content Remove="wwwroot\Icons\DotxSmall.png" />
+    <Content Remove="wwwroot\Icons\ExcelSmall.png" />
+    <Content Remove="wwwroot\Icons\homepage.png" />
+    <Content Remove="wwwroot\Icons\image.png" />
+    <Content Remove="wwwroot\Icons\leftpage.png" />
+    <Content Remove="wwwroot\Icons\panelwire.jpg" />
+    <Content Remove="wwwroot\Icons\PdfSmall.png" />
+    <Content Remove="wwwroot\Icons\PowerPointSmall.png" />
+    <Content Remove="wwwroot\Icons\rightpage.png" />
+    <Content Remove="wwwroot\Icons\UnknownSmall.png" />
+    <Content Remove="wwwroot\Icons\VideoSmall.png" />
+    <Content Remove="wwwroot\Icons\WordSmall.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,6 +115,54 @@
 
   <ItemGroup>
     <None Include="wwwroot\css\custom.css" />
+    <None Include="wwwroot\Icons\AudioSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\bannerpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\centrepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\CssSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\DotxSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\ExcelSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\homepage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\image.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\leftpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\panelwire.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\PdfSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\PowerPointSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\rightpage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\UnknownSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\VideoSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="wwwroot\Icons\WordSmall.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="wwwroot\webframelogo-16.16.ico" />
   </ItemGroup>
 

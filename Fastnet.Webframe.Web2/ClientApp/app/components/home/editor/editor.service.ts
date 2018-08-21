@@ -8,6 +8,61 @@ export class Directory {
     name: string;
     subdirectoryCount: number;
 }
+
+export enum ContentType {
+    Page,
+    Document,
+    Image
+}
+
+export enum PageType {
+    Centre,
+    Banner,
+    Left,
+    Right
+}
+export interface IContent {
+    type: ContentType;
+    id: number;
+    url: string;
+    name: string;
+    iconUrl: string
+}
+export class Page implements IContent {
+    type: ContentType;
+    id: number;
+    url: string;
+    name: string;
+    iconUrl: string;
+    pageType: PageType;
+    landingPage: boolean;
+    landingPageIconUrl: string;
+    pageTypeTooltip: string;
+}
+export class Document implements IContent {
+    type: ContentType;
+    id: number;
+    url: string;
+    name: string;
+    iconUrl: string;
+}
+export class Image implements IContent {
+    type: ContentType;
+    id: number;
+    url: string;
+    name: string;
+    iconUrl: string;
+    size: string;
+}
+export class Content {
+    pages: Page[] = [];
+    documents: Document[] = [];
+    images: Image[] = [];
+    isEmpty() {
+        return this.pages.length == 0 && this.documents.length == 0 && this.images.length == 0;
+    }
+}
+
 @Injectable()
 export class EditorService extends BaseService {
     constructor(http: Http) {
@@ -24,16 +79,26 @@ export class EditorService extends BaseService {
             }
         });
     }
-    async getDirectoryContent(id: number) {
+    async getDirectoryContent(id: number) : Promise<Content> {
         let query = `content/get/files/${id}`;
-        return new Promise<void>(async resolve => {
+        return new Promise<Content>(async resolve => {
             let dr = await this.query(query);
+            if (dr.success) {
+                let data = <Content>dr.data;
+                let c = new Content();
+                c.documents = data.documents;
+                c.images = data.images;
+                c.pages = data.pages;
+                resolve(c);
+            } else {
+                resolve(new Content());
+            }
         });
     }
     async deleteDirectory(id: number) {
         let query = `content/delete/directory/${id}`;
         return new Promise<void>(async resolve => {
-            let dr = await this.query(query);
+            let dr = await this.post(query, null);
             resolve();
         });
     }

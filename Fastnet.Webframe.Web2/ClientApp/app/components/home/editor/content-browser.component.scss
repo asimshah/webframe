@@ -3,6 +3,15 @@
 :host {
     @extend .modal-dialog-settings;
 
+    .command-bar {
+        background-color: lightgray;
+        padding-top: 0.125em;
+        padding-bottom: 0.25em;
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+        margin-bottom: 0.25em;
+    }
+
     .modal-container {
         width: 75%;
 
@@ -22,11 +31,14 @@
                 display: grid;
                 grid-template-columns: 1fr 2.5fr;
 
-                .tree-view {
+                .tree-view, .content-view {
                     padding-top: 0;
                     padding-bottom: 0.25em;
                     padding-left: 0.25em;
                     padding-right: 0.25em;
+                }
+
+                .tree-view {
                     min-height: 25vh;
                     border: 1px solid white;
                     border-radius: 0.2em;
@@ -34,13 +46,13 @@
                     .directory-commands {
                         display: grid;
                         grid-template-columns: auto auto;
-                        background-color: lightgray;
+                        @extend .command-bar;
+                        /*background-color: lightgray;
                         padding-top: 0.125em;
                         padding-bottom: 0.25em;
                         padding-left: 0.25em;
                         padding-right: 0.25em;
-                        margin-bottom: 0.25em;
-
+                        margin-bottom: 0.25em;*/
                         div:last-child {
                             text-align: right;
                         }
@@ -53,10 +65,47 @@
                 }
 
                 .content-view {
-                    padding: 0.25em;
                     border-left: 1px solid lightgray;
                     //border-radius: 0.25em;
                     width: 100%;
+                    background-color: #f9f9f9;
+                    > div:first-child {
+                        @extend .command-bar;
+                        color: white;
+                    }
+
+                    .content-table {
+                        display: grid;
+                        grid-template-columns: 48px 120px auto 24px 24px;
+                        grid-gap: 3px;
+                        max-height: 300px;
+                        overflow-y: auto;
+                        > * {
+                            background-color: white;
+                        }
+                        .delete-icon {
+                            cursor: pointer;
+                            color: red;
+
+                            &:hover {
+                                color: orange;
+                            }
+                        }
+
+                        .edit-icon {
+                            cursor: pointer;
+
+                            &:hover {
+                                color: orange;
+                            }
+                        }
+
+                        .image-size {
+                            font-size: smaller;
+                            font-style: italic;
+                            color: #808080;
+                        }
+                    }
                 }
             }
         }
