@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
 //import { Dictionary} from '../shared/dictionary.types';
 import {
-    ControlBase,
-    //TextInputControl,
-    ValidationResult, ControlState, EnumValue, ListItem,
+    ValidationResult, ControlState,
     PropertyValidatorAsync
-} from '../controls/controls.component';
+} from '../controls/controls.types';
+import { ControlBase } from '../controls/controls.component';
+import { EnumValue, ListItem } from '../controls/controls.types';
 import { Dictionary } from '../types/dictionary.types';
 import { MembershipService } from './membership.service';
 import { Member, Group, GroupTypes, MemberIdList } from '../shared/common.types';
@@ -154,32 +154,23 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         this.member = undefined;
         this.originalMemberJson = undefined;
     }
-    public onDeleteMemberClick() {
-        this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ", (r) => {
-            if (r === MessageBoxResult.ok) {
-                console.log("delete requested");
-                this.deleteMember();
-            }
-        });
-        //this.showConfirmDialog("Deleting a member removes all data for that member permanently. Are you sure you want to proceed? ", async (r) => {
-        //    if (r === true) {
-        //        //console.log("delete requested");
-        //        await this.deleteMember();
+    public async onDeleteMemberClick() {
+        //this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ", (r) => {
+        //    if (r === MessageBoxResult.ok) {
+        //        console.log("delete requested");
+        //        this.deleteMember();
         //    }
         //});
+        let r = await this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ");
+        if (r === MessageBoxResult.ok) {
+            console.log("delete requested");
+            this.deleteMember();
+        }
+
     }
-    public onActivateMemberClick() {
-        this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ", async (r) => {
-            if (r === MessageBoxResult.ok && this.member) {
-                await this.membershipService.activateMember(this.member);
-                this.member = undefined;
-                this.memberIsNew = false;
-                this.originalMemberJson = undefined;
-                this.performSearch();
-            }
-        });
-        //this.showConfirmDialog("Directly activating a member means that the email address will not be known to be correct. Are you sure you want to proceed?", async (r) => {
-        //    if (r === true && this.member) {
+    public async onActivateMemberClick() {
+        //this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ", async (r) => {
+        //    if (r === MessageBoxResult.ok && this.member) {
         //        await this.membershipService.activateMember(this.member);
         //        this.member = undefined;
         //        this.memberIsNew = false;
@@ -187,6 +178,14 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         //        this.performSearch();
         //    }
         //});
+        let r = await this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ");
+        if (r === MessageBoxResult.ok && this.member) {
+            await this.membershipService.activateMember(this.member);
+            this.member = undefined;
+            this.memberIsNew = false;
+            this.originalMemberJson = undefined;
+            this.performSearch();
+        }
     }
     public async onSendActivationEmailClick() {
         if (this.member) {
@@ -486,21 +485,19 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     async onDeleteGroupClick() {
         if (this.selectedGroup && !this.groupIsNew) {
-            this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ", async (r) => {
-                if (r === MessageBoxResult.ok && this.selectedGroup) {
-                    await this.membershipService.deleteGroup(this.selectedGroup);
-                    this.removeGroupFromTree();
-                    this.selectedGroup = undefined;
-                }
-            });
-
-            //this.showConfirmDialog(`Deleting a group is irreversible. Are you sure you want to proceed?`, async (r) => {
-            //    if (r === true && this.selectedGroup) {
+            //this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ", async (r) => {
+            //    if (r === MessageBoxResult.ok && this.selectedGroup) {
             //        await this.membershipService.deleteGroup(this.selectedGroup);
             //        this.removeGroupFromTree();
             //        this.selectedGroup = undefined;
             //    }
-            //}, true, "Message");
+            //});
+            let r = await this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ");
+            if (r === MessageBoxResult.ok && this.selectedGroup) {
+                await this.membershipService.deleteGroup(this.selectedGroup);
+                this.removeGroupFromTree();
+                this.selectedGroup = undefined;
+            }
         }
     }
     async onSaveGroupClick() {
@@ -678,9 +675,9 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         });
     }
     //
-    protected showMessage(message: string, onClose?: (r?: MessageBoxResult) => void) {
+    protected showMessage(message: string/*, onClose?: (r?: MessageBoxResult) => void*/): Promise<MessageBoxResult> {
         //console.log(`called with ${message}`);
         this.message = message;
-        this.dialogService.showMessageBox("message-box", onClose);
+        return this.dialogService.showMessageBox("message-box"/*, onClose*/);
     }
 }

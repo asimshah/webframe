@@ -38,7 +38,6 @@ namespace Fastnet.Webframe.Web2
         }
         public static PageDTO ToDTO(this Page page)
         {
-
             var dto = new PageDTO
             {
                 Type = ContentType.Page,
@@ -49,7 +48,11 @@ namespace Fastnet.Webframe.Web2
                 PageType = page.Type,
                 LandingPage = page.IsLandingPage,
                 LandingPageIconUrl = "/icons/homepage.png", // Page.GetLandingPageImageUrl(),
-                PageTypeTooltip = page.GetTypeTooltip()
+                PageTypeTooltip = page.GetTypeTooltip(),
+                CreatedBy = page.CreatedBy,
+                CreatedOn = page.CreatedOn.ToUKDefaultWithTime(),
+                ModifiedBy = page.ModifiedBy,
+                ModifiedOn = page.ModifiedOn?.ToUKDefaultWithTime()
             };
             return dto;
         }
@@ -185,6 +188,16 @@ namespace Fastnet.Webframe.Web2
             return r;
         }
     }
+    public class UploadDataDTO
+    {
+        public int ChunkNumber { get; set; }
+        public bool IsLastChunk { get; set; }
+        public string Key { get; set; }
+        public string Filename { get; set; }
+        public string MimeType { get; set; }
+        public long DirectoryId { get; set; }
+        public string Base64Data { get; set; }
+    }
     public class MemberDTO
     {
         public string Id { get; set; }
@@ -258,6 +271,10 @@ namespace Fastnet.Webframe.Web2
         public bool LandingPage { get; set; }
         public string LandingPageIconUrl { get; set; }
         public string PageTypeTooltip { get; set; }
+        public string ModifiedOn { get; set; }
+        public string ModifiedBy { get; set; }
+        public string CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
     }
     public class DocumentDTO : IContentDTO
     {
@@ -275,5 +292,12 @@ namespace Fastnet.Webframe.Web2
         public string Name { get; set; }
         public string IconUrl { get; set; }
         public string Size { get; set; }
+    }
+    public class NewPageDTO
+    {
+        public PageType Type { get; set; }
+        public long? ReferencePageId { get; set; }
+        public long DirectoryId { get; set; }
+        public string Name { get; set; }
     }
 }

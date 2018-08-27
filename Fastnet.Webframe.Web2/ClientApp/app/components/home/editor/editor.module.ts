@@ -8,6 +8,7 @@ import { EditorComponent } from './editor.component';
 import { editorRouting } from './editor.routing';
 import { ContentBrowserComponent } from './content-browser.component';
 import { EditorService } from './editor.service';
+import { PagePropertiesComponent } from './page-properties.component';
 //import { TreeModule } from 'angular-tree-component';
 //import { SidebarMenuComponent } from '../sidebarmenu.component';
 
@@ -24,7 +25,7 @@ import { EditorService } from './editor.service';
         //TreeModule
     ],
     exports: [],
-    declarations: [EditorComponent, ContentBrowserComponent],
+    declarations: [EditorComponent, ContentBrowserComponent, PagePropertiesComponent],
     providers: [EditorService],
 })
 export class EditorModule { }

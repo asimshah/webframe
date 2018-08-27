@@ -1,0 +1,21 @@
+﻿@import "../../modaldialog/modal-dialog.variables.scss";
+
+:host {
+    @extend .modal-dialog-settings;
+
+    .modal-container {
+        width: 50%;
+        padding: 0.5em;
+        .caption {
+            background-color: cornflowerblue;
+            color: white;
+            padding: 0.25em;
+            margin-bottom: 0.25em;
+        }
+    }
+    .page-dates {
+        margin-left: 0.5em;
+        font-size: 11px;
+        color: #808080;
+    }
+}

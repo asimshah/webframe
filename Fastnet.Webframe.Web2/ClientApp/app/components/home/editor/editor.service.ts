@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { BaseService, ServiceResult } from '../../shared/base.service';
-import { Http } from '@angular/http';
+import { Http, RequestOptionsArgs } from '@angular/http';
 
 export class Directory {
     id: number;
@@ -38,6 +38,10 @@ export class Page implements IContent {
     landingPage: boolean;
     landingPageIconUrl: string;
     pageTypeTooltip: string;
+    modifiedOn: string;
+    modifiedBy: string;
+    createdOn: string;
+    createdBy: string;
 }
 export class Document implements IContent {
     type: ContentType;
@@ -63,10 +67,48 @@ export class Content {
     }
 }
 
+export class UploadData {
+    chunkNumber: number;
+    isLastChunk: boolean;
+    key: string;
+    base64Data: string;
+    filename: string;
+    mimeType: string;
+    filelength: number;
+    directoryId: number;
+}
+
+export class NewPage {
+    type: PageType;
+    referencePageId?: number;
+    directoryId: number;
+    name: string;
+}
+
 @Injectable()
 export class EditorService extends BaseService {
     constructor(http: Http) {
         super(http);
+    }
+    async checkContentExists(id: number, name: string): Promise<boolean> {
+        let query = `content/check/exists/${id}/${encodeURI(name)}`;
+        return new Promise<boolean>(async resolve => {
+            let dr = await this.query(query);
+            resolve(dr.data);
+        });
+    }
+    async sendChunk(chunk: UploadData): Promise<string | ServiceResult> {
+        let query = "content/upload/chunk";
+
+        return new Promise<string | ServiceResult>(async resolve => {
+            let dr = await this.post(query, chunk);
+            if (dr.success) {
+                resolve(dr.data);
+            }
+            else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+        });
     }
     async getDirectories(parentId?: number): Promise<Directory[]> {
         let query = parentId ? `content/get/directories/${parentId}` : "content/get/directories";
@@ -95,6 +137,27 @@ export class EditorService extends BaseService {
             }
         });
     }
+    async deletePage(page: Page, dir: Directory) {
+        let query = `content/delete/page/${page.id}/${dir.id}`;
+        return new Promise<void>(async resolve => {
+            let dr = await this.post(query, null);
+            resolve();
+        });
+    }
+    async deleteDocument(doc: Document, dir: Directory) {
+        let query = `content/delete/document/${doc.id}/${dir.id}`;
+        return new Promise<void>(async resolve => {
+            let dr = await this.post(query, null);
+            resolve();
+        });
+    }
+    async deleteImage(image: Image, dir: Directory) {
+        let query = `content/delete/image/${image.id}/${dir.id}`;
+        return new Promise<void>(async resolve => {
+            let dr = await this.post(query, null);
+            resolve();
+        });
+    }
     async deleteDirectory(id: number) {
         let query = `content/delete/directory/${id}`;
         return new Promise<void>(async resolve => {
@@ -112,6 +175,28 @@ export class EditorService extends BaseService {
                 resolve({ success: true, errors: []});
             } else {
                 resolve({success: false, errors: [dr.message] });
+            }
+        });
+    }
+    async createPage(np: NewPage): Promise<ServiceResult> {
+        let query = "content/create/page";
+        return new Promise<ServiceResult>(async resolve => {
+            let dr = await this.post(query, np);
+            if (dr.success) {
+                resolve({ success: true, errors: [] });
+            } else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+        });
+    }
+    async updatePage(page: Page): Promise<ServiceResult> {
+        let query = "content/update/page";
+        return new Promise<ServiceResult>(async resolve => {
+            let dr = await this.post(query, page);
+            if (dr.success) {
+                resolve({ success: true, errors: [] });
+            } else {
+                resolve({ success: false, errors: [dr.message] });
             }
         });
     }

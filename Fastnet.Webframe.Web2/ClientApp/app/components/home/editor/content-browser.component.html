@@ -16,7 +16,7 @@
                                     <div *ngIf="subdirectory !== null" class="modal-container">
                                         <div class="caption">{{getNewDirectoryCaption()}}</div>
                                         <div class="form-body">
-                                            <text-input label="Subdirectory Name:" name="sdname" [(ngModel)]="subdirectory.name" [validator]="nameValidator"></text-input>
+                                            <text-input label="Subdirectory Name:" name="sdname" [(ngModel)]="subdirectory.name" [validator]="directoryNameValidator"></text-input>
                                         </div>
                                         <div class="command-buttons align-centrally">
                                             <button (click)="onCreateNewDirectory()">OK</button>
@@ -45,8 +45,8 @@
                             </div>
                             <div>{{page.url}}</div>
                             <div>{{page.name}}</div>
-                            <span class="fa fa-edit edit-icon" title="Show page properties"></span>
-                            <span *ngIf="!page.landingPage" title="Delete this page" class="fa fa-remove delete-icon"></span>
+                            <span class="fa fa-edit edit-icon" title="Show page properties" (click)="onPageProperties(page)" ></span>
+                            <span *ngIf="!page.landingPage" title="Delete this page" class="fa fa-remove delete-icon" (click)="onDeletePage(page)"></span>
                             <span *ngIf="page.landingPage" class="fa fa-square" style="color: transparent"></span>
                         </ng-template>
                         <ng-template ngFor let-doc [ngForOf]="content.documents">
@@ -56,7 +56,7 @@
                             <div>{{doc.url}}</div>
                             <div>{{doc.name}}</div>
                             <span class="fa fa-square" style="color: transparent"></span>
-                            <span class="fa fa-remove delete-icon"  title="Delete this document"  ></span>
+                            <span class="fa fa-remove delete-icon" title="Delete this document" (click)="onDeleteDocument(doc)"></span>
                         </ng-template>
                         <ng-template ngFor let-image [ngForOf]="content.images">
                             <div>
@@ -68,20 +68,68 @@
                                 <span class="image-size">{{image.size}}</span>
                             </div>
                             <span class="fa fa-square" style="color: transparent"></span>
-                            <span class="fa fa-remove delete-icon" title="Delete this image" ></span>
+                            <span class="fa fa-remove delete-icon" title="Delete this image" (click)="onDeleteImage(image)"></span>
                         </ng-template>
-
                     </div>
+                    <page-properties [existingContent]="content" id="pp-1" #pageProperties></page-properties>
                 </div>
             </div>
         </div>
-        <div class="command-buttons align-centrally">
+        <div class="command-buttons align-at-ends">
             <div>
-                <button class="default">Add New Page</button>
-                <button class="secondary">Upload File(s)</button>
+                <button class="default" [ngClass]="{disabled: !canExecute(ContentCommands.AddNewPage)}" (click)="onAddNewPage()">Add New Page</button>
+                <button class="default" [ngClass]="{disabled: !canExecute(ContentCommands.UploadFiles)}" (click)="onUploadFiles()">Upload File(s)</button>
+                <modal-dialog id="new-page">
+                    <div class="modal-overlay">
+                        <div *ngIf="newPage !== null" class="modal-container">
+                            <div class="caption">{{getNewPageCaption()}}</div>
+                            <div class="form-body">
+                                <text-input label="Page Name:" name="pagename" [(ngModel)]="newPage.name" [validator]="pageNameValidator"></text-input>
+                            </div>
+                            <div class="command-buttons align-centrally">
+                                <button (click)="onCreateNewPage()">OK</button>
+                                <button class="cancel" (click)="onCancelNewPage()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </modal-dialog>
+            </div>
+            <div>
                 <button class="cancel" (click)="onClose()">Close</button>
             </div>
         </div>
+        <modal-dialog id="upload-files">
+            <div class="modal-overlay">
+                <div class="modal-container">
+                    <div class="caption">Upload file(s)</div>
+                    <div class="form-body">
+                        <div class="upload-list" *ngIf="filesToUpload !== null && filesToUpload.length > 0; else uploadHelp">
+                            <ng-template ngFor let-fui [ngForOf]="filesToUpload">
+                                <span>{{fui.file.name}}</span>
+                                <span>{{fui.file.size}}</span>
+                                <div class="p-bar">
+                                    <div class="lower"></div>
+                                    <div class="upper" [style.width.%]="fui.progress"></div>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <ng-template #uploadHelp>
+                            <div class="help-text">Use "Add a file" to select one or more files to upload</div>
+                        </ng-template>
+                    </div>
+                    <input #fileInput style="display:none" type="file" (change)="onFileSelected($event)" />
+                    <div class="command-buttons align-at-ends">
+                        <div>
+                            <button class="small secondary" [ngClass]="{disabled: filesToUpload === null || filesToUpload.length === 0}" (click)="onStartFileUpload()">Start upload ...</button>
+                        </div>
+                        <div>
+                            <button class="small" (click)="fileInput.click()">Add a file..</button>
+                            <button class="cancel small" (click)="onCancelFileUpload()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </modal-dialog>
         <message-box id="messageBox" caption="Content Browser">
             <div>{{message}}</div>
         </message-box>

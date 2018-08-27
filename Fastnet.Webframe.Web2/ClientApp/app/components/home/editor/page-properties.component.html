@@ -1,0 +1,23 @@
+﻿<div class="modal-overlay">
+    <div *ngIf="page" class="modal-container">
+        <div class="caption">Page Properties</div>
+        <div class="form-body">
+            <text-input label="Name" name="pageName" [(ngModel)]="page.name" [validator]="pageNameValidator"></text-input>
+            <bool-input label="Landing Page" [(ngModel)]="page.landingPage" name="landingPage"></bool-input>
+            <div class="page-dates">
+                <div>Created by {{page.createdBy}} on {{page.createdOn}}</div>
+                <div *ngIf="page.modifiedBy !== null && page.modifiedBy.length > 0">Modified by {{page.modifiedBy}} on {{page.modifiedOn}}</div>
+            </div>
+        </div>
+        <div class="command-buttons align-centrally">
+            <button class="default" (click)="onSave()">Save</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
+        </div>
+        <message-box id="messageBox" caption="Page Properties">
+            <div>{{message}}</div>
+        </message-box>
+        <message-box id="warningBox" caption="Page Properties" [warning]="true">
+            <div>{{message}}</div>
+        </message-box>
+    </div>
+</div>

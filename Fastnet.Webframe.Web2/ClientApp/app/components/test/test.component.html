@@ -1,0 +1,24 @@
+﻿<div>
+    <div>this is the test component</div>
+    <inline-dialog #ctldialog>
+        <div commandbuttons>
+            <div class="right">
+                <button>right 1</button>
+                <button>right 2</button>
+            </div>
+            <div class="left">
+                <button (click)="onValidateAllClick()">Validate All</button>
+                <button>left 2</button>
+            </div>
+            <div >
+                <button>centre 1</button>
+                <button>centre 2</button>
+            </div>
+        </div>
+        <div body>
+            <text-input-new  label="<span class='fa fa-home'></span><span>First Name</span>" [(ngModel)]="firstName" [validator]="validateFirstName"></text-input-new>
+            <text-input-new [focus]="true" #ctllastname label="Last name" [(ngModel)]="lastName" [validator]="validateLastName"></text-input-new>
+            <text-input-new [disabled]="true" label="Something else" [(ngModel)]="something" ></text-input-new>
+        </div>
+    </inline-dialog>
+</div>

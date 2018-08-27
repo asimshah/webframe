@@ -11,7 +11,7 @@ ul {
 li {
     list-style:none;
 }
-$selectedColor: #549254;
+$selectedColor: cornflowerblue;// #549254;
 .tree-node {
     display: flex;
     align-items: center;
@@ -25,8 +25,8 @@ $selectedColor: #549254;
 
     &.selected {
         border: 1px solid $selectedColor;
-        background-color: $selectedColor;
-        color: white;
+        //background-color: $selectedColor;
+        //color: white;
     }
 
     &:hover {

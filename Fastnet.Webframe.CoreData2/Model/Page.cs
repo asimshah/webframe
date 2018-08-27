@@ -20,8 +20,8 @@ namespace Fastnet.Webframe.CoreData2
         public virtual Directory Directory { get; set; }
         //public ICollection<MenuMaster> MenuMasters { get; set; }
         public virtual ICollection<Menu> Menus { get; set; }
-        public virtual ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these document
-        public virtual ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these document
+        public virtual ICollection<PageDocument> PageDocuments { get; set; } // this page hyperlinks to these documents
+        public virtual ICollection<PagePage> ForwardLinks { get; set; }// this page hyperlinks to these pages
         public virtual ICollection<PagePage> BackLinks { get; set; } // this page is hyperlinked from these pages
         [NotMapped]
         public string Url
@@ -169,6 +169,7 @@ namespace Fastnet.Webframe.CoreData2
             return pm == null ? null : new PageContent { HtmlStyles = pm.HtmlStyles, HtmlText = pm.HtmlText, HtmlTextLength = pm.HtmlTextLength };
         }
     }
+    [Table("PageDocument")]
     public class PageDocument
     {
         public long PageId { get; set; }
@@ -176,6 +177,7 @@ namespace Fastnet.Webframe.CoreData2
         public virtual Page Page { get; set; }
         public virtual Document Document { get; set; }
     }
+    [Table("PageImage")]
     public class PagePage
     {
         public long FromPageId { get; set; }

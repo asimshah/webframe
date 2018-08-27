@@ -132,6 +132,40 @@ namespace Fastnet.Webframe.CoreData2
                 }
             }
         }
+        public static Document CreateNewDocument(this CoreDataContext coreDataContext)
+        {
+            long largest = 0;
+            if ((coreDataContext.Documents.Count() + coreDataContext.Documents.Local.Count()) > 0)
+            {
+                largest = coreDataContext.Documents.Select(x => x.DocumentId).Union(coreDataContext.Documents.Local.Select(x => x.DocumentId)).Max(x => x);
+            }
+
+            return new Document { DocumentId = largest + 1 };
+        }
+        public static Image CreateNewImage(this CoreDataContext coreDataContext)
+        {
+            long largest = 0;
+            if ((coreDataContext.Images.Count() + coreDataContext.Images.Local.Count()) > 0)
+            {
+                largest = coreDataContext.Images.Select(x => x.ImageId).Union(coreDataContext.Images.Local.Select(x => x.ImageId)).Max(x => x);
+            }
+            //long? largest = this.Images.Select(x => x.ImageId).Union(this.Images.Local.Select(x => x.ImageId)).Max(x => x);
+            return new Image { ImageId = largest + 1 };
+        }
+        public static Page CreateNewPage(this CoreDataContext coreDataContext)
+        {
+            long largest = 0;
+            if ((coreDataContext.Pages.Count() + coreDataContext.Pages.Local.Count()) > 0)
+            {
+                largest = coreDataContext.Pages.Select(x => x.PageId).Union(coreDataContext.Pages.Local.Select(x => x.PageId)).Max(x => x);
+            }
+            //Debug.Print("Page: largest pk = {0}", largest);
+            Page p = new Page { PageId = largest + 1 };
+            p.PageMarkup = new PageMarkup();
+
+            coreDataContext.Pages.Add(p);
+            return p;
+        }
         public static void RecordChanges(this CoreDataContext DataContext, DirectoryGroup dg, string actionBy, RestrictionAction.EditingActionTypes actionType)
         {
             //Func<RestrictionAction> getNewAction = () =>
@@ -326,7 +360,7 @@ namespace Fastnet.Webframe.CoreData2
                     }
                     break;
             }
-            await ctx.SaveChangesAsync();
+            //await ctx.SaveChangesAsync();
         }
         public static async Task RecordChanges(this CoreDataContext ctx, Image image, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
         {
@@ -344,7 +378,7 @@ namespace Fastnet.Webframe.CoreData2
                     await ctx.Actions.AddAsync(fa);
                     break;
             }
-            await ctx.SaveChangesAsync();
+            //await ctx.SaveChangesAsync();
         }
         public static async Task RecordChanges(this CoreDataContext ctx, Document doc, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
         {
@@ -362,7 +396,7 @@ namespace Fastnet.Webframe.CoreData2
                     await ctx.Actions.AddAsync(fa);
                     break;
             }
-            await ctx.SaveChangesAsync();
+            //await ctx.SaveChangesAsync();
         }
         public static async Task RecordChanges(this CoreDataContext ctx, Page page, string actionBy, FolderAction.EditingActionTypes actionType, Directory container)
         {
@@ -400,7 +434,7 @@ namespace Fastnet.Webframe.CoreData2
                     }
                     break;
             }
-            await ctx.SaveChangesAsync();
+            //await ctx.SaveChangesAsync();
         }
         private static bool AreGroupsPresent(this Directory dir)
         {

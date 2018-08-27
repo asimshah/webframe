@@ -5,10 +5,14 @@ import { EmailValidator, FormControl } from '@angular/forms';
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
 import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
 import { PageKeys, PageService } from '../shared/page.service';
-import { ControlState, PasswordInputControl, PropertyValidatorAsync, ValidationResult, ControlBase } from '../controls/controls.component';
+import { ControlState, PropertyValidatorAsync, ValidationResult} from '../controls/controls.types';
+
 import { Dictionary } from '../types/dictionary.types';
 //import { MessageBox } from '../shared/common.types';
 import { BaseComponent, nothingOnClose } from '../shared/base.component';
+import { MessageBoxResult } from '../modaldialog/message-box.component';
+import { ControlBase } from '../controls/controls.component';
+import { PasswordInputControl } from '../controls/password-input.component';
 
 class LoginModel {
     message: string;
@@ -75,9 +79,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
         if (r === true) {
             let result = await this.authenticationService.sendPasswordReset(this.model.emailAddress);
             if (result.success) {
-                this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`, () => {
-                    this.router.navigate(['home']);
-                });
+                //this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`, () => {
+                //    this.router.navigate(['home']);
+                //});
+                let r = await this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`);
+                this.router.navigate(['home']);
             } else {
                 this.showMessage(result.errors[0]);
             }
@@ -120,10 +126,11 @@ export class LoginComponent extends BaseComponent implements OnInit {
     canAttemptLogin() {
         return this.hasEmailAddress() && this.hasPassword();
     }
-    private showMessage(message: string, onClose?: () => void) {
+    private async showMessage(message: string/*, onClose?: () => void*/): Promise<MessageBoxResult> {
         console.log(`called with ${message}`);
         this.message = message;
-        this.dialogService.showMessageBox("login-message", onClose);
+        //this.dialogService.showMessageBox("login-message", onClose);
+        return this.dialogService.showMessageBox("login-message");
     }
     //showMessageDialog(message: string) {
     //    //this.loginModel = new LoginModel();

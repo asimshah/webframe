@@ -22,6 +22,7 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.8.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -68,12 +69,28 @@
     <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
+    <None Remove="ClientApp\app\components\controls\bool-enum-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\bool-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\controlbase2.type.ts" />
     <None Remove="ClientApp\app\components\controls\controls.module.ts" />
+    <None Remove="ClientApp\app\components\controls\date-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\dropdown-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\email-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\enum-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\focus.directive.ts" />
+    <None Remove="ClientApp\app\components\controls\inline-dialog.component.ts" />
+    <None Remove="ClientApp\app\components\controls\multiline-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\number-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\password-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\search-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\text-input-new.component.ts" />
+    <None Remove="ClientApp\app\components\controls\text-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\tree-view.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.module.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.routing.ts" />
+    <None Remove="ClientApp\app\components\home\editor\page-properties.component.ts" />
     <None Remove="ClientApp\app\components\home\menu.component.ts" />
     <None Remove="ClientApp\app\components\home\page.service.ts" />
     <None Remove="ClientApp\app\components\home\pagenotfound.component.ts" />
@@ -95,6 +112,8 @@
     <None Remove="ClientApp\app\components\shared\base.service.ts" />
     <None Remove="ClientApp\app\components\shared\common.types.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
+    <None Remove="ClientApp\app\components\test\test.component.ts" />
+    <None Remove="ClientApp\app\components\types\ChunkReader.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -179,13 +198,29 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\bool-enum-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\bool-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\controlbase2.type.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\date-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\focus.directive.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\inline-dialog.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\dropdown-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\email-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\enum-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\multiline-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\number-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\password-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\search-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\text-input-new.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\text-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\tree-view.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\home\editor\page-properties.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.shared.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\sidebarmenu.component.ts" />
@@ -211,6 +246,8 @@
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\member-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\base.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\test\test.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\types\chunkReader.ts" />
   </ItemGroup>
 
   <ItemGroup>

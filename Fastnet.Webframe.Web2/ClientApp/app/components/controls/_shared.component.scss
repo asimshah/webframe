@@ -1,6 +1,7 @@
 ﻿$border-color: #808080;
 $error-colour: red;
 $focus-colour: cornflowerblue;
+$disabled-color: #dadada;
 
 *, *:before, *:after {
     box-sizing: border-box;
@@ -37,5 +38,37 @@ label {
     &:focus {
         outline: none;
         border: 1px solid $focus-colour;
+    }
+}
+.text-error {
+    font-style: italic;
+    color: $error-colour;
+}
+
+.validation-text {
+    font-size: 14px;
+}
+
+.set-disabled {
+    pointer-events: none;
+
+
+    label {
+        color: $disabled-color;
+
+        &.selected {
+            span:first-child {
+                border: 0.0625em solid $disabled-color !important;
+            }
+
+            span:nth-child(2) {
+                border: 0.0625em solid $disabled-color !important;
+                background-color: $disabled-color !important;
+            }
+
+            span:last-child {
+                color: $disabled-color !important;
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@
         width: 75%;
 
         .command-buttons {
-            border-top: 1px solid lightgray;
+            //border-top: 1px solid lightgray;
         }
 
         .form-body {
@@ -111,7 +111,7 @@
         }
     }
 }
-#new-directory {
+#new-directory, #new-page, #upload-files {
     .modal-container {
         width: 50%;
         //min-height: 300px;
@@ -130,6 +130,45 @@
     .caption {
         padding: 0.25em;
         margin-bottom: 0.25em;
+    }
+}
+#upload-files {
+    .form-body {
+        min-height: 200px;
+    }
+
+    .help-text {
+        font-size: smaller;
+        font-style: italic;
+        color: royalblue;
+    }
+
+    .upload-list {
+        display: grid;
+        grid-template-columns: auto 80px 80px;
+
+        .p-bar {
+            //width: 200px;
+            height: 10px;
+            align-self: center;
+            position: relative;
+
+            > div {
+                border-radius: 2px;
+                position: absolute;
+                height: 100%;
+
+                &.lower {
+                    border: 1px solid #808080;
+                    width: 100%;
+                }
+
+                &.upper {
+                    border: 1px solid transparent;
+                    background-color: green;
+                }
+            }
+        }
     }
 }
 

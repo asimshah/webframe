@@ -21,6 +21,7 @@ import { ActivateComponent } from './components/authentication/activate.componen
 //import { ContentService } from './components/shared/content.service';
 import { EditorGuard } from './components/routeguards/editor-guard.service';
 import { LogoutComponent } from './components/authentication/logout.component';
+import { TestComponent } from './components/test/test.component';
 
 
 const appRoutes: Routes = [
@@ -34,6 +35,7 @@ const appRoutes: Routes = [
     //{ path: 'membership', component: MembershipPlaceholderComponent},
     { path: 'register', loadChildren: './components/authentication/register.module#RegisterModule' },
     { path: 'activate/:id/:code', component: ActivateComponent },
+    { path: 'test', component: TestComponent},
     { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard], canActivate: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },

@@ -50,22 +50,22 @@ namespace Fastnet.Webframe.CoreData2
             get { return string.Format("{0}w x {1}h", this.Width, this.Height); }
         }
 
-        public string GetImageTypeImage()
-        {
-            return "content/images/image.png";
-        }
+        //public string GetImageTypeImage()
+        //{
+        //    return "content/images/image.png";
+        //}
     }
-    public partial class CoreDataContext
-    {
-        public Image CreateNewImage()
-        {
-            long largest = 0;
-            if ((this.Images.Count() + this.Images.Local.Count()) > 0)
-            {
-                largest = this.Images.Select(x => x.ImageId).Union(this.Images.Local.Select(x => x.ImageId)).Max(x => x);
-            }
-            //long? largest = this.Images.Select(x => x.ImageId).Union(this.Images.Local.Select(x => x.ImageId)).Max(x => x);
-            return new Image { ImageId = largest + 1 };
-        }
-    }
+    //public partial class CoreDataContext
+    //{
+    //    public Image CreateNewImage()
+    //    {
+    //        long largest = 0;
+    //        if ((this.Images.Count() + this.Images.Local.Count()) > 0)
+    //        {
+    //            largest = this.Images.Select(x => x.ImageId).Union(this.Images.Local.Select(x => x.ImageId)).Max(x => x);
+    //        }
+    //        //long? largest = this.Images.Select(x => x.ImageId).Union(this.Images.Local.Select(x => x.ImageId)).Max(x => x);
+    //        return new Image { ImageId = largest + 1 };
+    //    }
+    //}
 }

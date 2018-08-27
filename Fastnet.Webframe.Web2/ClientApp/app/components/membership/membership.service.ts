@@ -2,7 +2,7 @@
 import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
 import { Member, Group, MemberIdList } from "../shared/common.types";
-import { ValidationResult, ControlState } from "../controls/controls.component";
+import { ValidationResult, ControlState } from "../controls/controls.types";
 
 @Injectable()
 export class MembershipService extends BaseService {

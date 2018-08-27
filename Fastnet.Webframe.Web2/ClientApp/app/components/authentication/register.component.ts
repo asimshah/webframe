@@ -4,11 +4,12 @@ import { PageService } from '../shared/page.service';
 import { BaseComponent } from '../shared/base.component';
 import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { Dictionary } from '../types/dictionary.types';
-import { PropertyValidatorAsync, ValidationResult, ControlState, ControlBase } from '../controls/controls.component';
+import { PropertyValidatorAsync, ValidationResult, ControlState } from '../controls/controls.types';
 import { MembershipService } from '../membership/membership.service';
 import { Member } from '../shared/common.types';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
+import { ControlBase } from '../controls/controls.component';
 
 class registrationModel {
     member: Member;

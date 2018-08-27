@@ -5,7 +5,7 @@ import { PageService } from '../../shared/page.service';
 import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { DWHMember } from '../../membership/dwh/dwhmembership.types';
 import { DWHMembershipService } from '../../membership/dwh/dwhmembership.service';
-import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.component';
+import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.types';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
 

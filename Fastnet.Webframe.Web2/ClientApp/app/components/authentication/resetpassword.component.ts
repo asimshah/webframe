@@ -7,7 +7,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
 import { Member } from '../shared/common.types';
 import { Dictionary } from '../types/dictionary.types';
-import { PropertyValidatorAsync, ControlState, ValidationResult, ControlBase } from '../controls/controls.component';
+import { PropertyValidatorAsync, ControlState, ValidationResult } from '../controls/controls.types';
+import { ControlBase } from '../controls/controls.component';
 
 @Component({
     selector: 'webframe-resetpassword',
@@ -47,12 +48,11 @@ export class ResetPasswordComponent extends BaseComponent implements OnInit {
         if (r === true) {
             this.member.password = this.password;
             await this.authenticationService.changePassword(this.member);
-            this.dialogService.showMessageBox("reset-message", () => {
-                this.router.navigate(['login']);
-            });
-            //this.showMessageDialog("Your password has been changed. You may now login using your new password", (r) => {
+            //this.dialogService.showMessageBox("reset-message", () => {
             //    this.router.navigate(['login']);
-            //}, false, "Message");
+            //});
+            await this.dialogService.showMessageBox("reset-message");
+            this.router.navigate(['login']);
         }
     }
     onCancel() {

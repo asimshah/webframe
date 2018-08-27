@@ -6,7 +6,7 @@ import { DWHMember } from './dwhmembership.types';
 import { DWHMembershipService } from './dwhmembership.service';
 import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
-import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.component';
+import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.types';
 import { MessageBoxResult } from '../../modaldialog/message-box.component';
 
 @Component({
@@ -38,15 +38,20 @@ export class DwhMembershipComponent extends MembershipComponent {
         super.setExistingMemberValidators();
         this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
     }
-    public onDeleteClick() {
+    public async onDeleteClick() {
         //console.log("onDeleteClick");
         //this.showConfirmDialog("Deleting a member removes all data for that member permanently (including any past and present bookings). Are you sure you want to proceed? ", (r) => {
-        this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ", (r) => {
-            if (r === MessageBoxResult.ok) {
-                console.log("delete requested");
-                this.deleteMember();
-            }
-        });
+        //this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ", (r) => {
+        //    if (r === MessageBoxResult.ok) {
+        //        console.log("delete requested");
+        //        this.deleteMember();
+        //    }
+        //});
+        let r = await this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ");
+        if (r === MessageBoxResult.ok) {
+            console.log("delete requested");
+            this.deleteMember();
+        }
     }
     public getBookingInformation(): string {
         let info = "";

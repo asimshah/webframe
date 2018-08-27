@@ -1,0 +1,61 @@
+﻿
+:host {
+    display: block;
+}
+inline-dialog {
+    display: block;
+}
+.inline-dialog {
+    height: 100%;
+    padding: 0.25em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.command-button-bar {
+    $gutter: 0.25em;
+    background-color: #e4e4e4;
+    border-radius: 0.25em;
+    padding: $gutter;
+    margin-top: $gutter * 3;
+    div {
+        //background-color: #808080;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        justify-items: center;
+
+        * {
+            grid-row: 1;
+            grid-column: 2;
+            display: flex;
+            justify-content: center;
+
+            * {
+                margin-left: $gutter / 2;// 0.125em;
+                margin-right: $gutter / 2;// 0.125em;
+            }
+
+            &.left {
+                grid-column: 1;
+                justify-self: left;
+
+                * {
+                    margin-left: 0;
+                    margin-right: $gutter ;//0.25em;
+                }
+            }
+
+            &.right {
+                grid-column-start: 3;
+                justify-self: right;
+                justify-content: flex-end;
+
+                * {
+                    margin-left: $gutter;
+                    margin-right: 0;
+                }
+            }
+        }
+    }
+}

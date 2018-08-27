@@ -23,6 +23,7 @@ import { ResetPasswordComponent } from './components/authentication/resetpasswor
 import { ActivateComponent } from './components/authentication/activate.component';
 //import { TreeModule } from 'angular-tree-component';
 import { LogoutComponent } from './components/authentication/logout.component';
+import { TestComponent } from './components/test/test.component';
 
 @NgModule({
     declarations: [
@@ -38,7 +39,8 @@ import { LogoutComponent } from './components/authentication/logout.component';
         //RegisterComponent,
         ActivateComponent,
         PermissionDeniedComponent,
-        MembershipPlaceholderComponent
+        MembershipPlaceholderComponent,
+        TestComponent
     ],
     imports: [
         CommonModule,

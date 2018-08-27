@@ -3,38 +3,7 @@
 :host {
     display: block;
 }
-.text-error {
-    font-style: italic;
-    color: $error-colour;
-}
 
-.validation-text {
-    font-size: 14px;
-}
-
-.set-disabled {
-    pointer-events: none;
-    $disabled-color: #dadada;
-
-    label {
-        color: $disabled-color;
-
-        &.selected {
-            span:first-child {
-                border: 0.0625em solid $disabled-color !important;
-            }
-
-            span:nth-child(2) {
-                border: 0.0625em solid $disabled-color !important;
-                background-color: $disabled-color !important;
-            }
-
-            span:last-child {
-                color: $disabled-color !important;
-            }
-        }
-    }
-}
 
 .text-input, .multiline-input, .password-input, .date-input, .number-input {
     &.not-valid {

@@ -1,8 +1,9 @@
-﻿import { Component, ElementRef, Input, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+﻿import { Component, ElementRef, Input, OnInit, OnDestroy, ViewEncapsulation, ViewChildren, QueryList, ContentChildren } from '@angular/core';
 
 import { ModalDialogService } from './modal-dialog.service';
 import { getOriginalError } from '@angular/core/src/errors';
 import { Subject } from 'rxjs/Subject';
+import { ControlBase } from '../controls/controls.component';
 
 @Component({
     selector: 'modal-dialog',
@@ -14,7 +15,7 @@ export class ModalDialogComponent implements OnInit, OnDestroy {
     @Input() id: string;
     protected element: HTMLElement;
     protected hasClosed: boolean = false;
-    
+    @ContentChildren(ControlBase) controls: QueryList<ControlBase>;
     constructor(protected modalDialogService: ModalDialogService, protected el: ElementRef) {
         this.element = el.nativeElement;
     }

@@ -49,20 +49,43 @@ export class ModalDialogService {
             --this.openModalsCount;
         }
     }
-    public showMessageBox(id: string, onClose?: (r: MessageBoxResult) => void) {
-        //console.log(`ModalDialogService: open() with ${id}, focus on ${name}`);
-        let m = this.modals.find((item) => item.id === id);
-        if (m !== undefined && this.isIOpenDialogWithClosure(m)) {            
-            this.openModalsCount++;
-            //console.log(`opening message-box ${id}, depth is ${this.openModalsCount}`);
-            let mx: IOpenWithClose = m;
-            mx.openWithClose(this.openModalsCount, onClose);
-            if (name) {
-                ControlBase.focus(name);
+    public isValid(id: string): Promise<boolean> {
+        let controls = this.getControls(id);
+        let results: boolean[] = [];
+        return new Promise<boolean>(async resolve => {
+            for (let c of controls) {
+                let r = await c.validate();
+                results.push(r.valid);
             }
-        } else {
-            alert(`no message-box found with id ${id}`)
+            let allTrue = results.every((v) => v === true);
+            resolve(allTrue);
+        });
+    }
+    private getControls(id: string): ControlBase[] {
+        let m = this.modals.find((item) => item.id === id);
+        if (m !== undefined) {
+            return m.controls.toArray();
         }
+        return [];
+    }
+    public showMessageBox(id: string/*, onClose?: (r: MessageBoxResult) => void*/): Promise<MessageBoxResult> {
+        return new Promise<MessageBoxResult>(resolve => {
+            let m = this.modals.find((item) => item.id === id);
+            if (m !== undefined && this.isIOpenDialogWithClosure(m)) {
+                this.openModalsCount++;
+                let mx: IOpenWithClose = m;
+                //mx.openWithClose(this.openModalsCount, onClose);
+                mx.openWithClose(this.openModalsCount, (r) => {
+                    resolve(r);
+                });
+                //if (name) {
+                //    ControlBase.focus(name);
+                //}
+            } else {
+                alert(`no message-box found with id ${id}`);
+                throw `no message-box found with id ${id}`;
+            }
+        });
     }
     private isIOpenDialogWithClosure(object: any): object is IOpenWithClose {
         return (<MessageBoxComponent>object).openWithClose !== undefined;

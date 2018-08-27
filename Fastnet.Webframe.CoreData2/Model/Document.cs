@@ -73,17 +73,17 @@ namespace Fastnet.Webframe.CoreData2
         //    return r;
         //}
     }
-    public partial class CoreDataContext
-    {
-        public Document CreateNewDocument()
-        {
-            long largest = 0;
-            if ((this.Documents.Count() + this.Documents.Local.Count()) > 0)
-            {
-                largest = this.Documents.Select(x => x.DocumentId).Union(this.Documents.Local.Select(x => x.DocumentId)).Max(x => x);
-            }
+    //public partial class CoreDataContext
+    //{
+    //    public Document CreateNewDocument()
+    //    {
+    //        long largest = 0;
+    //        if ((this.Documents.Count() + this.Documents.Local.Count()) > 0)
+    //        {
+    //            largest = this.Documents.Select(x => x.DocumentId).Union(this.Documents.Local.Select(x => x.DocumentId)).Max(x => x);
+    //        }
 
-            return new Document { DocumentId = largest + 1 };
-        }
-    }
+    //        return new Document { DocumentId = largest + 1 };
+    //    }
+    //}
 }
