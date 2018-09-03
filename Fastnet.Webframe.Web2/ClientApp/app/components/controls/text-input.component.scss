@@ -1,5 +1,5 @@
 ﻿@import "shared.component.scss";
-.email-input {
+.text-input {
     @extend %std-text-input;
 
     &.disabled {

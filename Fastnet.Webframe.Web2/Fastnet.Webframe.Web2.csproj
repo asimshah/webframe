@@ -71,10 +71,11 @@
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\controls\bool-enum-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\bool-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\combo-box.component.ts" />
     <None Remove="ClientApp\app\components\controls\controlbase2.type.ts" />
     <None Remove="ClientApp\app\components\controls\controls.module.ts" />
-    <None Remove="ClientApp\app\components\controls\date-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\dropdown-input.component.ts" />
+    <None Remove="ClientApp\app\components\controls\email-input-new.component.ts" />
     <None Remove="ClientApp\app\components\controls\email-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\enum-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\focus.directive.ts" />
@@ -83,7 +84,6 @@
     <None Remove="ClientApp\app\components\controls\number-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\password-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\search-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\text-input-new.component.ts" />
     <None Remove="ClientApp\app\components\controls\text-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\tree-view.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\content-browser.component.ts" />
@@ -200,10 +200,11 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\bool-enum-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\bool-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\combo-box.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controlbase2.type.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\date-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\email-input-new.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\focus.directive.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\inline-dialog.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\dropdown-input.component.ts" />
@@ -213,7 +214,6 @@
     <TypeScriptCompile Include="ClientApp\app\components\controls\number-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\password-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\search-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\text-input-new.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\text-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\tree-view.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\content-browser.component.ts" />

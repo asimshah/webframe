@@ -1,9 +1,47 @@
 ﻿
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { Validator, ControlState, ValidationResult, ValidationContext } from '../controls/controls.types';
-import { isNullorUndefined, isWhitespaceOrEmpty, isRequired } from '../controls/controlbase2.type';
+import { Validator, ControlState, ValidationResult, ValidationContext, ListItem } from '../controls/controls.types';
+import { isNullorUndefined, isWhitespaceOrEmpty, toEnumValues} from '../controls/controlbase2.type';
 import { InlineDialogComponent } from '../controls/inline-dialog.component';
-import { TextInputControl2 } from '../controls/text-input-new.component';
+import { TextInputControl } from '../controls/text-input.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Resizability } from '../controls/multiline-input.component';
+import {  DayStatus, CalendarDay, DaysOfTheWeek } from '../controls/date-input.component';
+//import { TextInputControl2 } from '../controls/text-input-new.component';
+
+enum testEnum {
+    Red = 8,
+    White,
+    Blue,
+    Green
+}
+class test {
+    firstName: string;
+    lastName: string;
+    something: string = "something...";
+    emailAddress1: string;
+    emailAddress2: string;
+    bool1: boolean;
+    bool2: boolean;
+    bool3: boolean;
+    bool4: boolean;
+    enum1: testEnum = testEnum.Green;
+    enum2: testEnum = testEnum.Red;
+    password1: string;
+    password2: string;
+    number1: number;
+    number2: number;
+    multi1: string;
+    multi2: string;
+    dropItem1: ListItem<any>;
+    dropItem2: ListItem<any>;
+    dropItem3: ListItem<any>;
+    date1: Date;
+    date2: Date;
+    date3: Date;
+    combo1: ListItem<any>;
+    combo2: ListItem<any>;
+}
 
 @Component({
     selector: 'test',
@@ -11,14 +49,30 @@ import { TextInputControl2 } from '../controls/text-input-new.component';
     styleUrls: ['./test.component.scss']
 })
 export class TestComponent implements AfterViewInit {
+    testEnum = testEnum;
+    Resizability = Resizability;
     @ViewChild('ctldialog') testDialog: InlineDialogComponent;
-    @ViewChild('ctllastname') lastNameInput: TextInputControl2;
-    firstName: string;
-    lastName: string;
-    something: string;
-    emailAddress: string;
-    constructor() {
+    @ViewChild('ctllastname') lastNameInput: TextInputControl;
+    model: test = new test();
+    colourNames = ["Bright Red", "Pure White", "Azure", "Sea Green"];
+    boolNames = ["White", "Black"];
+    dropset1: ListItem<any>[];
+    dropset2: ListItem<any>[];
+    constructor(private sanitizer: DomSanitizer) {
         console.log("constructor()");
+        this.test();
+        this.dropset1 = this.buildYearListItems();// this.buildListItems(["alpha", "beta", "gamma"]);
+        this.model.dropItem1  = this.dropset1[1];
+        let set2Names: string[] = [];
+        for (let i = 0; i < 25; ++i) {
+            set2Names.push(`set2-item-${i}`);
+        }
+        this.dropset2 = this.buildListItems(set2Names);
+        this.model.combo1 = this.dropset2[3];
+        this.model.combo2 = this.dropset1[3];
+    }
+    test() {
+        toEnumValues(testEnum);
     }
     ngAfterViewInit() {
         //this.lastNameInput.focus();
@@ -27,15 +81,25 @@ export class TestComponent implements AfterViewInit {
         let result = await this.testDialog.isValid();
         console.log(`testdialog isValid() returned ${result}`);
     }
-    async validateFirstName(cs: ControlState): Promise<ValidationResult> {
+    onDrop1Change(item: ListItem<any>) {
+        console.log(`Drop 1 changed to ${JSON.stringify(item, null, 2)}`);
+    }
+    onDrop3Changed(item: ListItem<any>) {
+        console.log(`Drop 3 changed to ${JSON.stringify(item, null, 2)}`);
+    }
+    fontAwesomeLabel(label: string, faIcon: string = "fa-blank", iconColour: string = "transparent") {        
+        let l = `<span class='fa ${faIcon}' style='color: ${iconColour}'></span><span><span>${label}</span>`;
+        return this.sanitizer.bypassSecurityTrustHtml(l);
+    }
+    async validateFirstName(context: ValidationContext, value: any): Promise<ValidationResult> {
         console.log('validateFirstName called');
         return new Promise<ValidationResult>(resolve => {
             let vr = new ValidationResult();
-            if (isNullorUndefined(cs.value) || isWhitespaceOrEmpty(cs.value)) {
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
                 vr.message = "a First Name is required";
             } else {
-                let t = cs.value as string;
+                let t = value as string;
                 if (t.length < 4) {
                     vr.valid = false;
                     vr.message = "a First Name minimum length is 4";
@@ -44,30 +108,57 @@ export class TestComponent implements AfterViewInit {
             resolve(vr);
         });
     }
-    async validateLastName(cs: ControlState): Promise<ValidationResult> {
+    async validateLastName(context: ValidationContext, value: any): Promise<ValidationResult> {
         console.log('validateLastName called');
         return new Promise<ValidationResult>(resolve => {
             let vr = new ValidationResult();
-            if (isNullorUndefined(cs.value) || isWhitespaceOrEmpty(cs.value)) {
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
                 vr.message = "a Last Name is required";
             } else {
-                let t = cs.value as string;
+                let t = value as string;
                 if (t.length < 8) {
                     vr.valid = false;
                     vr.message = "a Last Name minimum length is 8";
                 }
             }
-            if (cs.context === ValidationContext.LostFocus) {
+            if (context === ValidationContext.LostFocus) {
                 console.log("validateLastName: lostfocus - can call back end here");
             }
             resolve(vr);
         });
     }
-    async validateEmailAddress(cs: ControlState): Promise<ValidationResult> {
+    async validateEmailAddress(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>(resolve => {
             let vr = new ValidationResult();
             resolve(vr);
         });
+    }
+    buildListItems(names: string[]): ListItem<any>[] {
+        let r: ListItem<any>[] = [];
+        let index = 1;
+        for (let name of names) {
+            r.push({ name: name, value: index * index })
+            ++index;
+        }
+        return r;
+    }
+    onShowingDay(cd: CalendarDay) {
+        switch (cd.dayOfWeek) {
+            case DaysOfTheWeek.Saturday:
+            case DaysOfTheWeek.Sunday:
+                cd.status.classes.push("is-weekend");
+                break;
+            default:
+                break;
+        }
+    }
+    buildYearListItems(): ListItem<any>[] {
+        let r: ListItem<any>[] = [];
+
+        for (let i = 1900; i < 2025;++i) {
+            r.push({ name: i.toString(), value: i })
+        }
+        return r;
     }
 }

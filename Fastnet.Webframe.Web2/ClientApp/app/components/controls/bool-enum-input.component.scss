@@ -1,0 +1,4 @@
+﻿@import "shared.component.scss";
+:host {
+    @extend %std-enum-input;
+}

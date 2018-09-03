@@ -1,6 +1,6 @@
 ﻿import { ControlValueAccessor } from "@angular/forms";
-import { Input, ViewChild, ElementRef, OnInit, AfterViewInit } from "@angular/core";
-import { ValidationResult, ControlState, PropertyValidatorAsync, Validator, ValidationContext } from './controls.types';
+import { Input, ViewChild, ElementRef, OnInit, AfterViewInit, OnChanges, SimpleChanges } from "@angular/core";
+import { ValidationResult, ControlState, PropertyValidatorAsync, Validator, ValidationContext, EnumValue } from './controls.types';
 
 export function isNullorUndefined(value: any): boolean {
     return value === null || typeof value === "undefined";
@@ -9,7 +9,16 @@ export function isWhitespaceOrEmpty(value: string): boolean {
     let t = value.trim();
     return t.length == 0;
 }
-
+export function toEnumValues(val: any): EnumValue[] {
+    let list: EnumValue[] = [];
+    const keys = Object.keys(val).filter(k => typeof val[k as any] === "number");
+    const values = keys.map(k => val[k as any]);
+    for (let i = 0; i < keys.length; ++i) {
+        list.push({ name: keys[i], value: values[i] });
+    }
+    //console.log(`val is: ${JSON.stringify(list, null, 2)}`)
+    return list;
+}
 const noop = () => { };
 export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
     @ViewChild('focushere') focusableElement: ElementRef;
@@ -23,14 +32,13 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
     protected isTouched: boolean = false;
     protected localChangeCallBack: (_: any) => void = noop;
     protected afterValidationCallBack: () => void = noop;
-    @Input() validator: Validator;// PropertyValidatorAsync;
-    private preValidator: Validator;// PropertyValidatorAsync;
+    @Input() validator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>;// Validator;
+    private preValidator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>;// Validator;
     vr: ValidationResult;
     constructor() {
-        //console.log(`ctor(): inner value: ${JSON.stringify(this.innerValue, null, 2)}`);
     }
     ngAfterViewInit() {
-        console.log(`ngOnInit()`);
+        //console.log(`ngAfterViewInit()`);
         if (this.isFocused) {
             this.focus();
         }
@@ -40,13 +48,11 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
     }
     set value(v: any) {
         if (!(typeof this.innerValue === "undefined" && v === null)) {
-            //console.log(`inner value: ${JSON.stringify(this.innerValue, null, 2)}, v: ${JSON.stringify(v, null, 2)}`);
             if (v !== this.innerValue) {
+                //console.log(`innervalue changing from ${JSON.stringify(this.innerValue)} to ${JSON.stringify(v)}`);
                 this.innerValue = v;
                 this.isTouched = true;
                 this.onValueChanged();
-            } else {
-                //console.log(`2: ${JSON.stringify(this, null, 2)}`);
             }
         }
     }
@@ -54,22 +60,18 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         this.value = obj;
     }
     registerOnChange(fn: any): void {
-        //console.log(`registerOnChange() called`);
         this.onChangeCallback = fn;
     }
     registerOnTouched(fn: any): void {
-        //console.log(`registerOnTouched() called`);
         this.onTouchedCallback = () => {
             this.isTouched = true;
-            //this.vr = await this.doValidation();
             fn();
         }
     }
-    setPrevalidator(validator: Validator) {
+    setPrevalidator(validator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>) {
         this.preValidator = validator;// new PropertyValidatorAsync(validator);
     }
     public focus() {
-        //console.log(`focusing ..${JSON.stringify(this.element)}`);
         if (this.focusableElement) {
             this.focusableElement.nativeElement.focus();
         } else {
@@ -95,39 +97,32 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         setTimeout(async () => {
             await this.doValidation(ValidationContext.ValueChanged);
             this.afterValidationCallBack();
-            console.log(`1: ${JSON.stringify(this, null, 2)}`);
+            //console.log(`1: ${JSON.stringify(this, null, 2)}`);
         }, 0);
     }
     private async doValidation(context: ValidationContext): Promise<ValidationResult> {
-        console.log(`doValidation with context = ${context}`);
+        //console.log(`doValidation with context = ${context}`);
         return new Promise<ValidationResult>(async resolve => {
             try {
-                let cs = new ControlState();
-                cs.context = context;
-                cs.value = this.value;
-                cs.touched = this.isTouched;
-                cs.validationResult = new ValidationResult();
-                if (cs.touched === true || context === ValidationContext.UserCall) {
-
+                this.vr = new ValidationResult();
+                if (this.isTouched === true || context === ValidationContext.UserCall) {
                     try {
                         if (this.preValidator) {
-                            cs.validationResult = await this.preValidator(cs);//.validator(cs);
+                            this.vr = await this.preValidator(context, this.value);//.validator(cs);
                         }
-                        if (cs.validationResult.valid === true && this.validator) {
+                        if (this.vr.valid === true && this.validator) {
                             console.log(`calling validator`);
-                            cs.validationResult = await this.validator(cs);//.validator(cs);
+                            this.vr = await this.validator(context, this.value);//.validator(cs);
                         }
                     } catch (e) {
                         console.log(`error = ${e}`);
-                        cs.validationResult.valid = false;
-                        cs.validationResult.message = e;
+                        this.vr.valid = false;
+                        this.vr.message = e;
                     } finally {
-                        this.vr = cs.validationResult;
-                        resolve(cs.validationResult);
+                        resolve(this.vr);
                     }
                 } else {
-                    this.vr = cs.validationResult;
-                    resolve(cs.validationResult);
+                    resolve(this.vr);
                 }
             } catch (e) {
                 console.log(`error = ${e}`);
@@ -136,9 +131,36 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
     }
 }
 
-export class InputControlBase extends ControlBase2 {
+export class InputControlBase extends ControlBase2 implements OnChanges, AfterViewInit {
     onBlur() {
         super.onBlur();
         this.validate(ValidationContext.LostFocus);
+    }
+    ngAfterViewInit() {
+        this.setReadOnly();
+    }
+    ngOnChanges(changes: SimpleChanges) {
+        this.setReadOnly();
+    }
+    setReadOnly() {
+        if (this.focusableElement) {
+            let el = this.focusableElement.nativeElement as HTMLInputElement;
+            el.readOnly = this.disabled;
+        }
+    }
+}
+export class EnumControlBase<T> extends ControlBase2 {
+    @Input() columns: number = 1;
+    @Input() enumType: any; // make sure this is the enum type
+    @Input() items: EnumValue[] = [];
+    @Input() names: string[];
+    selectedValue: T | null;
+    constructor() {
+        super();
+        this.localChangeCallBack = (v) => { this.selectedValue = v };
+    }
+    gridColumns(): string {
+
+        return "auto ".repeat(this.columns);
     }
 }

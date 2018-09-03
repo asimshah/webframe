@@ -1,6 +1,12 @@
 ﻿@import "shared.component.scss";
-.email-input {
+
+.number-input {
     @extend %std-text-input;
+
+    input[type=number] {
+        text-align: right;
+        line-height: 22px;
+    }
 
     &.disabled {
         @extend .set-disabled;

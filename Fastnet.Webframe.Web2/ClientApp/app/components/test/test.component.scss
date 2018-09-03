@@ -3,6 +3,13 @@ inline-dialog {
     //border: 1px solid red;
     border-radius: 0.25em;
     //height: 400px;
-    width: 600px;
+    width: 800px;
     margin-left: 40px;
+    .control-panel {
+        display: grid;
+        grid-template-columns: auto auto auto;
+        grid-gap: 1em;
+    }
+
 }
+

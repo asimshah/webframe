@@ -669,7 +669,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
         this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
     }
-    findItem(list: ListItem[], value: number): ListItem | undefined {
+    findItem(list: ListItem<number>[], value: number): ListItem<number> | undefined {
         return list.find((item, i) => {
             return item.value === value;
         });

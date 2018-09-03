@@ -36,11 +36,11 @@ export class PropertyValidatorAsync {
     }
 }
 
-export class EnumValue {
-    value: number;
+export class ListItem<T> {
+    value: T;
     name: string;
 }
-export class ListItem {
-    value: any;
-    name: string;
+export class EnumValue extends ListItem<number> {
+
 }
+

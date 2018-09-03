@@ -1,22 +1,23 @@
 ﻿import { Component, Input, forwardRef } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
-import { ControlBase } from "./controls.component";
-import { TextInputControl } from "./text-input.component";
-import { ValidationResult, ControlState } from "./controls.types";
+//import { ControlBase } from "./controls.component";
+//import { TextInputControl } from "./text-input.component";
+import { ValidationResult, ControlState, ValidationContext } from "./controls.types";
+import { isNullorUndefined, InputControlBase, ControlBase2 } from "./controlbase2.type";
 
 
 @Component({
     selector: 'number-input',
-    template: `<div class="number-input" [ngClass]="{'not-valid': vr.valid === false}" >
+    template: `<div class="number-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
             <label>
-                <span>{{label}}</span>
-            <input class="focus-able" type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" (input)="onInput()"/>
+                <span [innerHTML]="label"></span>
+            <input #focushere type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" />
             </label>
-            <div class="validation-text">
-                <span *ngIf="vr.valid === false" class="text-error">{{vr.message}}</span>
+            <div *ngIf="isInError()" class="validation-text">
+                <span  class="text-error">{{vr.message}}</span>
             </div>
         </div>`,
-    styleUrls: ['./controls.component.scss'],
+    styleUrls: ['./number-input.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -24,34 +25,45 @@ import { ValidationResult, ControlState } from "./controls.types";
             multi: true
         },
         {
-            provide: ControlBase, useExisting: forwardRef(() => NumberInputControl)
+            provide: ControlBase2, useExisting: forwardRef(() => NumberInputControl)
         }
     ]
 })
-export class NumberInputControl extends TextInputControl {
+export class NumberInputControl extends InputControlBase {
     @Input() minNumber: number;
     @Input() maxNumber: number;
     constructor() {
         super();
-        this.setPrevalidator((cs) => this.validateNumberAsync(cs));
+        this.setPrevalidator((ctx, val) => this.validateNumberAsync(ctx, val));
     }
-    private validateNumberAsync(cs: ControlState): Promise<ValidationResult> {
+    private validateNumberAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            cs = this.validateNumber(cs);
-            resolve(cs.validationResult);
+            let vr = new ValidationResult();
+            if (!isNullorUndefined(value) && value !== NaN) {
+                let n: number = value;
+                if (this.minNumber && n < this.minNumber) {
+                    vr.valid = false;
+                    vr.message = "This number is too small";
+                } else if (this.maxNumber && n > this.maxNumber) {
+                    vr.valid = false;
+                    vr.message = "This number is too large";
+                }
+            }
+            resolve(vr);
         });
     }
-    private validateNumber(cs: ControlState): ControlState {
-        let n: number = cs.value;
-        if (n !== NaN) {
-            if (this.minNumber && n < this.minNumber) {
-                cs.validationResult.valid = false;
-                cs.validationResult.message = "This number is too small";
-            } else if (this.maxNumber && n > this.maxNumber) {
-                cs.validationResult.valid = false;
-                cs.validationResult.message = "This number is too large";
-            }
-        }
-        return cs;
-    }
+    //private validateNumber(cs: ControlState): ControlState {
+    //    let n: number = cs.value;
+        
+    //    if (n !== NaN) {
+    //        if (this.minNumber && n < this.minNumber) {
+    //            cs.validationResult.valid = false;
+    //            cs.validationResult.message = "This number is too small";
+    //        } else if (this.maxNumber && n > this.maxNumber) {
+    //            cs.validationResult.valid = false;
+    //            cs.validationResult.message = "This number is too large";
+    //        }
+    //    }
+    //    return cs;
+    //}
 }

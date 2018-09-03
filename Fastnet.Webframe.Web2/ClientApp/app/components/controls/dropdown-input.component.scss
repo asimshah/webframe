@@ -1,0 +1,34 @@
+﻿@import "shared.component.scss";
+.dropdown-input {
+    .dropdown-border {
+        border: 1px solid $border-colour;
+        border-radius: 0.25em;
+        padding: 0.25em;
+    }
+
+    select {
+        font: inherit;
+        font-size: inherit;
+        width: 100%;
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+        padding-bottom: 0.25em;
+        padding-top: 0.25em;
+        border: none; 
+        outline: none;
+        &:focus {
+            outline: none;
+        }
+    }
+
+    &.disabled {
+        @extend .set-disabled;
+
+        .dropdown-border {
+            border: 1px solid $disabled-colour;
+            select {
+                color: $disabled-colour;
+            }
+        }
+    }
+}

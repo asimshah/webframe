@@ -1,7 +1,7 @@
 ﻿<div>
     <div>this is the test component</div>
     <inline-dialog #ctldialog>
-        <div commandbuttons>
+        <div dialogcommands>
             <div class="right">
                 <button>right 1</button>
                 <button>right 2</button>
@@ -15,10 +15,33 @@
                 <button>centre 2</button>
             </div>
         </div>
-        <div body>
-            <text-input-new  label="<span class='fa fa-home'></span><span>First Name</span>" [(ngModel)]="firstName" [validator]="validateFirstName"></text-input-new>
-            <text-input-new [focus]="true" #ctllastname label="Last name" [(ngModel)]="lastName" [validator]="validateLastName"></text-input-new>
-            <text-input-new [disabled]="true" label="Something else" [(ngModel)]="something" ></text-input-new>
+        <div dialogbody class="control-panel">
+            <text-input label="<span class='fa fa-home'></span><span>First Name</span>" [(ngModel)]="model.firstName" [validator]="validateFirstName"></text-input>
+            <text-input [focus]="true" #ctllastname label="Last name" [(ngModel)]="model.lastName" [validator]="validateLastName"></text-input>
+            <text-input [disabled]="true" label="Something" [(ngModel)]="model.something"></text-input>
+            <email-input label="Email Address" [(ngModel)]="model.emailAddress1" [validator]="validateEmailAddress"></email-input>
+            <email-input label="Email Address2" [(ngModel)]="model.emailAddress2" [disabled]="true"></email-input>
+            <bool-input label="<span class='fa fa-home'></span><span>Bool 1</span>" [(ngModel)]="model.bool1"></bool-input>
+            <bool-input label="Bool 2" [disabled]="true" [(ngModel)]="model.bool2"></bool-input>
+            <bool-enum-input [label]="fontAwesomeLabel('Bool 3', 'fa-home', 'cornflowerblue')" [(ngModel)]="model.bool3"></bool-enum-input>
+            <bool-enum-input label="Bool 4" [disabled]="true" [(ngModel)]="model.bool4" [names]="boolNames"></bool-enum-input>
+            <enum-input label="Colours" [(ngModel)]="model.enum1" [enumType]="testEnum" [names]="colourNames" [columns]="2"></enum-input>
+            <enum-input label="Colours 2" [(ngModel)]="model.enum2" [enumType]="testEnum" [disabled]="true"></enum-input>
+            <password-input label="Password 1" [(ngModel)]="model.password1"></password-input>
+            <password-input label="Password 2" [(ngModel)]="model.password2" [disabled]="true"></password-input>
+            <number-input label="Number 1" [(ngModel)]="model.number1"></number-input>
+            <number-input label="Number 2" [(ngModel)]="model.number2" [disabled]="true"></number-input>
+            <combo-box label="Combo 1" [disabled]="true" [(ngModel)]="model.combo1" [maxRows]="15" [items]="dropset2"></combo-box>
+            <combo-box label="Combo 2" [compact]="true" [maxRows]="5" [(ngModel)]="model.combo2" [items]="dropset1"></combo-box>
+            <multiline-input label="Para 1" [(ngModel)]="model.multi1" [rows]="5" [resize]="Resizability.None"></multiline-input>
+            <multiline-input label="Para 2" [(ngModel)]="model.multi2" [disabled]="true"></multiline-input>
+            <dropdown-input label="Drop 1" [showItemCount]="4" [(ngModel)]="model.dropItem1" [items]="dropset1" (selectionChanged)="onDrop1Change($event)"></dropdown-input>
+            <dropdown-input label="Drop 2" [(ngModel)]="model.dropItem2" [items]="dropset2" [disabled]="true"></dropdown-input>
+            <dropdown-input label="Drop 3(2)" [showItemCount]="7" [(ngModel)]="model.dropItem3" [items]="dropset2" (selectionChanged)="onDrop3Changed($event)"></dropdown-input>
+            <date-input label="Date 1" [showmonthcount]="3" [(ngModel)]="model.date1" (beforeshowingdate)="onShowingDay($event)"></date-input>
+            <date-input label="Date 2" [(ngModel)]="model.date2" [disabled]="true"></date-input>
+            <date-input label="Date 3" [disabled]="true" [(ngModel)]="model.date3"></date-input>
         </div>
     </inline-dialog>
+    <pre>{{model | json}}</pre>
 </div>

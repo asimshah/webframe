@@ -2,48 +2,66 @@
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { EnumInputControl } from "./enum-input.component";
 import { EnumValue } from "./controls.types";
+import { ControlBase2, EnumControlBase } from "./controlbase2.type";
+
+
 
 @Component({
     selector: 'bool-enum-input',
-    template: `<div class="enum-border" >
-        <div class="enum-label">{{label}}</div>  
-            <div class="enum-group"    >
-                <div class="enum-item" >
-                    <label [ngClass]="{selected: value}" >
-                        <span></span><span></span>
-                        <input #rbx name="{{groupName}}" type="radio" (click)="onTrue()" [checked]="this.value" />
-                    <span >{{trueLabel}}</span></label>
-                </div>
-                <div class="enum-item">
-                    <label [ngClass]="{selected: !value}" >
-                        <span></span><span></span>
-                        <input #rbx name="{{groupName}}" type="radio" (click)="onFalse()" [checked]="!this.value" />
-                    <span >{{falseLabel}}</span></label>
+    template: `
+        <div class="enum-border"  [ngClass]="{'disabled' : disabled}" >
+            <div class="enum-group" [ngStyle]="{'grid-template-columns': gridColumns()}"  >
+                <div class="enum-item" *ngFor="let item of items" [ngClass]="{selected: isSelected(item)}" (click)="onClick(item)">
+                    <span class="outer-circle"></span>
+                    <span class="inner-circle"></span>
+                    <span class="item-label" >{{item.name}}</span>
                 </div>
             </div>
-        </div>`,
-    styleUrls: ['./controls.component.scss'],
+        </div>
+        <div class="enum-label" [innerHTML]="label" [ngClass]="{'disabled' : disabled}"></div>  
+`,
+    styleUrls: ['./bool-enum-input.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => BoolEnumInputControl),
             multi: true
+        },
+        {
+            provide: ControlBase2, useExisting: forwardRef(() => BoolEnumInputControl)
         }
-    ],
-    encapsulation: ViewEncapsulation.None
+    ]
 })
-export class BoolEnumInputControl extends EnumInputControl {
-    @Input() trueLabel: string = "True";
-    @Input() falseLabel: string = "False";
-    @Input() items: EnumValue[] = [];
+export class BoolEnumInputControl extends EnumControlBase<boolean> {
+
     constructor() {
         super();
     }
-    onTrue() {
-        this.writeValue(true);
+    ngOnInit() {
+        this.items = [
+            { name: "True", value: 0 },
+            { name: "False", value: 1 }
+        ];
+        if (this.names && this.names.length === this.items.length) {
+            for (let i = 0; i < this.items.length; ++i) {
+                this.items[i].name = this.names[i];
+            }
+        }
+        //this.selectedValue = this.value;
     }
-    onFalse() {
-        this.writeValue(false);
+    isSelected(item: EnumValue): boolean {
+        //console.log(`${this.selectedValue} versus ${item.value}`);
+        if (item && this.selectedValue != null) {
+            let currentValue = item.value === 0 ? true : false;
+            return this.selectedValue === currentValue;
+        }
+        return false;
+    }
+    onClick(item: EnumValue) {
+        //console.log(`onClick() with ${item.value}`);
+        let currentValue = item.value === 0 ? true : false;
+        this.selectedValue = currentValue;
+        this.writeValue(this.selectedValue);
     }
     get debug() { return JSON.stringify(this, null, 2); }
 }

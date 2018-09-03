@@ -1,0 +1,35 @@
+﻿@import "shared.component.scss";
+.multiline-input {
+    @extend %std-text-input;
+
+    &.disabled {
+        @extend .set-disabled;
+        textarea {
+            border-color: $disabled-colour;
+        }
+    }
+
+    textarea {
+        width: 100%;
+        font-weight: normal;
+        resize: both;
+
+        &.resize-both {
+            resize: both;
+        }
+
+        &.resize-vertical {
+            resize: vertical;
+        }
+
+        &.resize-horizontal {
+            resize: horizontal
+        }
+
+        &.resize-none {
+            resize: none;
+        }
+
+        border-radius: 0.25em;
+    }
+}
