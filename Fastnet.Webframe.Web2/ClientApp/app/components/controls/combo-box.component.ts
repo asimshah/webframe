@@ -124,7 +124,7 @@ export class ComboBoxComponent extends InputControlBase implements AfterViewInit
     }
     @HostListener('document:click')
     public externalEvent() {
-        console.log(`externalEvent`);
+        //console.log(`externalEvent`);
         this.closeDropDown();
     }
     private openDropdown(initialState = true) {

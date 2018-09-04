@@ -2,19 +2,19 @@
 .bool-input {
     label {
         span {
-            @extend .label-after;
+            @extend %label-after;
             margin-left: 0;
         }
     }
 
     input {
-        @extend .input-box;
+        @extend %input-box;
         vertical-align: bottom;
         margin-bottom: 0.25em;
         margin-left: 0;
     }
 
     &.disabled {
-        @extend .set-disabled;
+        @extend %set-disabled;
     }
 }

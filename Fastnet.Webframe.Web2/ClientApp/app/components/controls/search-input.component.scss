@@ -20,13 +20,13 @@
 
     label {
         span {
-            @extend .label-above;
+            @extend %label-above;
             display: block;
         }
     }
 
     input {
-        @extend .input-box;
+        @extend %input-box;
         width: 100%;
         border: none;
         border-radius: 0;

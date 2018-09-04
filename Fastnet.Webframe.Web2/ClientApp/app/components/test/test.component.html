@@ -1,16 +1,16 @@
 ﻿<div>
     <div>this is the test component</div>
     <inline-dialog #ctldialog>
-        <div dialogcommands>
+        <div dialogcommandbar>
             <div class="right">
-                <button>right 1</button>
-                <button>right 2</button>
+                <button class="warning" >popup 1</button>
+                <button class="secondary" (click)="onPopupTwo()">popop 2</button>
             </div>
             <div class="left">
                 <button (click)="onValidateAllClick()">Validate All</button>
-                <button>left 2</button>
+                <button class="cancel">left 2</button>
             </div>
-            <div >
+            <div class="centre">
                 <button>centre 1</button>
                 <button>centre 2</button>
             </div>
@@ -31,7 +31,7 @@
             <password-input label="Password 2" [(ngModel)]="model.password2" [disabled]="true"></password-input>
             <number-input label="Number 1" [(ngModel)]="model.number1"></number-input>
             <number-input label="Number 2" [(ngModel)]="model.number2" [disabled]="true"></number-input>
-            <combo-box label="Combo 1" [disabled]="true" [(ngModel)]="model.combo1" [maxRows]="15" [items]="dropset2"></combo-box>
+
             <combo-box label="Combo 2" [compact]="true" [maxRows]="5" [(ngModel)]="model.combo2" [items]="dropset1"></combo-box>
             <multiline-input label="Para 1" [(ngModel)]="model.multi1" [rows]="5" [resize]="Resizability.None"></multiline-input>
             <multiline-input label="Para 2" [(ngModel)]="model.multi2" [disabled]="true"></multiline-input>
@@ -42,6 +42,35 @@
             <date-input label="Date 2" [(ngModel)]="model.date2" [disabled]="true"></date-input>
             <date-input label="Date 3" [disabled]="true" [(ngModel)]="model.date3"></date-input>
         </div>
+        <popup-dialog #popuptwo>
+            <div dialogheader>
+                <div>This is popup 2</div>
+            </div>
+            <div dialogbody>
+                <combo-box label="Combo 1"  [(ngModel)]="model.combo1" [maxRows]="15" [items]="dropset2"></combo-box>
+            </div>
+            <div dialogcommandbar>
+                <div class="centre">
+                    <button class="secondary" (click)="onPopupOne()" >Open Popup 1</button>
+                    <button>popup centre 2</button>
+                </div>
+                <div class="right">
+                    <button class="warning">popup right 1</button>
+                    <button class="cancel" (click)="onClosePopupTwo()">Close Popup 2</button>
+                </div>
+            </div>
+        </popup-dialog>
+        <popup-dialog #popupone>
+            <div dialogbody>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+                <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
+            </div>
+        </popup-dialog>
     </inline-dialog>
     <pre>{{model | json}}</pre>
+
 </div>

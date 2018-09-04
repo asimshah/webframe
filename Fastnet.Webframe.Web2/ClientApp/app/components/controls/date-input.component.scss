@@ -1,26 +1,8 @@
 ﻿@import "shared.component.scss";
 
 .set-disabled {
-    pointer-events: none;
+    @extend %set-disabled;
 
-    label {
-        color: $disabled-colour;
-
-        &.selected {
-            span:first-child {
-                border: 0.0625em solid $disabled-colour !important;
-            }
-
-            span:nth-child(2) {
-                border: 0.0625em solid $disabled-colour !important;
-                background-color: $disabled-colour !important;
-            }
-
-            span:last-child {
-                color: $disabled-colour !important;
-            }
-        }
-    }
 }
 
 :host {
@@ -30,7 +12,7 @@
 
 
 span.label {
-    @extend .label-above;
+    @extend %label-above;
     color: #333;
     font-size: 14px;
     font-weight: 600;
@@ -58,7 +40,7 @@ span.label {
         }
 
         input {
-            @extend .input-box;
+            @extend %input-box;
             width: 100%;
             border: none;
             border-radius: 0;
@@ -69,7 +51,7 @@ span.label {
             }
 
             &.disabled {
-                @extend .set-disabled;
+                @extend %set-disabled;
             }
         }
 

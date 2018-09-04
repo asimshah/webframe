@@ -2,7 +2,4 @@
 .email-input-new {
     @extend %std-text-input;
 
-    &.disabled {
-        @extend .set-disabled;
-    }
 }

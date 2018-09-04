@@ -5,10 +5,10 @@ import { TextInputControl } from "./text-input.component";
 
 @Component({
     selector: 'search-input',
-    template: `<div class="search-input" [ngClass]="{'not-valid': isInvalid}" >               
+    template: `<div class="search-input" >               
             <label>
                 <span>{{label}}</span>
-            <input #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="onTextChanged($event)" (input)="onInput()" (keyup)="onKeyUp($event)"/>
+            <input #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="onTextChanged($event)" (keyup)="onKeyUp($event)"/>
             
             </label>
                 <button class="clear-button" [ngClass]="{'not-visible': value?.length === 0}" (click)="clearSearchText()">

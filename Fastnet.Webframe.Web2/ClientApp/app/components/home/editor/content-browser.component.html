@@ -103,7 +103,7 @@
                 <div class="modal-container">
                     <div class="caption">Upload file(s)</div>
                     <div class="form-body">
-                        <div class="upload-list" *ngIf="filesToUpload !== null && filesToUpload.length > 0; else uploadHelp">
+                        <div class="upload-list" *ngIf="filesToUpload.length > 0; else uploadHelp">
                             <ng-template ngFor let-fui [ngForOf]="filesToUpload">
                                 <span>{{fui.file.name}}</span>
                                 <span>{{fui.file.size}}</span>
@@ -120,7 +120,7 @@
                     <input #fileInput style="display:none" type="file" (change)="onFileSelected($event)" />
                     <div class="command-buttons align-at-ends">
                         <div>
-                            <button class="small secondary" [ngClass]="{disabled: filesToUpload === null || filesToUpload.length === 0}" (click)="onStartFileUpload()">Start upload ...</button>
+                            <button class="small secondary" [ngClass]="{disabled: filesToUpload.length === 0}" (click)="onStartFileUpload()">Start upload ...</button>
                         </div>
                         <div>
                             <button class="small" (click)="fileInput.click()">Add a file..</button>

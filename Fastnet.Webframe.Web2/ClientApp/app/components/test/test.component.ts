@@ -7,6 +7,7 @@ import { TextInputControl } from '../controls/text-input.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Resizability } from '../controls/multiline-input.component';
 import {  DayStatus, CalendarDay, DaysOfTheWeek } from '../controls/date-input.component';
+import { PopupDialogComponent } from '../controls/popup-dialog.component';
 //import { TextInputControl2 } from '../controls/text-input-new.component';
 
 enum testEnum {
@@ -53,6 +54,8 @@ export class TestComponent implements AfterViewInit {
     Resizability = Resizability;
     @ViewChild('ctldialog') testDialog: InlineDialogComponent;
     @ViewChild('ctllastname') lastNameInput: TextInputControl;
+    @ViewChild('popupone') popupone: PopupDialogComponent;
+    @ViewChild('popuptwo') popuptwo: PopupDialogComponent;
     model: test = new test();
     colourNames = ["Bright Red", "Pure White", "Azure", "Sea Green"];
     boolNames = ["White", "Black"];
@@ -160,5 +163,14 @@ export class TestComponent implements AfterViewInit {
             r.push({ name: i.toString(), value: i })
         }
         return r;
+    }
+    onPopupOne() {
+        this.popupone.open();
+    }
+    onPopupTwo() {
+        this.popuptwo.open();
+    }
+    onClosePopupTwo() {
+        this.popuptwo.close();
     }
 }

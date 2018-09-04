@@ -4,7 +4,12 @@
     @extend %std-text-input;
 
     &.disabled {
-        @extend .set-disabled;
+        .combo-container {
+            .text-box {
+                color: #dadada;
+                border-color: #dadada;
+            }
+        }
     }
 
 
@@ -95,15 +100,6 @@
             .dropdown-panel {
                 border: 1px solid #808080;
                 border-radius: 0.25em;
-            }
-        }
-    }
-
-    &.disabled {
-        .combo-container {
-            .text-box {
-                color: #dadada;
-                border-color: #dadada;
             }
         }
     }

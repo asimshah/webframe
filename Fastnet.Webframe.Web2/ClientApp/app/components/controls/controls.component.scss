@@ -18,13 +18,13 @@
 
     label {
         span {
-            @extend .label-above;
+            @extend %label-above;
             display: block;
         }
     }
 
     input, textarea {
-        @extend .input-box;
+        @extend %input-box;
         width: 100%;
     }
 
@@ -49,13 +49,13 @@
 
     label {
         span {
-            @extend .label-after;
+            @extend %label-after;
             margin-left: 0;
         }
     }
 
     input {
-        @extend .input-box;
+        @extend %input-box;
         vertical-align: bottom;
         margin-bottom: 0.25em;
         margin-left: 0;
@@ -176,6 +176,6 @@ text-input, multiline-input, password-input,
     date-input, bool-input, enum-input, bool-enum-input,
     number-input, dropdown-input {
     &.disabled {
-        @extend .set-disabled;
+        @extend %set-disabled;
     }
 }

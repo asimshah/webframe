@@ -2,7 +2,4 @@
 .text-input {
     @extend %std-text-input;
 
-    &.disabled {
-        @extend .set-disabled;
-    }
 }

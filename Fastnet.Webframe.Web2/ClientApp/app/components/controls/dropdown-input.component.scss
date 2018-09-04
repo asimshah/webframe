@@ -22,7 +22,7 @@
     }
 
     &.disabled {
-        @extend .set-disabled;
+        @extend %set-disabled;
 
         .dropdown-border {
             border: 1px solid $disabled-colour;

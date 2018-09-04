@@ -1,0 +1,54 @@
+﻿@import "shared.component.scss";
+
+$popup-overlay-background-colour: rgba(white, 0.77);
+$popup-background-colour: white;
+$popup-colour: black;
+$popup-border: 0.125em solid black;
+$popup-padding: 0.25em;
+$popup-border-radius: 0.25em;
+
+.popup-dialog {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: $popup-overlay-background-colour;
+
+    .popup-overlay {
+        background-color: $popup-background-colour;
+        color: $popup-colour;
+        padding: $popup-padding;
+        border: $popup-border;
+        border-radius: $popup-border-radius;
+        max-width: 90%;
+        margin: auto;
+        margin-top: 5%;
+        box-shadow: 0 0 20px cornflowerblue;
+
+        .dialog-header {
+            font-weight: bold;
+            background-color: cornflowerblue;
+            color: white;
+            padding: 0.25em;
+            min-height: 2em;
+
+            &.warning {
+                background-color: darkorange;
+            }
+
+            &.error {
+                background-color: red;
+            }
+        }
+
+        .dialog-body {
+            padding: 0.25em;
+        }
+
+        .dialog-commands {
+            @extend %dialog-commands;
+            min-height: 2em;
+        }
+    }
+}

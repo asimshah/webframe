@@ -3,7 +3,6 @@
     @extend %std-text-input;
 
     &.disabled {
-        @extend .set-disabled;
         textarea {
             border-color: $disabled-colour;
         }

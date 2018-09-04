@@ -1,4 +1,4 @@
-﻿
+﻿@import "shared.component.scss";
 :host {
     display: block;
 }
@@ -13,48 +13,7 @@ inline-dialog {
     justify-content: space-between;
 }
 
-.command-button-bar {
-    $gutter: 0.25em;
-    background-color: #e4e4e4;
-    border-radius: 0.25em;
-    padding: $gutter;
-    margin-top: $gutter * 3;
-    div {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        justify-items: center;
+.dialog-commands {
+    @extend %dialog-commands;
 
-        * {
-            grid-row: 1;
-            grid-column: 2;
-            display: flex;
-            justify-content: center;
-
-            * {
-                margin-left: $gutter / 2;
-                margin-right: $gutter / 2;
-            }
-
-            &.left {
-                grid-column: 1;
-                justify-self: left;
-
-                * {
-                    margin-left: 0;
-                    margin-right: $gutter ;
-                }
-            }
-
-            &.right {
-                grid-column-start: 3;
-                justify-self: right;
-                justify-content: flex-end;
-
-                * {
-                    margin-left: $gutter;
-                    margin-right: 0;
-                }
-            }
-        }
-    }
 }

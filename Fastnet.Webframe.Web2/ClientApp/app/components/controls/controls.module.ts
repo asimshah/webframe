@@ -16,6 +16,7 @@ import { BoolEnumInputControl } from './bool-enum-input.component';
 import { DropDownControl } from './dropdown-input.component';
 import { InlineDialogComponent } from './inline-dialog.component';
 import { ComboBoxComponent } from './combo-box.component';
+import { PopupDialogComponent } from './popup-dialog.component';
 
 
 
@@ -38,7 +39,8 @@ import { ComboBoxComponent } from './combo-box.component';
         DropDownControl,
         TreeViewComponent,
         InlineDialogComponent,
-        ComboBoxComponent
+        ComboBoxComponent,
+        PopupDialogComponent
     ],
     declarations: [
         TextInputControl,
@@ -54,7 +56,8 @@ import { ComboBoxComponent } from './combo-box.component';
         DropDownControl,
         TreeViewComponent,
         InlineDialogComponent,
-        ComboBoxComponent
+        ComboBoxComponent,
+        PopupDialogComponent
 
     ],
     providers: [],

@@ -1,0 +1,14 @@
+﻿<div class="popup-dialog">
+    <div #overlay class="popup-overlay">
+        <div class="dialog-header">
+            <ng-content select="[dialogheader]"></ng-content>
+        </div>
+        <div class="dialog-body">
+            <ng-content select="[dialogbody]"></ng-content>
+
+        </div>
+        <div class="dialog-commands">
+            <ng-content select="[dialogcommandbar]"></ng-content>
+        </div>
+    </div>
+</div>

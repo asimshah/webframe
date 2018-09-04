@@ -51,7 +51,7 @@ export class ContentBrowserComponent extends ModalDialogComponent /*implements A
     content?: Content | null = null;
     subdirectory: Directory | null = null;
     uploadInProgress = false;
-    filesToUpload: fileUploadItem[] | null = null;
+    filesToUpload: fileUploadItem[] = [];
     @ViewChild("fileInput") uploadInputElement: ElementRef;
     @ViewChild("pageProperties") pageProperties: PagePropertiesComponent;
     directoryNameValidator = new PropertyValidatorAsync((cs) => this.directoryNameValidatorAsync(cs));
@@ -237,7 +237,7 @@ export class ContentBrowserComponent extends ModalDialogComponent /*implements A
     onFileSelected(e: any) {
         let element = <HTMLInputElement>e.target;
         //let file = <string>e.target.files[0];
-        if (element.files && this.filesToUpload !== null) {
+        if (element.files && this.filesToUpload.length > 0) {
             let file = element.files[0];
             console.log(`${file.name} selected for upload, ${file.size}`);
             let item = new fileUploadItem();
@@ -248,7 +248,7 @@ export class ContentBrowserComponent extends ModalDialogComponent /*implements A
     }
     async onStartFileUpload() {
         return new Promise<void>(async resolve => {
-            if (this.filesToUpload != null) {
+            if (this.filesToUpload.length > 0) {
                 this.uploadInProgress = true;
                 for (let item of this.filesToUpload) {
                     let r = await this.editorService.checkContentExists(this.selectedDirectory!.id, item.file.name);
