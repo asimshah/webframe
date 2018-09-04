@@ -83,6 +83,7 @@
     <None Remove="ClientApp\app\components\controls\number-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\password-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\popup-dialog.component.ts" />
+    <None Remove="ClientApp\app\components\controls\popup-message.component.ts" />
     <None Remove="ClientApp\app\components\controls\search-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\text-input.component.ts" />
     <None Remove="ClientApp\app\components\controls\tree-view.component.ts" />
@@ -213,6 +214,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\controls\number-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\password-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\popup-dialog.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\controls\popup-message.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\search-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\text-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\controls\tree-view.component.ts" />

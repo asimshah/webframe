@@ -1,6 +1,6 @@
 ﻿<div class="popup-dialog">
-    <div #overlay class="popup-overlay">
-        <div class="dialog-header">
+    <div #overlay class="popup-overlay" [ngStyle]="getOverlayStyle()">
+        <div class="dialog-header" [ngClass]="getHeaderClass()" >
             <ng-content select="[dialogheader]"></ng-content>
         </div>
         <div class="dialog-body">

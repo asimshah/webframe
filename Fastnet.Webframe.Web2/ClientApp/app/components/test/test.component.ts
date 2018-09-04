@@ -8,6 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Resizability } from '../controls/multiline-input.component';
 import {  DayStatus, CalendarDay, DaysOfTheWeek } from '../controls/date-input.component';
 import { PopupDialogComponent } from '../controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions } from '../controls/popup-message.component';
 //import { TextInputControl2 } from '../controls/text-input-new.component';
 
 enum testEnum {
@@ -56,6 +57,7 @@ export class TestComponent implements AfterViewInit {
     @ViewChild('ctllastname') lastNameInput: TextInputControl;
     @ViewChild('popupone') popupone: PopupDialogComponent;
     @ViewChild('popuptwo') popuptwo: PopupDialogComponent;
+    @ViewChild(PopupMessageComponent) messagePopup : PopupMessageComponent;
     model: test = new test();
     colourNames = ["Bright Red", "Pure White", "Azure", "Sea Green"];
     boolNames = ["White", "Black"];
@@ -164,13 +166,37 @@ export class TestComponent implements AfterViewInit {
         }
         return r;
     }
+    onNormalMessage() {
+        this.messagePopup.open("this is a normal message", (r) => {
+            console.log(`normal message closed with result = ${r}`);
+        });
+    }
+    onOptionsMessage() {
+        let options = new PopupMessageOptions();
+        options.width = 370;
+        options.warning = true;
+        options.allowCancel = true;
+        options.caption = "frerdfred";
+        this.messagePopup.open(
+            ["1. this is a message with options", "<i>2. it is also multi line</i>"],
+            (r) => {
+                console.log(`options message closed with result = ${r}`);
+            },
+            options);
+    }
     onPopupOne() {
-        this.popupone.open();
+        this.popupone.open((a) => this.popupClosed(a));
     }
     onPopupTwo() {
-        this.popuptwo.open();
+        this.popuptwo.open((a) => this.popupClosed(a));
+    }
+    onClosePopupOne() {
+        this.popupone.close("popup one closed");
     }
     onClosePopupTwo() {
-        this.popuptwo.close();
+        this.popuptwo.close("popup two closed");
+    }
+    popupClosed(arg: string): void {
+        console.log(arg);
     }
 }

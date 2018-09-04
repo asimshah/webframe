@@ -17,6 +17,7 @@ import { DropDownControl } from './dropdown-input.component';
 import { InlineDialogComponent } from './inline-dialog.component';
 import { ComboBoxComponent } from './combo-box.component';
 import { PopupDialogComponent } from './popup-dialog.component';
+import { PopupMessageComponent } from './popup-message.component';
 
 
 
@@ -40,7 +41,8 @@ import { PopupDialogComponent } from './popup-dialog.component';
         TreeViewComponent,
         InlineDialogComponent,
         ComboBoxComponent,
-        PopupDialogComponent
+        PopupDialogComponent,
+        PopupMessageComponent
     ],
     declarations: [
         TextInputControl,
@@ -57,7 +59,8 @@ import { PopupDialogComponent } from './popup-dialog.component';
         TreeViewComponent,
         InlineDialogComponent,
         ComboBoxComponent,
-        PopupDialogComponent
+        PopupDialogComponent,
+        PopupMessageComponent
 
     ],
     providers: [],

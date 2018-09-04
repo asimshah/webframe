@@ -3,9 +3,15 @@
 $popup-overlay-background-colour: rgba(white, 0.77);
 $popup-background-colour: white;
 $popup-colour: black;
-$popup-border: 0.125em solid black;
+$popup-border-colour: cornflowerblue;
+$popup-border: 1px solid $popup-border-colour;
 $popup-padding: 0.25em;
 $popup-border-radius: 0.25em;
+
+$popup-caption-colour: cornflowerblue;
+$popup-warning-caption-colour: darkorange;
+$popup-error-caption-colour: red;
+
 
 .popup-dialog {
     position: fixed;
@@ -24,21 +30,21 @@ $popup-border-radius: 0.25em;
         max-width: 90%;
         margin: auto;
         margin-top: 5%;
-        box-shadow: 0 0 20px cornflowerblue;
+        box-shadow: 0 0 20px $popup-border-colour;
 
         .dialog-header {
             font-weight: bold;
-            background-color: cornflowerblue;
+            background-color: $popup-caption-colour;
             color: white;
             padding: 0.25em;
             min-height: 2em;
 
             &.warning {
-                background-color: darkorange;
+                background-color: $popup-warning-caption-colour;
             }
 
             &.error {
-                background-color: red;
+                background-color: $popup-error-caption-colour;
             }
         }
 

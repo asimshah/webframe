@@ -57,7 +57,7 @@ export class ComboBoxComponent extends InputControlBase implements AfterViewInit
     }
     @HostListener('window:resize', ['$event.target'])
     onResize() {
-        console.log(`onResize()`);
+        //console.log(`onResize()`);
         this.computeDropPanelSize();
         if (this.showDropdown === true) {
             // it is about to open

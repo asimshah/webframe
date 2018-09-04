@@ -11,8 +11,8 @@
                 <button class="cancel">left 2</button>
             </div>
             <div class="centre">
-                <button>centre 1</button>
-                <button>centre 2</button>
+                <button (click)="onNormalMessage()">Normal Message</button>
+                <button (click)="onOptionsMessage()">Message with Options</button>
             </div>
         </div>
         <div dialogbody class="control-panel">
@@ -69,7 +69,14 @@
                 <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
                 <div>asj fhaslkdjf askdjfs hadfkljas ldfkasdjf adkjfg</div>
             </div>
+            <div dialogcommandbar>
+                <div class="right">
+                    <button class="warning">popup right 1</button>
+                    <button class="cancel" (click)="onClosePopupOne()">Close Popup 1</button>
+                </div>
+            </div>
         </popup-dialog>
+        <popup-message [width]="270" ></popup-message>
     </inline-dialog>
     <pre>{{model | json}}</pre>
 
