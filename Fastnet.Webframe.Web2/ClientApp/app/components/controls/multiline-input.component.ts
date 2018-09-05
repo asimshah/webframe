@@ -66,6 +66,7 @@ export class MultilineTextInput extends InputControlBase {
     @Input('resize') resizability: Resizability;
     constructor() {
         super();
+        this.setReference("multi-line");
     }
     getResizeClass(): string {
         let r = "resize-both";

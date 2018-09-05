@@ -33,6 +33,7 @@ import { InputControlBase, ControlBase2 } from "./controlbase2.type";
             <label>                
             <input #focushere type="checkbox" [(ngModel)]="value" (blur)="onBlur()"/>
                 <span [innerHTML]="label"></span>
+                <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             </label>
         </div>`,
     styleUrls: ['./bool-input.component.scss'],
@@ -50,5 +51,6 @@ import { InputControlBase, ControlBase2 } from "./controlbase2.type";
 export class BoolInputControl extends InputControlBase {
     constructor() {
         super();
+        this.setReference("bool");
     }
 }

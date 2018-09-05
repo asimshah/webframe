@@ -37,7 +37,8 @@ import { ControlBase2, InputControlBase } from "./controlbase2.type";
     selector: 'password-input',
     template: `<div class="password-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
             <label>
-                <span [innerHTML]="label"></span>
+            <span [innerHTML]="label"></span>
+            <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             <input #focushere type="password" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()"/>
             </label>
             <div class="validation-text">
@@ -59,5 +60,6 @@ import { ControlBase2, InputControlBase } from "./controlbase2.type";
 export class PasswordInputControl extends InputControlBase {
     constructor() {
         super();
+        this.setReference("password");
     }
 }

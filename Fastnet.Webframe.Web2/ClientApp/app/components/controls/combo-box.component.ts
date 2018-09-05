@@ -39,6 +39,7 @@ export class ComboBoxComponent extends InputControlBase implements AfterViewInit
     private userTyping = false;
     constructor(private renderer: Renderer2) {
         super();
+        this.setReference("combo-box");
         ComboBoxComponent.allComboBoxes.push(this);
         //console.log(`constructor: ComboBoxComponent.allComboBoxes length now ${ComboBoxComponent.allComboBoxes.length}`);
     }
@@ -83,8 +84,9 @@ export class ComboBoxComponent extends InputControlBase implements AfterViewInit
         //console.log(`onItemClick: ${JSON.stringify(item, null, 2)}`);
         this.selectItem(item);
     }
-    onInput(text: string) {
+    onLocalInput(text: string) {
         console.log(`onInput(): ${text}, inputElementText = ${this.inputElementText}`);
+        super.onInput();
         this.userTyping = true;
         this.matchItems(text);
 

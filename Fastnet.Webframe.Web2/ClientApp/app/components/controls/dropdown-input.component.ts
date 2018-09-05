@@ -55,6 +55,7 @@ import { InputControlBase } from "./controlbase2.type";
     template: `<div class="dropdown-input"  [ngClass]="{'disabled' : disabled}">
             <label *ngIf="label">
                 <span [innerHTML]="label"></span>
+                <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             </label>
             <div class="dropdown-border">
                 <select #focushere [ngModel]="value" (ngModelChange)="modelChange($event)" [size]="getSize()" (focus)="onSelectFocus()" (blur)="onSelectBlur()"  >
@@ -79,6 +80,7 @@ export class DropDownControl extends InputControlBase {
     private inFocus: boolean = false;
     constructor() {
         super();
+        this.setReference("dropdown");
     }
     onSelectFocus() {
         this.inFocus = true;

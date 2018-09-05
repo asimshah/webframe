@@ -6,6 +6,7 @@ import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
 import { AuthenticationService } from '../authentication/authentication.service';
 import { ConfigService } from '../shared/config.service';
+import { ControlBase2 } from '../controls/controlbase2.type';
 declare var getCustomisation: any;
 //declare var platform: any;
 
@@ -27,6 +28,7 @@ export class AppComponent implements OnInit {
         for (let rr of this.customisation.routeRedirections) {
             this.redirect(rr.fromRoute, rr.toRoute);
         }
+        ControlBase2.enableTrace(true);
     }
     async ngOnInit() {
         console.log(`AppComponent constructor(): ngOnInit`);

@@ -86,7 +86,7 @@ $default-leftpanel-width: 210px;
 }
 
 button {
-    $button-background: white;
+    /*$button-background: white;
     $default-button-background: #337ab7;
     $button-colour: black;
     $button-hover: orange;
@@ -100,12 +100,12 @@ button {
     padding-right: 0.5em;
     height: 28px;
     background-color: $default-button-background;
-    color: $button-background;
+    color: $button-background;*/
     &.small {
         height: auto;
         font-size: 10px;
     }
-    &.cancel {
+    /*&.cancel {
         border: 1px solid $button-background;
         background-color: $button-background;
         color: $button-colour;
@@ -142,7 +142,7 @@ button {
         background: none;
         border: none;
         color: $link-colour;
-        //font-size: 8pt;
+        font-size: 12px;
         &:hover {
             text-decoration: underline;
         }
@@ -150,7 +150,7 @@ button {
         &[disabled], &.disabled {
             color: gray;
         }
-    }
+    }*/
 }
 .command-buttons {
     font-size: 0.8em;

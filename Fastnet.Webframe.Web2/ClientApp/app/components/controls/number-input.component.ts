@@ -10,7 +10,8 @@ import { isNullorUndefined, InputControlBase, ControlBase2 } from "./controlbase
     selector: 'number-input',
     template: `<div class="number-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
             <label>
-                <span [innerHTML]="label"></span>
+            <span [innerHTML]="label"></span>
+            <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             <input #focushere type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" />
             </label>
             <div *ngIf="isInError()" class="validation-text">
@@ -34,6 +35,7 @@ export class NumberInputControl extends InputControlBase {
     @Input() maxNumber: number;
     constructor() {
         super();
+        this.setReference("number");
         this.setPrevalidator((ctx, val) => this.validateNumberAsync(ctx, val));
     }
     private validateNumberAsync(context: ValidationContext, value: any): Promise<ValidationResult> {

@@ -68,7 +68,10 @@ import { ControlBase2, InputControlBase, toEnumValues, EnumControlBase } from ".
                 </div>
             </div>
         </div>
-        <div class="enum-label" [innerHTML]="label" [ngClass]="{'disabled' : disabled}"  ></div>  
+        <div class="enum-label" [ngClass]="{'disabled' : disabled}">
+            <span [innerHTML]="label"></span>
+            <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
+        </div>  
 `,
     styleUrls: ['./enum-input.component.scss'],
     providers: [
@@ -84,11 +87,11 @@ import { ControlBase2, InputControlBase, toEnumValues, EnumControlBase } from ".
 })
 export class EnumInputControl extends EnumControlBase<number> implements OnInit {
     private static index: number = 0;
-    protected reference: number;
+    //protected reference: number;
     groupName: string = "";
     constructor() {
         super();
-        this.reference = EnumInputControl.index++;
+        this.setReference("enum");
     }
     ngOnInit() {
         //console.log(`ngOnInit`);

@@ -46,7 +46,8 @@ import { ValidationContext } from "./controls.types";
     template: `<div class="text-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
             <label >
                 <span [innerHTML]="label"></span>
-            <input #focushere type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()"  />
+                <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
+            <input #focushere type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             </label>
             <div *ngIf="isInError()" class="validation-text">
                 <span  class="text-error">{{vr.message}}</span>
@@ -68,7 +69,8 @@ export class TextInputControl extends InputControlBase {
 
     constructor() {
         super();
-
+        this.setReference("text");
+        //console.log(`${this.getReference()} is TextInputControl`);
     }
 
 

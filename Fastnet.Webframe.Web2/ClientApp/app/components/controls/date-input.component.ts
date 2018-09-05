@@ -80,6 +80,7 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
     }
     constructor() {
         super();
+        this.setReference("date");
         //console.log("constructor()");
         this.dateControlIndex = DateInputControl.allDateControls.length;// DateInput2Control.counter;
         DateInputControl.allDateControls.push(this);

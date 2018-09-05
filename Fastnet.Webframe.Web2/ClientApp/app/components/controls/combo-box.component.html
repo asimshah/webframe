@@ -1,10 +1,11 @@
 ﻿<div class="combo-box" [ngClass]="{disabled: disabled}" (click)="stopEvent($event)">
     <label *ngIf="label && compact === false">
         <span [innerHTML]="label"></span>
+        <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
     </label>
     <div  class="combo-container" [ngClass]="{'is-open': isOpen(), compact: compact }" >
         <div #textBox class="text-box">
-            <input #focushere type="text" [placeholder]=placeHolderText [ngClass]="{'align-centre': aligncentre}" [value]="inputElementText" (click)="onDownIconClick()" (blur)="onBlur()" (input)="onInput(focushere.value)" spellcheck="false"/>
+            <input #focushere type="text" [placeholder]=placeHolderText [ngClass]="{'align-centre': aligncentre}" [value]="inputElementText" (click)="onDownIconClick()" (blur)="onBlur()" (input)="onLocalInput(focushere.value)" spellcheck="false"/>
             <span class="fa fa-chevron-down down-icon" title="click to open" (click)="onDownIconClick()"></span>
         </div>
 

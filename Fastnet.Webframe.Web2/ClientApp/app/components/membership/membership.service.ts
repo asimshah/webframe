@@ -2,7 +2,8 @@
 import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
 import { Member, Group, MemberIdList } from "../shared/common.types";
-import { ValidationResult, ControlState } from "../controls/controls.types";
+import { ValidationResult, ControlState, ValidationContext } from "../controls/controls.types";
+import { isNullorUndefined, isWhitespaceOrEmpty } from "../controls/controlbase2.type";
 
 @Injectable()
 export class MembershipService extends BaseService {
@@ -53,24 +54,38 @@ export class MembershipService extends BaseService {
             resolve();
         });
     }
-    async newEmailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    async newEmailAddressValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>(async resolve => {
-            let vr = cs.validationResult;
-            if (vr.valid) {
-                let text: string = cs.value || "";
-                if (text.trim().length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
+                vr.valid = false;
+                vr.message = `an email address is required`;
+            } else if(context === ValidationContext.LostFocus){
+                let text: string = value;
+                text = text.toLowerCase();
+                let r = await this.validateEmailAddress(text);
+                if (r === false) {
                     vr.valid = false;
-                    vr.message = `an Email Address is required`;
-                } else {
-                    text = text.toLocaleLowerCase();
-                    let r = await this.validateEmailAddress(text);
-                    if (r === false) {
-                        vr.valid = false;
-                        vr.message = `this Email Address is already in use`;
-                    }
+                    vr.message = `this email Address is already in use`;
                 }
             }
-            resolve(cs.validationResult);
+            resolve(vr);
+            //let vr = cs.validationResult;
+            //if (vr.valid) {
+            //    let text: string = cs.value || "";
+            //    if (text.trim().length === 0) {
+            //        vr.valid = false;
+            //        vr.message = `an Email Address is required`;
+            //    } else {
+            //        text = text.toLocaleLowerCase();
+            //        let r = await this.validateEmailAddress(text);
+            //        if (r === false) {
+            //            vr.valid = false;
+            //            vr.message = `this Email Address is already in use`;
+            //        }
+            //    }
+            //}
+            //resolve(cs.validationResult);
         });
     }
     async validateEmailAddress(address: string): Promise<boolean> {

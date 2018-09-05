@@ -59,7 +59,8 @@ import { ControlBase2, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty 
     template: `<div class="email-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
             <label>
                 <span [innerHTML]="label"></span>
-            <input #focushere type="email" [(ngModel)]="value" (blur)="onBlur()"/>
+                <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
+            <input #focushere type="email" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             </label>
             <div *ngIf="isInError()" class="validation-text">
                 <span  class="text-error">{{vr.message}}</span>
@@ -81,6 +82,7 @@ export class EmailInputControl extends InputControlBase {
     private defaultEmailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     constructor() {
         super();
+        this.setReference("email");
         this.setPrevalidator((ctx, val) => this.validateEmail(ctx, val));
     }
     private validateEmail(context: ValidationContext, value: any): Promise<ValidationResult> {

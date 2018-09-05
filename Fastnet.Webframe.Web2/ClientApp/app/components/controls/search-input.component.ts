@@ -1,7 +1,7 @@
 ﻿import { Component, forwardRef, Output, EventEmitter } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { ControlBase } from "./controls.component";
-import { TextInputControl } from "./text-input.component";
+import { InputControlBase, ControlBase2 } from "./controlbase2.type";
 
 @Component({
     selector: 'search-input',
@@ -29,15 +29,16 @@ import { TextInputControl } from "./text-input.component";
             multi: true
         },
         {
-            provide: ControlBase, useExisting: forwardRef(() => SearchInputControl)
+            provide: ControlBase2, useExisting: forwardRef(() => SearchInputControl)
         }
     ]
 })
-export class SearchInputControl extends TextInputControl {
+export class SearchInputControl extends InputControlBase {
     @Output() searchClick = new EventEmitter();
     @Output() clearClick = new EventEmitter();
     constructor() {
         super();
+        this.setReference("search");
     }
     clearSearchText() {
         this.writeValue("");

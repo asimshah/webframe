@@ -3,11 +3,12 @@ $error-colour: red;
 $focus-colour: cornflowerblue;
 $disabled-colour: #dadada;
 $hover-colour: orange;
+$link-colour: #0340d8;
 
 $button-background: #337ab7;
 $button-colour: white;
 $button-hover: orange;
-$button-border: 1 px solid transparent;
+$button-border: 1px solid transparent;
 
 $cancel-button-background: white;
 $cancel-button-colour: black;
@@ -80,7 +81,6 @@ $secondary-button-colour: white;
     label {
         span {
             @extend %label-above;
-            display: block;
         }
     }
 
@@ -215,6 +215,7 @@ label {
         justify-items: center;
 
         button {
+            font-size: 13px;
             border: $button-border;
             border-radius: 0.25em;
             padding-left: 0.5em;
@@ -245,6 +246,28 @@ label {
                 background-color: $button-hover;
                 color: $button-colour;
                 border: $button-hover;
+            }
+
+            &.link {
+                background: none;
+                border: none;
+                color: $link-colour;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+
+                &[disabled], &.disabled {
+                    color: gray;
+                }
+            }
+
+            &[disabled], &.disabled {
+                cursor: none;
+                pointer-events: none;
+                background-color: $disabled-colour;
+                border-color: $disabled-colour;
+                color: $button-colour;
             }
         }
 

@@ -2,13 +2,31 @@
 import { Input, ViewChild, ElementRef, OnInit, AfterViewInit, OnChanges, SimpleChanges } from "@angular/core";
 import { ValidationResult, ControlState, PropertyValidatorAsync, Validator, ValidationContext, EnumValue } from './controls.types';
 
+/** a method that returns a Promise<ValidationResult>, used for custom control validations */
+export type ValidationMethod = (ctx: ValidationContext, val: any) => Promise<ValidationResult>;
+
+/**
+ * Tests that value is either null or defined
+ * primarily used in validation methods
+ * @param value value to test
+ */
 export function isNullorUndefined(value: any): boolean {
     return value === null || typeof value === "undefined";
 }
+/**
+ * Tests if value is empty or all whitespace
+ * primarily used in validation methods
+ * @param value value to test
+ */
 export function isWhitespaceOrEmpty(value: string): boolean {
     let t = value.trim();
     return t.length == 0;
 }
+/**
+ * Builds an array of EnumValue from an enum (for number enums only)
+ * Used to generate EnumValue pairs for enum style controls
+ * @param val
+ */
 export function toEnumValues(val: any): EnumValue[] {
     let list: EnumValue[] = [];
     const keys = Object.keys(val).filter(k => typeof val[k as any] === "number");
@@ -20,22 +38,44 @@ export function toEnumValues(val: any): EnumValue[] {
     return list;
 }
 const noop = () => { };
+
+/**
+ * base class for all custom html components used in fastnet forms
+ * adds the following @Input() attributes:
+ * [label] optional control label text - can be html
+ * [placeholder] placeholder within html <input> element, default ""
+ * [disabled] set to true or false, use this to detect and set custom control as disabled, default is false
+ * [focus] if true, sets initial focus to this control, use only on one control within the dialog
+ * */
 export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
+    private static counter = 0;
+    private static _trace: boolean = false;
+    private reference: string = "";
     @ViewChild('focushere') focusableElement: ElementRef;
     @Input() label?: string;
     @Input() placeHolderText: string = "";
     @Input() disabled: boolean = false;
     @Input('focus') isFocused: boolean;
+    
     protected innerValue?: any;
     protected onChangeCallback: (_: any) => void = noop;
     protected onTouchedCallback: () => void = noop;
-    protected isTouched: boolean = false;
+    protected _isTouched: boolean = false;
+    protected get isTouched(): boolean {
+        return   this._isTouched;
+    }
+    protected set isTouched(val: boolean) {
+        console.log(`${this.getReference()}: changing isTouched from ${this._isTouched} to ${val}`);
+        this._isTouched = val;
+    }
     protected localChangeCallBack: (_: any) => void = noop;
     protected afterValidationCallBack: () => void = noop;
     @Input() validator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>;// Validator;
     private preValidator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>;// Validator;
     vr: ValidationResult;
+
     constructor() {
+        
     }
     ngAfterViewInit() {
         //console.log(`ngAfterViewInit()`);
@@ -47,11 +87,14 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         return this.innerValue;
     }
     set value(v: any) {
-        if (!(typeof this.innerValue === "undefined" && v === null)) {
+        let iv_untouched = this.innerValue === "undefined" || this.innerValue === null;
+        let v_untouched = v === "undefined" || v === null;
+        if (iv_untouched === false && v_untouched === false) {
+        //if (!(typeof this.innerValue === "undefined" && v === null)) {
             if (v !== this.innerValue) {
                 //console.log(`innervalue changing from ${JSON.stringify(this.innerValue)} to ${JSON.stringify(v)}`);
                 this.innerValue = v;
-                this.isTouched = true;
+                //this.isTouched = true;
                 this.onValueChanged();
             }
         }
@@ -68,9 +111,20 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
             fn();
         }
     }
+    /**
+     * sets an 'internal' validator for a custom control (e.g, see email input)
+     * this validator, if set,  is called before any user provided validators.
+     * user provided validators only execute if the prevalidor returns a valid condition
+     * @param validator
+     */
     setPrevalidator(validator: (ctx: ValidationContext, value: any) => Promise<ValidationResult>) {
         this.preValidator = validator;// new PropertyValidatorAsync(validator);
     }
+    get traceReferences(): boolean {
+        return ControlBase2._trace;
+    }
+    /** set focus on the control
+     *  the html for the control must have an element marked with #focushere */
     public focus() {
         if (this.focusableElement) {
             this.focusableElement.nativeElement.focus();
@@ -78,6 +132,12 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
             console.log(`no focusable element present`);
         }
     }
+    /**
+     * Validate this control.
+     * (1) this method is called internally using ValidationContext.LostFocus
+     * (2) it can be called directly using ValidationContext.UserCall (which is the default)
+     * @param context default is ValidationContext.UserCall
+     */
     public async validate(context: ValidationContext = ValidationContext.UserCall): Promise<ValidationResult> {
         return new Promise<ValidationResult>(async resolve => {
             let vr = await this.doValidation(context);
@@ -86,10 +146,22 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         });
     }
     onBlur() {
-        this.onTouchedCallback();
+        console.log(`${this.getReference()}: onBlur() called`);
+        //this.onTouchedCallback();
     }
+    /** returns true or false based on whether the control is valid or not
+     * use this method in custom control templates
+     * */
     isInError() {
         return this.vr && this.vr.valid === false;
+    }
+    /** returns the (internal) reference string for this instance
+     * Note that references must be set in the constructor of the derived custom control component */
+    getReference(): string {
+        return this.reference;
+    }
+    protected setReference(prefix: string) {
+        this.reference = `${prefix}-${ControlBase2.counter++}`;
     }
     private onValueChanged() {
         this.localChangeCallBack(this.innerValue);
@@ -104,14 +176,15 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         //console.log(`doValidation with context = ${context}`);
         return new Promise<ValidationResult>(async resolve => {
             try {
+                console.log(`${this.getReference()}: starting validation: touched =  ${this.isTouched}, context = ${context}`);
                 this.vr = new ValidationResult();
-                if (this.isTouched === true || context === ValidationContext.UserCall) {
+                if (this.isTouched === true || context !== ValidationContext.ValueChanged) {
                     try {
                         if (this.preValidator) {
                             this.vr = await this.preValidator(context, this.value);//.validator(cs);
                         }
                         if (this.vr.valid === true && this.validator) {
-                            console.log(`calling validator`);
+                            console.log(`${this.getReference()}: calling validator using value = ${this.value}`);
                             this.vr = await this.validator(context, this.value);//.validator(cs);
                         }
                     } catch (e) {
@@ -129,8 +202,15 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
             }
         });
     }
+    public static enableTrace(tf: boolean) {
+        ControlBase2._trace = tf;
+        console.log(`custom control trace enabled = ${ControlBase2._trace}`);
+    }
 }
-
+/** Use this as a base for any control based on the HTML <input> element
+ * Note that (1) all input events are caught and used to set isTouched to true
+ * and (2) lostfocus event will cause validation with ValidationContext.LostFocus
+ */
 export class InputControlBase extends ControlBase2 implements OnChanges, AfterViewInit {
     onBlur() {
         super.onBlur();
@@ -142,6 +222,12 @@ export class InputControlBase extends ControlBase2 implements OnChanges, AfterVi
     ngOnChanges(changes: SimpleChanges) {
         this.setReadOnly();
     }
+    onInput() {
+        // why do we need this?
+        //  because we need to differentiate between users entering something in an input element and
+        //  the value being set in other ways. 
+        this.isTouched = true;
+    }
     setReadOnly() {
         if (this.focusableElement) {
             let el = this.focusableElement.nativeElement as HTMLInputElement;
@@ -149,7 +235,20 @@ export class InputControlBase extends ControlBase2 implements OnChanges, AfterVi
         }
     }
 }
+/**
+ * Use this as a base for controls using radio buttons for enums
+ * generic T is one of number or boolean - this is the value type of the enum
+ * boolean allows the use of enum style layout for a boolean
+ * adds the following @Input() attributes:
+ * [columns]   number of columns in which to layout radio buttons, default 1
+ * [enumType]  the typescript enum type to layout
+ * [items]     internal use only (can this be removed as an @Input()?)
+ * [names]     user friendly names to use for each enum value
+ * */
 export class EnumControlBase<T> extends ControlBase2 {
+    /**
+     * Number of columns in which to layout the radio buttons
+     */
     @Input() columns: number = 1;
     @Input() enumType: any; // make sure this is the enum type
     @Input() items: EnumValue[] = [];

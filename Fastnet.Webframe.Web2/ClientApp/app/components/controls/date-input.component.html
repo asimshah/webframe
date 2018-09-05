@@ -1,6 +1,7 @@
 ﻿<div class="date-input">
-    <span class="label">{{label}}</span>
-    <div class="date-box-border"  [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}">
+    <span class="label" [innerHTML]="label"></span>
+    <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
+    <div class="date-box-border" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}">
         <div>
             <input readonly #focushere [min]="standardDate(minDate)" [max]="standardDate(maxDate)" [ngModel]="value | date:'ddMMMyyyy'" (mouseup)="onMouseUp($event)" />
             <button class="clear-button" [ngClass]="{'not-visible': !value || value === null}" (click)="clear()">

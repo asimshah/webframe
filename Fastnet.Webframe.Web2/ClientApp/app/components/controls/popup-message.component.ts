@@ -26,7 +26,7 @@ export class PopupMessageComponent implements OnInit {
     PopupMessageResult: PopupMessageResult;
     @ViewChild('popupdialog') popup: PopupDialogComponent;
     @Input() width?: number;
-    caption: string = "System Message";
+    @Input() caption: string = "System Message";
     okLabel: string = "OK";
     cancelLabel: string = "Cancel";
     allowCancel: boolean = false;
@@ -46,6 +46,7 @@ export class PopupMessageComponent implements OnInit {
         //}
     }
     open(messages: string | string[], onClose: PopupMessageCloseHandler, options?: PopupMessageOptions) {
+        console.log("open");
         this.messages = messages;
         if (typeof this.messages === "string") {
             this.isSingleMessage = true;

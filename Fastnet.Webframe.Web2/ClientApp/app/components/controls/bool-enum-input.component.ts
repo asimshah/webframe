@@ -18,7 +18,10 @@ import { ControlBase2, EnumControlBase } from "./controlbase2.type";
                 </div>
             </div>
         </div>
-        <div class="enum-label" [innerHTML]="label" [ngClass]="{'disabled' : disabled}"></div>  
+        <div class="enum-label"  [ngClass]="{'disabled' : disabled}">
+            <span [innerHTML]="label"></span>
+            <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
+        </div>  
 `,
     styleUrls: ['./bool-enum-input.component.scss'],
     providers: [
@@ -36,6 +39,7 @@ export class BoolEnumInputControl extends EnumControlBase<boolean> {
 
     constructor() {
         super();
+        this.setReference("bool-enum");
     }
     ngOnInit() {
         this.items = [

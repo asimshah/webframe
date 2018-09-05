@@ -1,22 +1,25 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmailValidator, FormControl } from '@angular/forms';
+//import { EmailValidator, FormControl } from '@angular/forms';
 
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
 import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
-import { PageKeys, PageService } from '../shared/page.service';
-import { ControlState, PropertyValidatorAsync, ValidationResult} from '../controls/controls.types';
+import { PageService } from '../shared/page.service';
+import { ValidationResult, ValidationContext} from '../controls/controls.types';
 
-import { Dictionary } from '../types/dictionary.types';
+//import { Dictionary } from '../types/dictionary.types';
 //import { MessageBox } from '../shared/common.types';
-import { BaseComponent, nothingOnClose } from '../shared/base.component';
-import { MessageBoxResult } from '../modaldialog/message-box.component';
-import { ControlBase } from '../controls/controls.component';
+import { BaseComponent } from '../shared/base.component';
+//import { MessageBoxResult } from '../modaldialog/message-box.component';
+//import { ControlBase } from '../controls/controls.component';
 import { PasswordInputControl } from '../controls/password-input.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../controls/popup-message.component';
+import { isNullorUndefined, isWhitespaceOrEmpty } from '../controls/controlbase2.type';
+import { EmailInputControl } from '../controls/email-input.component';
 
-class LoginModel {
-    message: string;
-}
+//class LoginModel {
+//    message: string;
+//}
 
 @Component({
     selector: 'webframe-login',
@@ -29,8 +32,9 @@ export class LoginComponent extends BaseComponent implements OnInit {
     public model: Credentials;
     public message: string;
     private usernameKey: string;
-    public validators: Dictionary<PropertyValidatorAsync>;
     @ViewChild(PasswordInputControl) passwordElement: PasswordInputControl;
+    @ViewChild(EmailInputControl) emailControl: EmailInputControl;
+    @ViewChild(PopupMessageComponent) messagePopup: PopupMessageComponent;
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
         dialogService: ModalDialogService,
@@ -38,8 +42,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
         super(pageService, dialogService);
         this.usernameKey = `${this.nameSpace}-last-used-email`;
         this.model = new Credentials();
-        this.validators = new Dictionary<PropertyValidatorAsync>();
-        this.validators.add("emailAddress", new PropertyValidatorAsync(this.emailAddressValidatorAsync));
     }
     async ngOnInit() {
         this.bannerPageId = await this.pageService.getDefaultBanner();
@@ -75,44 +77,35 @@ export class LoginComponent extends BaseComponent implements OnInit {
         }
     }
     async onResetPassword() {
-        let r = await ControlBase.isValid("password");
-        if (r === true) {
+        let r = await this.emailControl.validate();
+        if (r.valid === true) {
             let result = await this.authenticationService.sendPasswordReset(this.model.emailAddress);
             if (result.success) {
-                //this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`, () => {
-                //    this.router.navigate(['home']);
-                //});
-                let r = await this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`);
-                this.router.navigate(['home']);
+                this.showMessage(`A password reset email has been sent to ${this.model.emailAddress}`, (r) => {
+                    this.router.navigate(['home']);
+                });
             } else {
-                this.showMessage(result.errors[0]);
+                this.showErrors(result.errors);
             }
-            //this.showMessageDialog(`A password reset email has been sent to ${this.model.emailAddress}`, (r) => {
-            //    this.router.navigate(['home']);
-            //}, false, "Message");
 
         } else {
             this.showMessage("Please provide a valid email first");
         }
-        //this.router.navigate(['resetpassword']);
-        //this.showMessageDialog("Reset password feature not implemented yet.");
     }
     onRegister() {
         this.router.navigate(['register']);
-        //this.showMessageDialog("Registration feature not implemented yet.");
     }
     onCancel(): void {
         this.router.navigate(['home']);
     }
-    emailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    emailAddressValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            let vr = cs.validationResult;
-            let text = cs.value || "";
-            if (text.length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
                 vr.message = `an email address is required`;
             }
-            resolve(cs.validationResult);
+            resolve(vr);
         });
     }
 
@@ -126,18 +119,12 @@ export class LoginComponent extends BaseComponent implements OnInit {
     canAttemptLogin() {
         return this.hasEmailAddress() && this.hasPassword();
     }
-    private async showMessage(message: string/*, onClose?: () => void*/): Promise<MessageBoxResult> {
-        console.log(`called with ${message}`);
-        this.message = message;
-        //this.dialogService.showMessageBox("login-message", onClose);
-        return this.dialogService.showMessageBox("login-message");
+    private showErrors(errors: string[]): void {
+        let options = new PopupMessageOptions();
+        options.error = true;
+        this.messagePopup.open(errors, (r) => { });
     }
-    //showMessageDialog(message: string) {
-    //    //this.loginModel = new LoginModel();
-    //    //this.loginModel.message = message;
-    //    this.messageBox = new MessageBox();
-    //    this.messageBox.message = message;
-    //    this.dialogService.open('message-box');
-    //}
-
+    private showMessage(message: string, onClose: PopupMessageCloseHandler = (r) => { }): void {
+        this.messagePopup.open(message, (r) =>  onClose(r));
+    }
 }
