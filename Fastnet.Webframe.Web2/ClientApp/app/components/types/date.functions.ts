@@ -4,6 +4,9 @@
     "August", "September", "October",
     "November", "December"
 ];
+export function noop(): void {
+
+}
 // converts a string date to one with time set to 00:00:00
 // if null, returns today with time set to 00:00:00
 export function getDateWithZeroTime(date: string | null): Date {

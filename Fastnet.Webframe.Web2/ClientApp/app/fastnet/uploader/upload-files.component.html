@@ -1,0 +1,33 @@
+﻿<popup-dialog #popupdialog [width]="600">
+    <div dialogheader>
+        <div class="caption">Upload file(s)</div>
+    </div>
+    <div dialogbody>
+        <div class="upload-panel">
+            <div class="upload-list" *ngIf="filesToUpload.length > 0; else uploadHelp">
+                <ng-container *ngFor="let fui of filesToUpload">
+                    <span>{{fui.file.name}}</span>
+                    <span>{{fui.file.size}}</span>
+                    <div class="p-bar">
+                        <div class="lower"></div>
+                        <div class="upper" [style.width.%]="fui.progress"></div>
+                    </div>
+                </ng-container>
+            </div>
+            <ng-template #uploadHelp>
+                <div class="help-text">Use "Add file(s)" to select one or more files to upload</div>
+            </ng-template>
+        </div>
+        <input #fileInput style="display:none" type="file" (change)="onFileSelected($event)" multiple/>
+    </div>
+    <div dialogcommandbar>
+        <div class="left">
+            <button class="secondary" [ngClass]="{disabled: !canExecute(uploadCommands.StartUpload)}" (click)="onStartFileUpload()">Start upload ...</button>
+            <button [ngClass]="{disabled: !canExecute(uploadCommands.StartUpload)}" (click)="onClearList()">Clear list ...</button>
+        </div>
+        <div class="right">
+            <button [ngClass]="{disabled: !canExecute(uploadCommands.AddFiles)}" (click)="fileInput.click()">Add file(s)...</button>
+            <button class="cancel" [ngClass]="{disabled: !canExecute(uploadCommands.Cancel)}" (click)="onCancelFileUpload()">Close</button>
+        </div>
+    </div>
+</popup-dialog>

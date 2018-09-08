@@ -19,9 +19,12 @@ $selectedColor: cornflowerblue;// #549254;
 .tree-icon {
     margin-right: 0.25em;
 }
-.item-text {
-    padding: 0.25em;
+.item-text {    
+    padding-bottom: 0.20em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
     border-radius: 0.25em;
+    border: 1px solid transparent;
 
     &.selected {
         border: 1px solid $selectedColor;

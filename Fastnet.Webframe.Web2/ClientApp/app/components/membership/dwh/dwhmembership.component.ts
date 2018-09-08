@@ -4,10 +4,10 @@ import { MembershipComponent } from '../membership.component';
 import { PageService } from '../../shared/page.service';
 import { DWHMember } from './dwhmembership.types';
 import { DWHMembershipService } from './dwhmembership.service';
-import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
-import { AuthenticationService } from '../../authentication/authentication.service';
-import { ValidationResult, ControlState, PropertyValidatorAsync } from '../../controls/controls.types';
-import { MessageBoxResult } from '../../modaldialog/message-box.component';
+import { ValidationResult, ControlState, PropertyValidatorAsync, ValidationContext } from '../../controls/controls.types';
+//import { MessageBoxResult } from '../../modaldialog/message-box.component';
+import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
+import { PopupMessageOptions, PopupMessageResult } from '../../controls/popup-message.component';
 
 @Component({
     selector: 'webframe-dwhmembership',
@@ -17,10 +17,8 @@ import { MessageBoxResult } from '../../modaldialog/message-box.component';
 export class DwhMembershipComponent extends MembershipComponent {
     public memberList: DWHMember[];
     constructor(pageService: PageService, router: Router,
-        dialogService: ModalDialogService,
-        //authenticationService: AuthenticationService,
         membershipService: DWHMembershipService) {
-        super(pageService, router, dialogService, membershipService);
+        super(pageService, router, membershipService);
         //console.log("DwhMembershipComponent: constructor()");
     }
     //async ngOnInit() {
@@ -30,28 +28,29 @@ export class DwhMembershipComponent extends MembershipComponent {
         console.log(`returning dwh new member`);
         return new DWHMember();
     }
-    protected setNewMemberValidators() {
-        super.setNewMemberValidators();
-        this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
-    }
-    protected setExistingMemberValidators() {
-        super.setExistingMemberValidators();
-        this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
-    }
+    //protected setNewMemberValidators() {
+    //    super.setNewMemberValidators();
+    //    this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
+    //}
+    //protected setExistingMemberValidators() {
+    //    super.setExistingMemberValidators();
+    //    this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
+    //}
     public async onDeleteClick() {
-        //console.log("onDeleteClick");
-        //this.showConfirmDialog("Deleting a member removes all data for that member permanently (including any past and present bookings). Are you sure you want to proceed? ", (r) => {
-        //this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ", (r) => {
-        //    if (r === MessageBoxResult.ok) {
-        //        console.log("delete requested");
-        //        this.deleteMember();
-        //    }
-        //});
-        let r = await this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ");
-        if (r === MessageBoxResult.ok) {
-            console.log("delete requested");
-            this.deleteMember();
-        }
+        let options = new PopupMessageOptions();
+        options.allowCancel = true;
+        options.warning = true;
+        this.popupMessage.open("Deleting a member removes all data for that member permanently(including any past and present bookings). Choose OK to proceed.", (r) => {
+            if (r === PopupMessageResult.ok) {
+                console.log("delete requested");
+                this.deleteMember();
+            }
+        }, options);
+        //let r = await this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ");
+        //if (r === MessageBoxResult.ok) {
+        //    console.log("delete requested");
+        //    this.deleteMember();
+        //}
     }
     public getBookingInformation(): string {
         let info = "";
@@ -77,20 +76,16 @@ export class DwhMembershipComponent extends MembershipComponent {
         }
         return info + ".";
     }
-    bmcNumberValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    bmcNumberValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>(async resolve => {
-            let vr = cs.validationResult;
-            if (this.member) {
-                let text: string = cs.value || "";
-                if (text.length > 0) {
+            let vr = new ValidationResult();
+            if (!isNullorUndefined(value) && !isWhitespaceOrEmpty(value)) {
+                let text: string = value as string;
+                if (this.member && text.length > 0) {
                     if (this.member.lastName.trim().length === 0) {
                         vr.valid = false;
-                        vr.message = "Please complete Last Name before entering the BMC number";
-                    } //else if (text.length !== 7) {
-                    //    vr.valid = false;
-                    //    vr.message = "BMC numbers are 7 characters of the form Annnnnn";
-                    //}
-                        else {
+                        vr.message = "Please complete last name before entering the BMC number";
+                    } else {
                         let r = await this.membershipService.validateProperty("bmcnumber", [text, this.member.lastName]);
                         if (!r.success) {
                             vr.valid = false;
@@ -100,6 +95,27 @@ export class DwhMembershipComponent extends MembershipComponent {
                 }
             }
             resolve(vr);
+            //let vr = cs.validationResult;
+            //if (this.member) {
+            //    let text: string = cs.value || "";
+            //    if (text.length > 0) {
+            //        if (this.member.lastName.trim().length === 0) {
+            //            vr.valid = false;
+            //            vr.message = "Please complete Last Name before entering the BMC number";
+            //        } //else if (text.length !== 7) {
+            //        //    vr.valid = false;
+            //        //    vr.message = "BMC numbers are 7 characters of the form Annnnnn";
+            //        //}
+            //            else {
+            //            let r = await this.membershipService.validateProperty("bmcnumber", [text, this.member.lastName]);
+            //            if (!r.success) {
+            //                vr.valid = false;
+            //                vr.message = r.message;
+            //            }
+            //        }
+            //    }
+            //}
+            //resolve(vr);
         });
     }
 

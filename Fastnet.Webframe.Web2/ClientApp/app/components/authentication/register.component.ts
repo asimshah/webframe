@@ -2,15 +2,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageService } from '../shared/page.service';
 import { BaseComponent } from '../shared/base.component';
-import { ModalDialogService } from '../modaldialog/modal-dialog.service';
-//import { Dictionary } from '../types/dictionary.types';
-//import { PropertyValidatorAsync, ValidationResult, ControlState, ValidationContext } from '../controls/controls.types';
 import { MembershipService } from '../membership/membership.service';
 import { Member } from '../shared/common.types';
 import { Router/*, ActivatedRoute*/ } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
-//import { ControlBase } from '../controls/controls.component';
-//import { PopupMessageComponent } from '../controls/popup-message.component';
 import { PopupDialogComponent } from '../controls/popup-dialog.component';
 import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
 import { ValidationContext, ValidationResult } from '../controls/controls.types';
@@ -31,9 +26,9 @@ export class RegisterComponent extends BaseComponent  {
     @ViewChild(InlineDialogComponent) mainDialog: InlineDialogComponent;
     confirmPasswordValidator: ValidationMethod = (ctx: ValidationContext, val: any) => this.confirmPasswordValidatorAsync(ctx, val);
     emailAddressValidator: ValidationMethod = (ctx: ValidationContext, val: any) => this.membershipService.newEmailAddressValidatorAsync(ctx, val);
-    constructor(pageService: PageService, dialogService: ModalDialogService, protected membershipService: MembershipService,
+    constructor(pageService: PageService, protected membershipService: MembershipService,
         protected authenticationService: AuthenticationService, protected router: Router) {
-        super(pageService, dialogService);
+        super(pageService);
         console.log("RegisterComponent: constructor");
         this.model = new registrationModel();
         this.model.member = this.getNewMember();
@@ -96,6 +91,5 @@ export class RegisterComponent extends BaseComponent  {
             resolve(vr);
         });
     }
-
 }
 

@@ -5,7 +5,9 @@ export enum PopupMessageResult {
     ok,
     cancel
 }
+/** Sets options for a <popup-message> (PopupMessageComponent) */
 export class PopupMessageOptions {
+    /** optional caption = default is "System Message" */
     caption?: string;
     okLabel?: string;
     cancelLabel?: string;
@@ -15,6 +17,7 @@ export class PopupMessageOptions {
     width?: number; // always px
 }
 
+/** Called when PopupMessageComponent closes. Use when opening a PopupMessageComponent. */
 export type PopupMessageCloseHandler = (r: PopupMessageResult) => void;
 
 @Component({
@@ -45,6 +48,12 @@ export class PopupMessageComponent implements OnInit {
         //    this.isSingleMessage = false;
         //}
     }
+    /**
+     * Opens a <popup-message> custom component
+     * @param messages can be a single string or an array of strings
+     * @param onClose called when the popup messages closes
+     * @param options sets options such captions, buttons labels, cancel allowed, etc
+     */
     open(messages: string | string[], onClose: PopupMessageCloseHandler, options?: PopupMessageOptions) {
         console.log("open");
         this.messages = messages;

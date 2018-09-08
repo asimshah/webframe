@@ -201,8 +201,36 @@ label {
         font-weight: 600;
     }
 }
+%std-dialog-buttons {
+    button {
+        font-size: 13px;
+        border: $button-border;
+        border-radius: 0.25em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        padding-bottom: 0.25em;
+        /*height: 28px;
+        min-width: 60px;*/
+        background-color: $button-background;
+        color: $button-colour;
+        margin: 0.125em;
 
-%dialog-commands {
+        &:hover {
+            background-color: $button-hover;
+            color: $button-colour;
+            border: 1px solid $button-hover;
+        }
+
+        &[disabled], &.disabled {
+            cursor: none;
+            pointer-events: none;
+            background-color: $disabled-colour;
+            border-color: $disabled-colour;
+            color: $button-colour;
+        }
+    }
+}
+%std-dialog-commands {
     $gutter: 0.25em;
     background-color: #e4e4e4;
     border-radius: 0.25em;
@@ -211,7 +239,7 @@ label {
 
     div {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr auto 1fr;
         justify-items: center;
 
         button {

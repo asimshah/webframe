@@ -1,13 +1,4 @@
 <div class="SitePanel" (click)="onSitePanelClick($event)">
-    <!--<div *ngIf="isEditor" class="edit-panel command-buttons">
-        <div class="top-row-left">
-            <button class="default small">Edit this page</button>
-        </div>
-        <div class="top-row-right">
-            <button class="secondary small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
-            <button class="default small" >Save Changes</button>
-        </div>
-    </div>-->
     <div *ngIf="member" class="login-status">
         <div class="login-name">{{member.name}}</div>
     </div>
@@ -30,28 +21,4 @@
         </div>
     </div>
 </div>
-<!--<modal-dialog id="site-content-browser">
-    <div class="modal-overlay">
-        <div class="modal-container">
-            <div class="form-body">
-                <div class="caption">Site Content Browser</div>
-                <div class="content-browser-panel">
-                    <div class="tree-view">
-                        treeview here
-                    </div>
-                    <div class="content-view">
-                        content here
-                    </div>
-                </div>
-            </div>
-            <div class="command-buttons align-centrally">
-                <div>
-                    <button class="default">Add New Page</button>
-                    <button class="secondary">Upload File(s)</button>
-                    <button class="cancel" (click)="onCloseSiteContentBrowser()">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</modal-dialog>-->
 

@@ -5,6 +5,10 @@ import { ValidationResult, ControlState, PropertyValidatorAsync, Validator, Vali
 /** a method that returns a Promise<ValidationResult>, used for custom control validations */
 export type ValidationMethod = (ctx: ValidationContext, val: any) => Promise<ValidationResult>;
 
+
+export function isNullorUndefinedorWhitespaceOrEmpty(value: any): boolean {
+    return isNullorUndefined(value) || isWhitespaceOrEmpty(value);
+}
 /**
  * Tests that value is either null or defined
  * primarily used in validation methods
@@ -146,7 +150,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         });
     }
     onBlur() {
-        console.log(`${this.getReference()}: onBlur() called`);
+        //console.log(`${this.getReference()}: onBlur() called`);
         //this.onTouchedCallback();
     }
     /** returns true or false based on whether the control is valid or not
@@ -176,7 +180,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         //console.log(`doValidation with context = ${context}`);
         return new Promise<ValidationResult>(async resolve => {
             try {
-                console.log(`${this.getReference()}: starting validation: touched =  ${this.isTouched}, context = ${context}`);
+                //console.log(`${this.getReference()}: starting validation: touched =  ${this.isTouched}, context = ${context}`);
                 this.vr = new ValidationResult();
                 if (this.isTouched === true || context !== ValidationContext.ValueChanged) {
                     try {
@@ -184,7 +188,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
                             this.vr = await this.preValidator(context, this.value);//.validator(cs);
                         }
                         if (this.vr.valid === true && this.validator) {
-                            console.log(`${this.getReference()}: calling validator using value = ${this.value}`);
+                            //console.log(`${this.getReference()}: calling validator using value = ${this.value}`);
                             this.vr = await this.validator(context, this.value);//.validator(cs);
                         }
                     } catch (e) {

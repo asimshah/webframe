@@ -23,7 +23,7 @@
 </div>
 <popup-dialog>
     <div dialogheader>
-        <div>Registration - Account Created</div>
+        <div>Registration</div>
     </div>
     <div dialogbody>
         <p>
@@ -45,31 +45,3 @@
         </div>
     </div>
 </popup-dialog>
-<modal-dialog id="registration-confirmation">
-    <div class="modal-overlay">
-        <div class="modal-container">
-            <div class="form-body">
-                <div class="caption">Registration</div>
-                <div class="message-body">
-                    <h4>Account Created</h4>
-                    <p>
-                        An account has been created for you and an email has been sent to {{model.member.emailAddress}}. This email contains an
-                        activation link - please use this link to activate this account.
-                    </p>
-                    <p>Once the account has been activated, you will be able to login to this site.</p>
-                    <p>Please note that you may need to check your junk mail folder to find this email.</p>
-                    <p>
-                        <i>
-                            We use email activation to ensure that the email address you provided is both valid and one that you can use.
-                            This helps us to keep our site secure.
-                        </i>
-                    </p>
-                </div>
-            </div>
-            <div class="command-buttons align-centrally">
-                <button class="default" (click)="onCloseRegistrationConfirmation()">OK</button>
-            </div>
-        </div>
-        <ng-template #noModel>No message object provided - use MessageBox class and call it messageBox</ng-template>
-    </div>
-</modal-dialog>

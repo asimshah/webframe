@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewEncapsulation, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd, NavigationExtras } from '@angular/router';
+import { Component, OnInit, ViewEncapsulation,  OnDestroy } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DOCUMENT } from '@angular/platform-browser';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -8,7 +8,7 @@ import { PageKeys, PageService } from '../shared/page.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { AdminGuard } from '../routeguards/admin-guard.service';
 import { Member } from '../shared/common.types';
-import { ModalDialogService } from '../modaldialog/modal-dialog.service';
+
 
 // Notes
 // 1. This component handles loading of webframe pages
@@ -26,17 +26,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     protected isEditorComponent: boolean = false;
     public member: Member;
     public isEditor: boolean = false;
-    private routerSub: Subscription;
     protected idSub: Subscription;
     //private canQueryPages: boolean = false;
     private current: PageKeys | null;
     protected pageId: number | undefined;
     constructor(protected router: Router,
-        protected route: ActivatedRoute,
-        protected dialogService: ModalDialogService,
-        protected pageService: PageService,
-        protected authenticationService: AuthenticationService,
-        protected adminGuard: AdminGuard) {
+        private route: ActivatedRoute,
+        private pageService: PageService,
+        private authenticationService: AuthenticationService,
+        private adminGuard: AdminGuard) {
         this.isEditorComponent = false;
         //this.canQueryPages = false;// !this.RunningInNode();
     }

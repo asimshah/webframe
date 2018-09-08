@@ -86,7 +86,8 @@ namespace Fastnet.Webframe.Web2
             return new DirectoryDTO
             {
                 Id = dir.DirectoryId,
-                Name = dir.Name,
+                Name = dir.ParentDirectory == null ? "Site Content" : dir.Name,
+                Fullname = dir.FullName.Replace("$root", "Site Content"),
                 ParentId = dir.ParentDirectoryId,
                 SubdirectoryCount = dir.SubDirectories != null ? dir.SubDirectories.Count() : 0
             };
@@ -238,6 +239,7 @@ namespace Fastnet.Webframe.Web2
         public long Id { get; set; }
         public long? ParentId { get; set; }
         public string Name { get; set; }
+        public string Fullname { get; set; }
         public int SubdirectoryCount { get; set; }
     }
     public enum ContentType

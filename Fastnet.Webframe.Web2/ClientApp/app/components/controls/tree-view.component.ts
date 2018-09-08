@@ -1,7 +1,7 @@
 ﻿import { Component, Input, ViewEncapsulation, OnInit, Inject, forwardRef, AfterViewInit, ViewChildren, QueryList, EventEmitter, Output } from '@angular/core';
 
 export interface ITreeNode {
-    text: string;
+    htmlText: string;
     nodes: ITreeNode[];
     expanded: boolean;
     selected: boolean;
@@ -16,8 +16,11 @@ export interface ITreeNode {
 })
 export class TreeViewComponent  {
     @Input() parent: TreeViewComponent;
-    @Input() nodes: ITreeNode[] = []
+    @Input() nodes: ITreeNode[] = [];
     @Input() level: number = 0;
+    @Input() expandedclass = "fa fa-minus-square-o";
+    @Input() closedclass = "fa fa-plus-square-o";
+    @Input() emptynodeclass = "fa fa-square";
     @Output() selected = new EventEmitter<ITreeNode>();
     //@ViewChildren(TreeViewComponent) childComponents: QueryList<TreeViewComponent>
     instance: TreeViewComponent;
@@ -50,7 +53,12 @@ export class TreeViewComponent  {
         return node.nodes && node.nodes.length > 0;
     }
     getIconClass(node: ITreeNode): string {
-        return node.expanded ? "fa-minus-square-o" : "fa-plus-square-o";
+        if (this.hasChildren(node)) {
+            return node.expanded ? this.expandedclass : this.closedclass;// "fa-minus-square-o" : "fa-plus-square-o";
+        }
+        else {
+            return this.emptynodeclass;
+        }
     }
     private setNodeSelected(n: ITreeNode) {
         let root = this.findRoot();

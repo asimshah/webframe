@@ -1,11 +1,10 @@
-﻿<div class="popup-dialog">
+﻿<div class="popup-dialog" >
     <div #overlay class="popup-overlay" [ngStyle]="getOverlayStyle()">
         <div class="dialog-header" [ngClass]="getHeaderClass()" >
             <ng-content select="[dialogheader]"></ng-content>
         </div>
-        <div class="dialog-body">
+        <div class="dialog-body"  [ngStyle]="{'grid-template-columns': gridColumns()}" >
             <ng-content select="[dialogbody]"></ng-content>
-
         </div>
         <div class="dialog-commands">
             <ng-content select="[dialogcommandbar]"></ng-content>

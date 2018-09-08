@@ -2,7 +2,6 @@
 import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 import { HomeComponent } from '../home.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { PageService } from '../../shared/page.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { AdminGuard } from '../../routeguards/admin-guard.service';
@@ -19,11 +18,10 @@ export class EditorComponent extends HomeComponent {
     @ViewChild("contentBrowser") contentBrowser: ContentBrowserComponent;
     constructor(router: Router,
         route: ActivatedRoute,
-        dialogService: ModalDialogService,
         pageService: PageService,
         authenticationService: AuthenticationService,
         adminGuard: AdminGuard) {
-        super(router, route, dialogService, pageService, authenticationService, adminGuard);
+        super(router, route,  pageService, authenticationService, adminGuard);
         this.isEditorComponent = true;
         console.log(`editor component`);
     }

@@ -1,6 +1,6 @@
 ﻿import { Component, forwardRef, Output, EventEmitter } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
-import { ControlBase } from "./controls.component";
+//import { ControlBase } from "./controls.component";
 import { InputControlBase, ControlBase2 } from "./controlbase2.type";
 
 @Component({

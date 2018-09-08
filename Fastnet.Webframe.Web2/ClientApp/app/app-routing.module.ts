@@ -1,5 +1,5 @@
-﻿import { NgModule, OnInit } from '@angular/core';
-import { RouterModule, Routes, Router } from '@angular/router';
+﻿import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 import { ConfigService } from './components/shared/config.service';
 import { HomeComponent } from './components/home/home.component';
@@ -10,12 +10,12 @@ import { LoginComponent } from './components/authentication/login.component';
 import { AdminGuard } from './components/routeguards/admin-guard.service';
 import { MemberGuard } from './components/routeguards/member-guard.service';
 import { PermissionDeniedComponent } from './components/routeguards/permissiondenied.component';
-import { ModalDialogService } from './components/modaldialog/modal-dialog.service';
+//import { ModalDialogService } from './components/modaldialog/modal-dialog.service';
 import { AuthenticationService } from './components/authentication/authentication.service';
 import { MembershipService } from './components/membership/membership.service';
 import { DWHMembershipService } from './components/membership/dwh/dwhmembership.service';
-import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
-import { RegisterComponent } from './components/authentication/register.component';
+//import { MembershipPlaceholderComponent } from './components/membership/membership-placeholder.component';
+//import { RegisterComponent } from './components/authentication/register.component';
 import { ResetPasswordComponent } from './components/authentication/resetpassword.component';
 import { ActivateComponent } from './components/authentication/activate.component';
 //import { ContentService } from './components/shared/content.service';

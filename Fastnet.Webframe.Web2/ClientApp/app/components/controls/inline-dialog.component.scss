@@ -8,12 +8,18 @@ inline-dialog {
 .inline-dialog {
     height: 100%;
     padding: 0.25em;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
 
+    /*display: flex;
+    flex-direction: column;
+    justify-content: space-between;*/
+}
+.dialog-body {
+    @extend %std-dialog-buttons;
+    display: grid;
+    grid-gap: 10px;
+    align-items: flex-end;
+}
 .dialog-commands {
-    @extend %dialog-commands;
+    @extend %std-dialog-commands;
 
 }

@@ -43,7 +43,8 @@ namespace Fastnet.Webframe.Web2.Controllers
                 {
                     var rd = await coreDataContext.Directories.SingleAsync(d => d.ParentDirectory == null);
                     var data = new List<DirectoryDTO>();
-                    data.Add(new DirectoryDTO { Id = rd.DirectoryId, Name = "Store", SubdirectoryCount = rd.SubDirectories.Count });
+                    data.Add(rd.ToDTO());
+                    //data.Add(new DirectoryDTO { Id = rd.DirectoryId, Name = "Site Content", SubdirectoryCount = rd.SubDirectories.Count });
                     return SuccessResult(data);
                 }
                 var directories = coreDataContext.Directories.Where(d => d.ParentDirectory.DirectoryId == id.Value)

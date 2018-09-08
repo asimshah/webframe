@@ -1,16 +1,9 @@
-﻿@import "../../modaldialog/modal-dialog.variables.scss";
+﻿//@import "../../modaldialog/modal-dialog.variables.scss";
 
-:host {
+/*:host {
     @extend .modal-dialog-settings;
 
-    .command-bar {
-        background-color: lightgray;
-        padding-top: 0.125em;
-        padding-bottom: 0.25em;
-        padding-left: 0.25em;
-        padding-right: 0.25em;
-        margin-bottom: 0.25em;
-    }
+
 
     .modal-container {
         width: 75%;
@@ -27,94 +20,110 @@
                 margin-bottom: 0.25em;
             }
 
-            .content-browser-panel {
-                display: grid;
-                grid-template-columns: 1fr 2.5fr;
 
-                .tree-view, .content-view {
-                    padding-top: 0;
-                    padding-bottom: 0.25em;
-                    padding-left: 0.25em;
-                    padding-right: 0.25em;
-                }
+        }
+    }
+}*/
+/*.folder-colour {
+    color: darkorange;
+}*/
+.command-bar {
+    background-color: lightgray;
+    padding-top: 0.125em;
+    padding-bottom: 0.25em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    margin-bottom: 0.25em;
+}
+.content-browser-panel {
+    display: grid;
+    grid-template-columns: 1fr 2.5fr;
+    .content-caption {
+        color: #101010;
+    }
+    .tree-view, .content-view {
+        padding-top: 0;
+        padding-bottom: 0.25em;
+        padding-left: 0.25em;
+        padding-right: 0.25em;
+    }
 
-                .tree-view {
-                    min-height: 25vh;
-                    border: 1px solid white;
-                    border-radius: 0.2em;
+    .tree-view {
+        min-height: 25vh;
+        border: 1px solid white;
+        border-radius: 0.2em;
 
-                    .directory-commands {
-                        display: grid;
-                        grid-template-columns: auto auto;
-                        @extend .command-bar;
-                        /*background-color: lightgray;
-                        padding-top: 0.125em;
-                        padding-bottom: 0.25em;
-                        padding-left: 0.25em;
-                        padding-right: 0.25em;
-                        margin-bottom: 0.25em;*/
-                        div:last-child {
-                            text-align: right;
-                        }
+        .directory-commands {
+            display: grid;
+            grid-template-columns: auto auto;
+            @extend .command-bar;
+            div:last-child {
+                text-align: right;
+            }
 
-                        button.small {
-                            height: auto;
-                            font-size: 10px;
-                        }
-                    }
-                }
+            button.small {
+                height: auto;
+                font-size: 10px;
+            }
+        }
+    }
 
-                .content-view {
-                    border-left: 1px solid lightgray;
-                    //border-radius: 0.25em;
-                    width: 100%;
-                    background-color: #f9f9f9;
-                    > div:first-child {
-                        @extend .command-bar;
-                        color: white;
-                    }
+    .content-view {
+        border-left: 1px solid lightgray;
+        //border-radius: 0.25em;
+        width: 100%;
+        background-color: #f9f9f9;
 
-                    .content-table {
-                        display: grid;
-                        grid-template-columns: 48px 120px auto 24px 24px;
-                        grid-gap: 3px;
-                        max-height: 300px;
-                        overflow-y: auto;
-                        > * {
-                            background-color: white;
-                        }
-                        .delete-icon {
-                            cursor: pointer;
-                            color: red;
+        > div:first-child {
+            @extend .command-bar;
+            color: white;
+        }
 
-                            &:hover {
-                                color: orange;
-                            }
-                        }
+        .content-table {
+            display: grid;
+            grid-template-columns: fit-content(48px) fit-content(120px) auto 24px 24px;
+            grid-row-gap: 3px;
+            grid-column-gap: 5px;
+            max-height: 300px;
+            overflow-y: auto;
 
-                        .edit-icon {
-                            cursor: pointer;
+            > * {
+                background-color: white;
+            }
 
-                            &:hover {
-                                color: orange;
-                            }
-                        }
+            .delete-icon {
+                cursor: pointer;
+                color: red;
 
-                        .image-size {
-                            font-size: smaller;
-                            font-style: italic;
-                            color: #808080;
-                        }
-                    }
+                &:hover {
+                    color: orange;
                 }
             }
+
+            .edit-icon, .view-icon {
+                cursor: pointer;
+
+                &:hover {
+                    color: orange;
+                }
+            }
+
+            .image-size {
+                font-size: smaller;
+                font-style: italic;
+                color: #808080;
+            }
+
+            /*.content-url {
+                padding-left: 0.25em;
+                padding-right: 0.25em;
+            }*/
         }
     }
 }
 #new-directory, #new-page, #upload-files {
-    .modal-container {
+    /*.modal-container {
         width: 50%;
-        //min-height: 300px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -130,10 +139,10 @@
     .caption {
         padding: 0.25em;
         margin-bottom: 0.25em;
-    }
+    }*/
 }
 #upload-files {
-    .form-body {
+    /*.form-body {
         min-height: 200px;
     }
 
@@ -148,7 +157,6 @@
         grid-template-columns: auto 80px 80px;
 
         .p-bar {
-            //width: 200px;
             height: 10px;
             align-self: center;
             position: relative;
@@ -169,7 +177,7 @@
                 }
             }
         }
-    }
+    }*/
 }
 
 

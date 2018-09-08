@@ -1,4 +1,4 @@
-﻿<div class="modal-overlay">
+﻿<!--<div class="modal-overlay">
     <div *ngIf="page" class="modal-container">
         <div class="caption">Page Properties</div>
         <div class="form-body">
@@ -20,4 +20,26 @@
             <div>{{message}}</div>
         </message-box>
     </div>
-</div>
+</div>-->
+<popup-dialog #pagePropertiesDialog [width]="400">
+    <div dialogheader>
+        <div>Page Properties</div>
+    </div>
+    <div dialogbody>
+        <ng-container *ngIf="currentPage">
+            <text-input label="Name" [(ngModel)]="currentPage.name" [validator]="pageNameValidator"></text-input>
+            <bool-input label="<span class='fa fa-home'></span><span>Landing Page</span>" [(ngModel)]="currentPage.landingPage"></bool-input>
+            <div class="page-dates">
+                <div>Created by {{currentPage.createdBy}} on {{currentPage.createdOn}}</div>
+                <div *ngIf="currentPage.modifiedBy !== null && currentPage.modifiedBy.length > 0">Modified by {{currentPage.modifiedBy}} on {{currentPage.modifiedOn}}</div>
+            </div>
+        </ng-container>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button (click)="onSave()">Save</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
+        </div>
+    </div>
+</popup-dialog>
+<popup-message caption="Page Properties" [width]="500"></popup-message>

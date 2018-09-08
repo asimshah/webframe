@@ -7,13 +7,13 @@ import { ITreeNode, TreeViewComponent } from '../controls/tree-view.component';
 
 class treeNode implements ITreeNode {
     //id: number;
-    text: string;
+    htmlText: string;
     expanded: boolean;
     selected: boolean;
     nodes: treeNode[] = [];
     constructor(public group: Group, public parent: treeNode | null) {
         //this.id = group.groupId
-        this.text = group.name;
+        this.htmlText = group.name;
         this.expanded = false;
         this.selected = false;
         this.nodes = [];
@@ -66,7 +66,7 @@ export class GroupTreeComponent implements AfterViewInit {
                 let tn = new treeNode(group, parentNode);
                 parentNode.nodes.push(tn);
                 parentNode.nodes = parentNode.nodes.sort((l, r) => {
-                    return l.text.localeCompare(r.text);
+                    return l.group.name.localeCompare(r.group.name);
                 });
                 this.groupTree.selectNode(tn);
                 //this.groups.push(group);
@@ -83,7 +83,7 @@ export class GroupTreeComponent implements AfterViewInit {
         if (n !== null) {
             let parentNode = n.parent;// this.findNode(parent);
             if (parentNode !== null) {
-                console.log(`found parent node ${parentNode.text}`);
+                console.log(`found parent node ${parentNode.group.name}`);
                 let index = parentNode.nodes.findIndex((x) => x.group.groupId === group.groupId);
                 if (index >= 0) {
                     parentNode.nodes.splice(index, 1);

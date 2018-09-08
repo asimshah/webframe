@@ -115,6 +115,8 @@
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
     <None Remove="ClientApp\app\components\test\test.component.ts" />
     <None Remove="ClientApp\app\components\types\ChunkReader.ts" />
+    <None Remove="ClientApp\app\fastnet\uploader\upload-files.component.ts" />
+    <None Remove="ClientApp\app\fastnet\uploader\upload-files.module.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -250,6 +252,8 @@
     <TypeScriptCompile Include="ClientApp\app\components\shared\base.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\test\test.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\types\chunkReader.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\uploader\upload-files.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\uploader\upload-files.module.ts" />
   </ItemGroup>
 
   <ItemGroup>

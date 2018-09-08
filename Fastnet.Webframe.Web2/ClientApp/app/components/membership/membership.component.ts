@@ -1,21 +1,25 @@
-﻿import { Component, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
+﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
 //import { Dictionary} from '../shared/dictionary.types';
 import {
-    ValidationResult, ControlState,
-    PropertyValidatorAsync
+    ValidationResult,
+    ValidationContext
 } from '../controls/controls.types';
-import { ControlBase } from '../controls/controls.component';
-import { EnumValue, ListItem } from '../controls/controls.types';
-import { Dictionary } from '../types/dictionary.types';
+//import { ControlBase } from '../controls/controls.component';
+import {  ListItem } from '../controls/controls.types';
+//import { Dictionary } from '../types/dictionary.types';
 import { MembershipService } from './membership.service';
 import { Member, Group, GroupTypes, MemberIdList } from '../shared/common.types';
-import { ModalDialogService } from '../modaldialog/modal-dialog.service';
-import { AuthenticationService } from '../authentication/authentication.service';
-import { BaseComponent, nothingOnClose } from '../shared/base.component';
+//import { ModalDialogService } from '../modaldialog/modal-dialog.service';
+//import { AuthenticationService } from '../authentication/authentication.service';
+import { BaseComponent } from '../shared/base.component';
 import { GroupTreeComponent } from './group-tree.component';
-import { MessageBoxResult } from '../modaldialog/message-box.component';
+//import { MessageBoxResult } from '../modaldialog/message-box.component';
+import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from '../controls/controlbase2.type';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../controls/popup-message.component';
+import { InlineDialogComponent } from '../controls/inline-dialog.component';
+import { PopupDialogComponent } from '../controls/popup-dialog.component';
 
 enum CommandButtons {
     Cancel,
@@ -58,7 +62,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public CommandButtons = CommandButtons;
     public message: string;
     public errors: string[];
-    public validators: Dictionary<PropertyValidatorAsync>;
     public mode: Modes;
     public bannerPageId: number | null;
     public tabs: TabItem[] = [];
@@ -67,19 +70,23 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     public memberIsNew: boolean;
     public memberList: Member[];
     private originalMemberJson?: string;
+    private originalEmailAddress: string; // used only in the case of editing an existing member
     // above member related stuff
     // below group related stuff
     @ViewChild(GroupTreeComponent) private groupTree: GroupTreeComponent;
+    @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
+    @ViewChild('memberDialog') memberDialog: InlineDialogComponent;
+    @ViewChild('candidateMembersDialog') candidateMembersDialog: PopupDialogComponent;
     public groupIsNew: boolean = false;
     public selectedGroup?: Group;
     private selectedGroupJson: string;
     private parentGroup: Group; // set when groupIsNew === true
     public groupMembers: groupMember[];
-    public candidateMembers: groupMember[];
+    public candidateMembers: groupMember[] = [];
+    emailAddressValidator: ValidationMethod = (ctx: ValidationContext, val: any) => this.emailAddressValidatorAsync(ctx, val);
     constructor(pageService: PageService, protected router: Router,
-        dialogService: ModalDialogService,
         protected membershipService: MembershipService) {
-        super(pageService, dialogService);
+        super(pageService);
         console.log(`MembershipComponent: constructor`);
         this.mode = Modes.Member;
 
@@ -108,14 +115,12 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public onMemberClick(m: Member) {
         if (this.member && this.memberHasChanges()) {
-            this.showMessage("First save the current changes, or use Cancel");
-            //this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
+            this.popupMessage.open("First save the current changes, or use Cancel", (r) => { } );
         } else {
             this.member = m;
+            this.originalEmailAddress = m.emailAddress.toLowerCase();
             this.memberIsNew = false;
             this.saveMemberJson();
-            ControlBase.resetAll();
-            this.setExistingMemberValidators();
         }
     }
     public async onSearchClick() {
@@ -126,16 +131,14 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             this.member = this.getNewMember();
             this.memberIsNew = true;
             this.saveMemberJson();
-            this.setNewMemberValidators();
         } else {
             if (this.memberHasChanges()) {
-                this.showMessage("First save the current changes, or use Cancel");
-                //this.showMessageDialog("First save the current changes, or use Cancel", nothingOnClose, false, "Membership");
+                this.popupMessage.open("First save the current changes, or use Cancel", (r) => { });
             }
         }
     }
     public async onSaveMemberClick() {
-        let r = await this.validateAll();
+        let r = await this.memberDialog.isValid();
         if (r) {
             if (this.memberIsNew) {
                 await this.createNewMember();
@@ -155,50 +158,42 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         this.originalMemberJson = undefined;
     }
     public async onDeleteMemberClick() {
-        //this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ", (r) => {
-        //    if (r === MessageBoxResult.ok) {
-        //        console.log("delete requested");
-        //        this.deleteMember();
-        //    }
-        //});
-        let r = await this.showMessage("Deleting a member removes all data for that member permanently. Choose OK to proceed. ");
-        if (r === MessageBoxResult.ok) {
-            console.log("delete requested");
-            this.deleteMember();
-        }
+        let options = new PopupMessageOptions();
+        options.allowCancel = true;
+        options.warning = true;
+        this.popupMessage.open("Deleting a member removes all data for that member permanently. Choose OK to proceed.", (r) => {
+            if (r === PopupMessageResult.ok) {
+                console.log("delete requested");
+                this.deleteMember();
+            }
+        }, options);
+
 
     }
     public async onActivateMemberClick() {
-        //this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ", async (r) => {
-        //    if (r === MessageBoxResult.ok && this.member) {
-        //        await this.membershipService.activateMember(this.member);
-        //        this.member = undefined;
-        //        this.memberIsNew = false;
-        //        this.originalMemberJson = undefined;
-        //        this.performSearch();
-        //    }
-        //});
-        let r = await this.showMessage("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed. ");
-        if (r === MessageBoxResult.ok && this.member) {
-            await this.membershipService.activateMember(this.member);
-            this.member = undefined;
-            this.memberIsNew = false;
-            this.originalMemberJson = undefined;
-            this.performSearch();
-        }
+        let options = new PopupMessageOptions();
+        options.allowCancel = true;
+        options.warning = true;
+        this.popupMessage.open("Directly activating a member means that the email address will not be known to be correct. Choose OK to proceed.", async (r) => {
+            if (r === PopupMessageResult.ok && this.member) {
+                await this.membershipService.activateMember(this.member);
+                this.member = undefined;
+                this.memberIsNew = false;
+                this.originalMemberJson = undefined;
+                this.performSearch();
+            }
+        }, options);
     }
     public async onSendActivationEmailClick() {
         if (this.member) {
             await this.membershipService.sendActivationEmail(this.member);
-            this.showMessage(`An activation email has been sent to ${this.member.emailAddress}`);
-            //this.showMessageDialog(`An activation email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
+            this.popupMessage.open(`An activation email has been sent to ${this.member.emailAddress}`, (r) => { });
         }
     }
     public async onSendPasswordResetClick() {
         if (this.member) {
             await this.membershipService.sendPasswordResetEmail(this.member);
-            this.showMessage(`An password reset email has been sent to ${this.member.emailAddress}`);
-            //this.showMessageDialog(`An password reset email has been sent to ${this.member.emailAddress}`, nothingOnClose, false, "Membership");
+            this.popupMessage.open(`A password reset email has been sent to ${this.member.emailAddress}`, (r) => { });
         }
     }
     public goBack() {
@@ -209,7 +204,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     public setMode(mode: Modes) {
         this.mode = mode;
-        this.validators = new Dictionary<PropertyValidatorAsync>();
         this.selectedGroup = undefined;
         this.selectedGroupJson = "";
         this.groupMembers = [];
@@ -305,14 +299,13 @@ export class MembershipComponent extends BaseComponent implements OnInit {
             let cr = await this.membershipService.updateMember(this.member);
             if (cr.success) {
                 this.saveMemberJson();
-                this.showMessage(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`);
-                //this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, nothingOnClose, false, "Membership");
+                this.popupMessage.open(`Membership record for ${this.member.firstName} ${this.member.lastName} updated`, (r) => { });
             } else {
-                this.errors = cr.errors;
-                this.message = "`Membership record was not updated";
-                this.dialogService.showMessageBox("error-box");
-                //let errors = cr.errors.join("<br>");
-                //this.showMessageDialog(`Membership record was not updated<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
+                let errors = cr.errors.slice();
+                errors.push("Membership record was not updated");
+                let options = new PopupMessageOptions();
+                options.error = true;
+                this.popupMessage.open(errors, (r) => { }, options);
             }
         }
     }
@@ -320,19 +313,18 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         if (this.member) {
             let cr = await this.membershipService.createNewMember(this.member);
             if (cr.success) {
-                this.showMessage(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`);
-                //this.showMessageDialog(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, nothingOnClose, false, "Membership");
-                this.member = undefined;
-                this.memberIsNew = false;
-                this.originalMemberJson = undefined;
-                this.performSearch();
+                this.popupMessage.open(`Membership record for ${this.member.firstName} ${this.member.lastName} created and an activation email has been sent`, (r) => {
+                    this.member = undefined;
+                    this.memberIsNew = false;
+                    this.originalMemberJson = undefined;
+                    this.performSearch();
+                });
             } else {
-                this.errors = cr.errors;
-                this.message = "Membership record was not created";
-                this.dialogService.showMessageBox("error-box");
-                //let errors = cr.errors.join("<br>");
-
-                //this.showMessageDialog(`Membership record was not created<br>Error(s):<br><div >${errors}</div>`, nothingOnClose, true, "Membership");
+                let errors = cr.errors.slice();
+                errors.push("Membership record was not created");
+                let options = new PopupMessageOptions();
+                options.error = true;
+                this.popupMessage.open(errors, (r) => { }, options);
             }
         }
     }
@@ -368,7 +360,23 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         if (this.selectedGroup) {
             let members = await this.membershipService.getCandidateMembers(this.selectedGroup);
             this.candidateMembers = this.toGroupMembers(members);
-            this.dialogService.open("candidate-members");
+            this.candidateMembersDialog.open(async (r: boolean) => {
+                if (r === true) {
+                    if (this.selectedGroup) {
+                        let list = new MemberIdList();
+                        list.Ids = [];
+                        for (let m of this.candidateMembers) {
+                            if (m.selected === true) {
+                                list.Ids.push(m.id);
+                            }
+                        }
+                        await this.membershipService.addGroupMembers(this.selectedGroup, list);
+                        let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
+                        this.groupMembers = this.toGroupMembers(members);
+                    }
+                }
+                this.candidateMembers = [];
+            });
         }
     }
     //
@@ -410,9 +418,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         console.log(`user selected group ${group.name}`);
         if (!this.isSystemGroup()) {
             this.selectedGroupJson = JSON.stringify(this.selectedGroup);
-            this.validators = new Dictionary<PropertyValidatorAsync>();
-            this.validators.add("name", new PropertyValidatorAsync((cs) => this.nameValidatorAsync(cs)));
-            this.validators.add("description", new PropertyValidatorAsync((cs) => this.descriptionValidatorAsync(cs)));
         }
         else {
             this.selectedGroupJson = "";
@@ -420,11 +425,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         if (!this.membersSystemGenerated()) {
             let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
             this.groupMembers = this.toGroupMembers(members);
-            //this.groupMembers = [];
-            //for (let m of members) {
-            //    this.groupMembers.push({ id: m.id, name: `${m.firstName} ${m.lastName} (${m.emailAddress})`, selected: false });
-            //}
-            //this.groupMembers = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
         }
     }
 
@@ -464,40 +464,22 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         }
     }
     onCancelAddMembersClick() {
-        this.candidateMembers = [];
-        this.dialogService.close("candidate-members");
+        this.candidateMembersDialog.close(false);
     }
     async onAddMembersClick() {
-        if (this.selectedGroup) {
-            let list = new MemberIdList();
-            list.Ids = [];
-            for (let m of this.candidateMembers) {
-                if (m.selected === true) {
-                    list.Ids.push(m.id);
-                }
-            }
-            await this.membershipService.addGroupMembers(this.selectedGroup, list);
-            let members = await this.membershipService.getGroupMembers(this.selectedGroup.groupId);
-            this.groupMembers = this.toGroupMembers(members);
-        }
-        this.candidateMembers = [];
-        this.dialogService.close("candidate-members");
+        this.candidateMembersDialog.close(false);
     }
     async onDeleteGroupClick() {
         if (this.selectedGroup && !this.groupIsNew) {
-            //this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ", async (r) => {
-            //    if (r === MessageBoxResult.ok && this.selectedGroup) {
-            //        await this.membershipService.deleteGroup(this.selectedGroup);
-            //        this.removeGroupFromTree();
-            //        this.selectedGroup = undefined;
-            //    }
-            //});
-            let r = await this.showMessage("Deleting a group is irreversible. Choose OK to proceed. ");
-            if (r === MessageBoxResult.ok && this.selectedGroup) {
-                await this.membershipService.deleteGroup(this.selectedGroup);
-                this.removeGroupFromTree();
-                this.selectedGroup = undefined;
-            }
+            let options = new PopupMessageOptions();
+            options.warning = true;
+            this.popupMessage.open("Deleting a group is irreversible. Choose OK to proceed.", async (r) => {
+                if (r === PopupMessageResult.ok && this.selectedGroup) {
+                    await this.membershipService.deleteGroup(this.selectedGroup);
+                    this.removeGroupFromTree();
+                    this.selectedGroup = undefined;
+                }
+            }, options);
         }
     }
     async onSaveGroupClick() {
@@ -566,118 +548,69 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
 
     //
-    firstNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    firstNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            let vr = cs.validationResult;
-            let text = cs.value || "";
-            if (text.length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
-                vr.message = `a First Name is required`;
+                vr.message = `an first name is required`;
             }
-            //console.log(`${JSON.stringify(cs)}`);
-            resolve(cs.validationResult);
+            resolve(vr);
         });
     }
-    lastNameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    lastNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            let vr = cs.validationResult;
-            let text = cs.value || "";
-            if (text.length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
-                vr.message = `a Last Name is required`;
+                vr.message = `an last name is required`;
             }
-            //console.log(`${JSON.stringify(cs)}`);
-            resolve(cs.validationResult);
+            resolve(vr);
         });
     }
-    emailAddressValidatorAsync(cs: ControlState): Promise<ValidationResult> {
-        //let ms = this.membershipService;
+    async emailAddressValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>(async resolve => {
-            let vr = cs.validationResult;
-            if (vr.valid) {
-                let text: string = cs.value || "";
-                if (text.trim().length === 0) {
-                    vr.valid = false;
-                    vr.message = `an Email Address is required`;
-                } else {
-                    text = text.toLocaleLowerCase();
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
+                vr.valid = false;
+                vr.message = `an email address is required`;
+            } else if (context === ValidationContext.LostFocus) {
+                let text: string = value;
+                text = text.toLowerCase();
+                if (this.memberIsNew || text != this.originalEmailAddress) {
                     let r = await this.membershipService.validateEmailAddress(text);
                     if (r === false) {
                         vr.valid = false;
-                        vr.message = `this Email Address is already in use`;
+                        vr.message = `this email address is already in use`;
                     }
-                }
-            }
-            resolve(cs.validationResult);
-        });
-    }
-    passwordValidatorAsync(cs: ControlState): Promise<ValidationResult> {
-        return new Promise<ValidationResult>(resolve => {
-            let vr = cs.validationResult;
-            let text: string = cs.value || "";
-            if (text.trim().length === 0) {
-                vr.valid = false;
-                vr.message = `a Password is required`;
-            } else {
-                if (text.trim().length < 8) {
-                    vr.valid = false;
-                    vr.message = "minimum password length is 8 chars"
                 }
             }
             resolve(vr);
         });
     }
-    nameValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    groupNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            let vr = cs.validationResult;
-            let text = cs.value || "";
-            if (text.length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
-                vr.message = `a Group Name is required`;
+                vr.message = `a group name is required`;            
             }
-            //console.log(`${JSON.stringify(cs)}`);
-            resolve(cs.validationResult);
+            resolve(vr);
         });
     }
-    descriptionValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    groupDescriptionValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
-            let vr = cs.validationResult;
-            let text = cs.value || "";
-            if (text.length === 0) {
+            let vr = new ValidationResult();
+            if (isNullorUndefined(value) || isWhitespaceOrEmpty(value)) {
                 vr.valid = false;
-                vr.message = `a Group Description is required`;
+                vr.message = `a group description is required`;
             }
-            //console.log(`${JSON.stringify(cs)}`);
-            resolve(cs.validationResult);
+            resolve(vr);
         });
-    }
-    async validateAll(): Promise<boolean> {
-        return new Promise<boolean>(async resolve => {
-            let badCount = await ControlBase.validateAll();
-            resolve(badCount.length === 0);
-        });
-    }
-    protected setNewMemberValidators() {
-        this.validators = new Dictionary<PropertyValidatorAsync>();
-        this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
-        this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
-        this.validators.add("emailAddress", new PropertyValidatorAsync((cs) => this.emailAddressValidatorAsync(cs)));
-        this.validators.add("password", new PropertyValidatorAsync((cs) => this.passwordValidatorAsync(cs)));
-    }
-    protected setExistingMemberValidators() {
-        this.validators = new Dictionary<PropertyValidatorAsync>();
-        this.validators.add("firstName", new PropertyValidatorAsync((cs) => this.firstNameValidatorAsync(cs)));
-        this.validators.add("lastName", new PropertyValidatorAsync((cs) => this.lastNameValidatorAsync(cs)));
     }
     findItem(list: ListItem<number>[], value: number): ListItem<number> | undefined {
         return list.find((item, i) => {
             return item.value === value;
         });
-    }
-    //
-    protected showMessage(message: string/*, onClose?: (r?: MessageBoxResult) => void*/): Promise<MessageBoxResult> {
-        //console.log(`called with ${message}`);
-        this.message = message;
-        return this.dialogService.showMessageBox("message-box"/*, onClose*/);
     }
 }

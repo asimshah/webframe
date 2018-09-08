@@ -6,7 +6,12 @@ export class Directory {
     id: number;
     parentId: number;
     name: string;
+    fullname: string;
     subdirectoryCount: number;
+    constructor() {
+        this.name = '';
+        this.subdirectoryCount = 0;
+    }
 }
 
 export enum ContentType {

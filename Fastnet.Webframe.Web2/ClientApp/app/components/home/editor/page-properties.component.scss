@@ -1,6 +1,6 @@
 ﻿@import "../../modaldialog/modal-dialog.variables.scss";
 
-:host {
+/*:host {
     @extend .modal-dialog-settings;
 
     .modal-container {
@@ -13,9 +13,10 @@
             margin-bottom: 0.25em;
         }
     }
-    .page-dates {
-        margin-left: 0.5em;
-        font-size: 11px;
-        color: #808080;
-    }
+
+}*/
+.page-dates {
+    margin-left: 0.5em;
+    font-size: 11px;
+    color: #808080;
 }

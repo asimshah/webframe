@@ -1,10 +1,10 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
-import { Router, Routes, Route } from '@angular/router';
+import { Router } from '@angular/router';
 
-import { ModalDialogService } from '../modaldialog/modal-dialog.service';
+//import { ModalDialogService } from '../modaldialog/modal-dialog.service';
 //import { ConfigService } from '../shared/config.service';
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
-import { AuthenticationService } from '../authentication/authentication.service';
+//import { AuthenticationService } from '../authentication/authentication.service';
 import { ConfigService } from '../shared/config.service';
 import { ControlBase2 } from '../controls/controlbase2.type';
 declare var getCustomisation: any;
@@ -19,9 +19,7 @@ declare var getCustomisation: any;
 export class AppComponent implements OnInit {
     private customisation: ClientCustomisation;
     constructor(private router: Router,
-        private configService: ConfigService,
-        private authenticationService: AuthenticationService,
-        private dialogService: ModalDialogService) {
+        private configService: ConfigService) {
         this.customisation = <ClientCustomisation>getCustomisation();
         console.log(`AppComponent constructor(): for factory ${FactoryName[this.customisation.factory]}`);
         this.loadCustomCss();

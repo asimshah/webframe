@@ -33,6 +33,17 @@ body {
     color: gray;
     font-size: 8px;
 }
+.folder-colour {
+    color: #ffbb00;
+}
+.image-view {
+    text-align: center;
+    img {
+        max-height: 100%;
+        max-width: 100%;
+        margin: auto auto;
+    }
+}
 /*#message-box {
     $caption-background: cornflowerblue;
     $caption-colour: white;
@@ -47,7 +58,7 @@ body {
         color: red;
     }
 }*/
-modal-dialog {
+/*modal-dialog {
     $caption-background: cornflowerblue;
     $caption-colour: white;
 
@@ -63,5 +74,5 @@ modal-dialog {
     .error {
         color: red;
     }
-}
+}*/
 

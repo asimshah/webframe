@@ -1,4 +1,4 @@
-﻿<div class="modal-overlay">
+﻿<!--<div class="modal-overlay">
     <div class="modal-container">
         <div class="form-body">
             <div class="caption">Site Content Browser</div>
@@ -33,7 +33,7 @@
                     <div>
                         <div>
                             <span>{{selectedDirectory.name}}</span>
-                            <!--<span>p={{content.pages.length}}, d={{content.documents.length}}, i={{content.images.length}}</span>-->
+                            <span>p={{content.pages.length}}, d={{content.documents.length}}, i={{content.images.length}}</span>
                         </div>
                     </div>
                     <div *ngIf="content.isEmpty()">Folder is empty</div>
@@ -140,4 +140,137 @@
             <div>{{message}}</div>
         </message-box>
     </div>
-</div>
+</div>-->
+<popup-dialog #contentbrowser>
+    <div dialogheader>
+        <div>Site Content Browser</div>
+    </div>
+    <div dialogbody>
+        <div class="content-browser-panel">
+            <div class="tree-view">
+                <div class="directory-commands">
+                    <div>
+                        <button title="Delete selected directory" class="small warning" [ngClass]="{disabled: !canExecute(ContentCommands.DeleteDirectory)}" (click)="onDeleteDirectory()">Delete</button>
+                    </div>
+                    <div>
+                        <button title="Show selected directory properties" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.ShowDirectoryProperties)}">Properties</button>
+                        <button title="Add a subdirectory to the selected directory" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.AddSubdirectory)}" (click)="onAddDirectory()">Add</button>
+                        <popup-dialog #newDirectoryDialog [width]="400">
+                            <div dialogheader>
+                                <div>{{getNewDirectoryCaption()}}</div>
+                            </div>
+                            <div dialogbody>
+                                <text-input *ngIf="subdirectory" label="Subdirectory Name:" [(ngModel)]="subdirectory.name" [validator]="directoryNameValidatorAsync"></text-input>
+                            </div>
+                            <div dialogcommandbar>
+                                <div class="centre">
+                                    <button (click)="onCreateNewDirectory()">OK</button>
+                                    <button class="cancel" (click)="onCancelNewDirectory()">Cancel</button>
+                                </div>
+                            </div>
+                        </popup-dialog>
+                        <!--<modal-dialog id="new-directory">
+                            <div class="modal-overlay">
+                                <div *ngIf="subdirectory !== null" class="modal-container">
+                                    <div class="caption">{{getNewDirectoryCaption()}}</div>
+                                    <div class="form-body">
+                                        <text-input label="Subdirectory Name:" name="sdname" [(ngModel)]="subdirectory.name" [validator]="directoryNameValidator"></text-input>
+                                    </div>
+                                    <div class="command-buttons align-centrally">
+                                        <button (click)="onCreateNewDirectory()">OK</button>
+                                        <button class="cancel" (click)="onCancelNewDirectory()">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </modal-dialog>-->
+                    </div>
+                </div>
+                <tree-view [emptynodeclass]="'fa fa-folder-o folder-colour'" [expandedclass]="'fa fa-folder-open folder-colour'" [closedclass]="'fa fa-folder folder-colour'" [nodes]="directoryNodes" (selected)="onTreeNodeSelected($event)"></tree-view>
+            </div>
+            <div *ngIf="content !== null" class="content-view">
+                <div>
+                    <div class="content-caption">
+                        <span>{{selectedDirectory.fullname}}</span>
+                    </div>
+                </div>
+                <div *ngIf="content.isEmpty()">Folder is empty</div>
+                <div *ngIf="!content.isEmpty()" class="content-table">
+                    <ng-container *ngFor="let page of content.pages">
+                        <div>
+                            <img src="{{page.iconUrl}}" />
+                            <img *ngIf="page.landingPage" src="{{page.landingPageIconUrl}}" />
+                        </div>
+                        <div>{{page.url}}</div>
+                        <div>{{page.name}}</div>
+                        <span class="fa fa-edit edit-icon" title="Show page properties" (click)="onPageProperties(page)"></span>
+                        <span *ngIf="!page.landingPage" title="Delete this page" class="fa fa-remove delete-icon" (click)="onDeletePage(page)"></span>
+                        <span *ngIf="page.landingPage" class="fa fa-square" style="color: transparent"></span>
+                    </ng-container>
+                    <ng-container *ngFor="let doc of content.documents">
+                        <div>
+                            <img src="{{doc.iconUrl}}" />
+                        </div>
+                        <div>{{doc.url}}</div>
+                        <div>{{doc.name}}</div>
+                        <span class="fa fa-square" style="color: transparent"></span>
+                        <span class="fa fa-remove delete-icon" title="Delete this document" (click)="onDeleteDocument(doc)"></span>
+                    </ng-container>
+                    <ng-container *ngFor="let image of content.images">
+                        <div>
+                            <img src="{{image.iconUrl}}" />
+                        </div>
+                        <div>{{image.url}}</div>
+                        <div>
+                            <span>{{image.name}}</span>
+                            <span class="image-size">{{image.size}}</span>
+                        </div>
+                        <span class="fa fa-eye view-icon" title="View this image" (click)="onViewImage(image)"></span>
+                        <span class="fa fa-remove delete-icon" title="Delete this image" (click)="onDeleteImage(image)"></span>
+                    </ng-container>
+                </div>
+                <page-properties [existingContent]="content"  #pageProperties></page-properties>
+            </div>
+
+        </div>
+    </div>
+    <div dialogcommandbar>
+        <div class="left">
+            <button [ngClass]="{disabled: !canExecute(ContentCommands.AddNewPage)}" (click)="onAddNewPage()">Add New Page</button>
+            <button [ngClass]="{disabled: !canExecute(ContentCommands.UploadFiles)}" (click)="onUploadFiles()">Upload File(s)</button>
+        </div>
+        <div class="right">
+            <button class="cancel" (click)="onClose()">Close</button>
+        </div>
+    </div>
+</popup-dialog>
+<popup-dialog #viewImageDialog [width]="300">
+    <div dialogheader>
+        <div>{{getImageCaption()}}</div>
+    </div>
+    <div dialogbody>
+        <div class="image-view">
+            <img *ngIf="imageOnView" [src]="imageOnView.url" />
+        </div>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button class="cancel" (click)="onCloseImageViewer()">Close</button>
+        </div>
+    </div>
+</popup-dialog>
+<popup-dialog #newPageDialog [width]="400">
+    <div dialogheader>
+        <div>{{getNewPageCaption()}}</div>
+    </div>
+    <div dialogbody>
+        <text-input *ngIf="newPage" label="Page Name:" [(ngModel)]="newPage.name" [validator]="pageNameValidatorAsync"></text-input>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button (click)="onCreateNewPage()">OK</button>
+            <button class="cancel" (click)="onCancelNewPage()">Cancel</button>
+        </div>
+    </div>
+</popup-dialog>
+<upload-dialog #uploadFilesDialog (startUpload)="onStartFileUpload($event)"></upload-dialog>
+<popup-message caption="Content Browser" [width]="500"></popup-message>

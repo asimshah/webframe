@@ -49,11 +49,15 @@ $popup-error-caption-colour: red;
         }
 
         .dialog-body {
+            @extend %std-dialog-buttons;
             padding: 0.25em;
+            display: grid;
+            grid-gap: 10px;
+            align-items: flex-end;
         }
 
         .dialog-commands {
-            @extend %dialog-commands;
+            @extend %std-dialog-commands;
             min-height: 2em;
         }
     }

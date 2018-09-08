@@ -9,6 +9,7 @@ import { editorRouting } from './editor.routing';
 import { ContentBrowserComponent } from './content-browser.component';
 import { EditorService } from './editor.service';
 import { PagePropertiesComponent } from './page-properties.component';
+import { UploadFilesModule } from '../../../fastnet/uploader/upload-files.module';
 //import { TreeModule } from 'angular-tree-component';
 //import { SidebarMenuComponent } from '../sidebarmenu.component';
 
@@ -21,6 +22,7 @@ import { PagePropertiesComponent } from './page-properties.component';
         editorRouting,
         PageModule,
         ControlsModule,
+        UploadFilesModule,
         ModalDialogModule,
         //TreeModule
     ],

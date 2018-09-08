@@ -2,13 +2,13 @@
     <li  *ngFor="let node of nodes">
         <div >
             <div class="tree-node" >
-                <span *ngIf="hasChildren(node); else blank" class="tree-icon fa" [ngClass]="getIconClass(node)" (click)="onNodeIconClick(node)"></span>
+                <span *ngIf="hasChildren(node); else blank" class="tree-icon" [ngClass]="getIconClass(node)" (click)="onNodeIconClick(node)"></span>
                 <ng-template #blank>
-                    <span class="fa fa-square" style="color:transparent"></span>
+                    <span [ngClass]="getIconClass(node)" ></span>
                 </ng-template>
-                <span class="item-text" [ngClass]="{selected: node.selected}" (click)="onNodeClick(node)">{{node.text}}</span>
+                <span class="item-text" [ngClass]="{selected: node.selected}" (click)="onNodeClick(node)" [innerHTML]="node.htmlText"></span>
             </div>
-            <tree-view *ngIf="showChildren(node)" [parent]="instance" [nodes]="node.nodes" [level]="level + 1"></tree-view>
+            <tree-view *ngIf="showChildren(node)" [emptynodeclass]="emptynodeclass" [expandedclass]="expandedclass" [closedclass]="closedclass" [parent]="instance" [nodes]="node.nodes" [level]="level + 1"></tree-view>
         </div>
     </li>
 </ul>

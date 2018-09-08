@@ -1,0 +1,32 @@
+﻿.upload-panel {
+    height: 400px;
+
+
+    .upload-list {
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: auto auto auto;
+
+        .p-bar {
+            height: 10px;
+            align-self: center;
+            position: relative;
+
+            > div {
+                border-radius: 2px;
+                position: absolute;
+                height: 100%;
+
+                &.lower {
+                    border: 1px solid #808080;
+                    width: 100%;
+                }
+
+                &.upper {
+                    border: 1px solid transparent;
+                    background-color: green;
+                }
+            }
+        }
+    }
+}

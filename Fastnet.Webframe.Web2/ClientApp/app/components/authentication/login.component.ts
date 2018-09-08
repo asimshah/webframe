@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 //import { EmailValidator, FormControl } from '@angular/forms';
 
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
-import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
+//import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
 import { PageService } from '../shared/page.service';
 import { ValidationResult, ValidationContext} from '../controls/controls.types';
 
@@ -37,9 +37,8 @@ export class LoginComponent extends BaseComponent implements OnInit {
     @ViewChild(PopupMessageComponent) messagePopup: PopupMessageComponent;
     constructor(
         private router: Router, private authenticationService: AuthenticationService,
-        dialogService: ModalDialogService,
         pageService: PageService) {
-        super(pageService, dialogService);
+        super(pageService);
         this.usernameKey = `${this.nameSpace}-last-used-email`;
         this.model = new Credentials();
     }

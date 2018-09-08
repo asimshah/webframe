@@ -1,16 +1,42 @@
-﻿@import "../../styles/webframe.forms.scss";
+﻿/*@import "../../styles/webframe.forms.scss";*/
+
+$annotation-colour: #152eea;
 
 .SitePanel {
     height: 100%;
 }
 
-.webframe-form {
-    .caption {
-        color: cornflowerblue;
-        border-bottom: 2px solid cornflowerblue;
+.two-columns {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 0.25em;
+    align-items: self-end;
+}
+.caption {
+    font-size: 14px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: cornflowerblue;
+    border-bottom: 2px solid cornflowerblue;
+}
+.annotation {
+    font-size: 12px;
+    color: $annotation-colour;
+
+    &.no-space {
+        display: flex;
+    }
+
+    &.warning {
+        color: red;
     }
 }
 
+.bordered-container {
+    padding: 0.25em;
+    border: 1px solid black;
+    border-radius: 0.25em;
+}
 .command-bar {
     background-color: darkblue;
     padding: 0.5em;
@@ -139,8 +165,8 @@
     }
 
     .group-member-panel {
-        display: flex;
-        justify-content: space-between;
+        /*display: flex;
+        justify-content: space-between;*/
 
         .group-members {
             margin-top: 1.0em;
@@ -170,10 +196,10 @@
             .member-list {
                 padding-left: 0.5em;
                 padding-right: 0.5em;
-                border: 1px solid black;
-                border-radius: 4px;
+                /*border: 1px solid black;
+                border-radius: 4px;*/
                 font-size: smaller;
-                max-height: 326px;
+                max-height: 280px;
                 overflow-y: scroll;
 
                 bool-input {
@@ -205,7 +231,7 @@
     }
 }
 
-#candidate-members {
+popup-dialog {
     .modal-container {
         width: 65%;
 
