@@ -2,7 +2,7 @@
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { ControlBase } from "./controls.component";
 //import { TextInputControl } from "./text-input.component";
-import { ValidationResult, ControlState, ValidationContext } from "./controls.types";
+import { ValidationResult, ValidationContext } from "./controls.types";
 import { isNullorUndefined, InputControlBase, ControlBase2 } from "./controlbase2.type";
 
 

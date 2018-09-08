@@ -4,9 +4,8 @@ import { FormsModule } from '@angular/forms';
 
 import { PageModule } from '../../page/page.module';
 import { routing } from './dwhregister.routing';
-import { ControlsModule } from "../../controls/controls.module";
-import { ModalDialogModule } from '../../modaldialog/modal-dialog.module';
 import { DwhRegisterComponent } from './dwhregister.component';
+import { ControlsModule } from '../../../fastnet/controls/controls.module';
 
 
 @NgModule({
@@ -15,8 +14,7 @@ import { DwhRegisterComponent } from './dwhregister.component';
         FormsModule,
         routing,
         PageModule,
-        ControlsModule,
-        ModalDialogModule
+        ControlsModule
     ],
     exports: [],
     declarations: [

@@ -1,11 +1,15 @@
 ﻿
-import { Component, Input, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { Page, Content, EditorService } from './editor.service';
+import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions } from '../../../fastnet/controls/popup-message.component';
+import { ValidationMethod, isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase2.type';
+import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
 
-import {  ValidationResult,  ValidationContext } from '../../controls/controls.types';
-import { isNullorUndefinedorWhitespaceOrEmpty, ValidationMethod } from '../../controls/controlbase2.type';
-import { PopupDialogComponent } from '../../controls/popup-dialog.component';
-import { PopupMessageOptions, PopupMessageComponent } from '../../controls/popup-message.component';
+//import {  ValidationResult,  ValidationContext } from '../../controls/controls.types';
+//import { isNullorUndefinedorWhitespaceOrEmpty, ValidationMethod } from '../../controls/controlbase2.type';
+//import { PopupDialogComponent } from '../../controls/popup-dialog.component';
+//import { PopupMessageOptions, PopupMessageComponent } from '../../controls/popup-message.component';
 
 @Component({
     selector: 'page-properties',
@@ -17,7 +21,6 @@ export class PagePropertiesComponent  {
     @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
     @Input() existingContent: Content;
     currentPage: Page;
-    //pageNameValidator = new PropertyValidatorAsync((cs) => this.pageNameValidatorAsync(cs));
     pageNameValidator: ValidationMethod = (context, value) => this.pageNameValidatorAsync(context, value);
     name: string;
     existingNames: string[];
@@ -38,53 +41,31 @@ export class PagePropertiesComponent  {
                     let sr = await this.editorService.updatePage(this.currentPage);
                     if (sr.success) {
                         this.popupMessage.open("Page saved", () => { });
-                        //this.message = "Page saved";
-                        //await this.modalDialogService.showMessageBox("messageBox");
-                        //this.modalDialogService.close(this.id);
-
                     } else {
                         let options = new PopupMessageOptions();
                         options.warning = true;
                         this.popupMessage.open(sr.errors, () => { });
-                        //this.message = sr.errors[0];
-                        //await this.modalDialogService.showMessageBox("warningBox");
                     }
                 }
-
             } else {
                 this.restoreOriginalValues();
             }
         });
-        //this.modalDialogService.open(this.id);
     }
     async onSave() {
         if (await this.pagePropertiesDialog.isValid()) {
             this.pagePropertiesDialog.close(true);
         }
-        //if (this.hasChanged() && this.modalDialogService.isValid(this.id)) {
-        //    let sr = await this.editorService.updatePage(this.page);
-        //    if (sr.success) {
-        //        this.message = "Page saved";
-        //        await this.modalDialogService.showMessageBox("messageBox");
-        //        this.modalDialogService.close(this.id);
-
-        //    } else {
-        //        this.message = sr.errors[0];
-        //        await this.modalDialogService.showMessageBox("warningBox");
-        //    }
-        //}
     }
     onCancel() {
         this.pagePropertiesDialog.close(false);
-        //this.restoreOriginalValues();
-        //this.modalDialogService.close(this.id);
     }
     getCaption(): string {
        return `${this.currentPage.url} Properties`;
        //return `Page Properties`;
     }
     pageNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
-        console.log(`newPageNameValidatorAsync`);
+        //console.log(`newPageNameValidatorAsync`);
         return new Promise<ValidationResult>((resolve) => {
             let vr = new ValidationResult();
             if (isNullorUndefinedorWhitespaceOrEmpty(value)) {
@@ -98,18 +79,6 @@ export class PagePropertiesComponent  {
                 }
             }
             resolve(vr);
-            //let vr = cs.validationResult;
-            //let text = (<string>cs.value || "").trim();
-            //if (text.length === 0) {
-            //    vr.valid = false;
-            //    vr.message = `a page name is required`;
-            //} else {
-            //    if (this.existingNames.some((v) => v.toLowerCase() === text)) {
-            //        vr.valid = false;
-            //        vr.message = `this name is already in use`;
-            //    }
-            //}
-            //resolve(cs.validationResult);
         });
     }
     private saveOriginalValues() {

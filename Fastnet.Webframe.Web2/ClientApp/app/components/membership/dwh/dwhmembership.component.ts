@@ -4,10 +4,12 @@ import { MembershipComponent } from '../membership.component';
 import { PageService } from '../../shared/page.service';
 import { DWHMember } from './dwhmembership.types';
 import { DWHMembershipService } from './dwhmembership.service';
-import { ValidationResult, ControlState, PropertyValidatorAsync, ValidationContext } from '../../controls/controls.types';
-//import { MessageBoxResult } from '../../modaldialog/message-box.component';
-import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
-import { PopupMessageOptions, PopupMessageResult } from '../../controls/popup-message.component';
+import { PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
+import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
+import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase2.type';
+//import { ValidationResult, ValidationContext } from '../../controls/controls.types';
+//import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
+//import { PopupMessageOptions, PopupMessageResult } from '../../controls/popup-message.component';
 
 @Component({
     selector: 'webframe-dwhmembership',
@@ -19,23 +21,11 @@ export class DwhMembershipComponent extends MembershipComponent {
     constructor(pageService: PageService, router: Router,
         membershipService: DWHMembershipService) {
         super(pageService, router, membershipService);
-        //console.log("DwhMembershipComponent: constructor()");
     }
-    //async ngOnInit() {
-    //    console.log("DWHRegisterComponent: OnInit");
-    //}
     protected getNewMember(): DWHMember {
         console.log(`returning dwh new member`);
         return new DWHMember();
     }
-    //protected setNewMemberValidators() {
-    //    super.setNewMemberValidators();
-    //    this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
-    //}
-    //protected setExistingMemberValidators() {
-    //    super.setExistingMemberValidators();
-    //    this.validators.add("bmcMembership", new PropertyValidatorAsync((cs) => this.bmcNumberValidatorAsync(cs)));
-    //}
     public async onDeleteClick() {
         let options = new PopupMessageOptions();
         options.allowCancel = true;
@@ -46,11 +36,6 @@ export class DwhMembershipComponent extends MembershipComponent {
                 this.deleteMember();
             }
         }, options);
-        //let r = await this.showMessage("Deleting a member removes all data for that member permanently (including any past and present bookings). Choose OK to proceed. ");
-        //if (r === MessageBoxResult.ok) {
-        //    console.log("delete requested");
-        //    this.deleteMember();
-        //}
     }
     public getBookingInformation(): string {
         let info = "";
@@ -95,27 +80,6 @@ export class DwhMembershipComponent extends MembershipComponent {
                 }
             }
             resolve(vr);
-            //let vr = cs.validationResult;
-            //if (this.member) {
-            //    let text: string = cs.value || "";
-            //    if (text.length > 0) {
-            //        if (this.member.lastName.trim().length === 0) {
-            //            vr.valid = false;
-            //            vr.message = "Please complete Last Name before entering the BMC number";
-            //        } //else if (text.length !== 7) {
-            //        //    vr.valid = false;
-            //        //    vr.message = "BMC numbers are 7 characters of the form Annnnnn";
-            //        //}
-            //            else {
-            //            let r = await this.membershipService.validateProperty("bmcnumber", [text, this.member.lastName]);
-            //            if (!r.success) {
-            //                vr.valid = false;
-            //                vr.message = r.message;
-            //            }
-            //        }
-            //    }
-            //}
-            //resolve(vr);
         });
     }
 

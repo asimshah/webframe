@@ -32,10 +32,13 @@
   <ItemGroup>
     <!-- Files not to publish (note that the 'dist' subfolders are re-added below) -->
     <Compile Remove="archive\**" />
+    <Compile Remove="ClientApp\app\components\modaldialog\**" />
     <Content Remove="archive\**" />
     <Content Remove="ClientApp\**" />
     <EmbeddedResource Remove="archive\**" />
+    <EmbeddedResource Remove="ClientApp\app\components\modaldialog\**" />
     <None Remove="archive\**" />
+    <None Remove="ClientApp\app\components\modaldialog\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,24 +72,24 @@
     <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
-    <None Remove="ClientApp\app\components\controls\bool-enum-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\bool-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\combo-box.component.ts" />
-    <None Remove="ClientApp\app\components\controls\controlbase2.type.ts" />
-    <None Remove="ClientApp\app\components\controls\controls.module.ts" />
-    <None Remove="ClientApp\app\components\controls\dropdown-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\email-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\enum-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\focus.directive.ts" />
-    <None Remove="ClientApp\app\components\controls\inline-dialog.component.ts" />
-    <None Remove="ClientApp\app\components\controls\multiline-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\number-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\password-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\popup-dialog.component.ts" />
-    <None Remove="ClientApp\app\components\controls\popup-message.component.ts" />
-    <None Remove="ClientApp\app\components\controls\search-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\text-input.component.ts" />
-    <None Remove="ClientApp\app\components\controls\tree-view.component.ts" />
+    <None Remove="ClientApp\app\fastnet\core\base64.chunkreader.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\bool-enum-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\bool-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\combo-box.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\controlbase2.type.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\controls.module.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\dropdown-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\email-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\enum-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\inline-dialog.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\multiline-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\number-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\password-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\popup-dialog.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\popup-message.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\search-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\text-input.component.ts" />
+    <None Remove="ClientApp\app\fastnet\controls\tree-view.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editor.module.ts" />
@@ -104,7 +107,6 @@
     <None Remove="ClientApp\app\components\membership\membership.routing.ts" />
     <None Remove="ClientApp\app\components\membership\membership.service.ts" />
     <None Remove="ClientApp\app\components\membership\membership.shared.module.ts" />
-    <None Remove="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <None Remove="ClientApp\app\components\page\page.component.ts" />
     <None Remove="ClientApp\app\components\page\page.module.ts" />
     <None Remove="ClientApp\app\components\routeguards\editor-guard.service.ts" />
@@ -114,7 +116,6 @@
     <None Remove="ClientApp\app\components\shared\common.types.ts" />
     <None Remove="ClientApp\app\components\shared\config.types.ts" />
     <None Remove="ClientApp\app\components\test\test.component.ts" />
-    <None Remove="ClientApp\app\components\types\ChunkReader.ts" />
     <None Remove="ClientApp\app\fastnet\uploader\upload-files.component.ts" />
     <None Remove="ClientApp\app\fastnet\uploader\upload-files.module.ts" />
   </ItemGroup>
@@ -201,25 +202,24 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\bool-enum-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\bool-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\combo-box.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\controlbase2.type.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\controls.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\controls.module.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\focus.directive.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\inline-dialog.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\dropdown-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\email-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\enum-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\multiline-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\number-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\password-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\popup-dialog.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\popup-message.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\search-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\text-input.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\controls\tree-view.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\bool-enum-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\bool-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\combo-box.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\controlbase2.type.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\controls.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\controls.module.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\inline-dialog.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\dropdown-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\email-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\enum-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\multiline-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\number-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\password-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\popup-dialog.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\popup-message.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\search-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\text-input.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\controls\tree-view.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\content-browser.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.module.ts" />
@@ -234,7 +234,6 @@
     <TypeScriptCompile Include="ClientApp\app\components\membership\group-tree.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership-placeholder.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.service.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\modaldialog\modal-dialog.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\page.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\editor-guard.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\common.types.ts" />
@@ -251,7 +250,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\routeguards\permissiondenied.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\base.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\test\test.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\types\chunkReader.ts" />
+    <TypeScriptCompile Include="ClientApp\app\fastnet\core\base64.chunkreader.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\uploader\upload-files.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\uploader\upload-files.module.ts" />
   </ItemGroup>

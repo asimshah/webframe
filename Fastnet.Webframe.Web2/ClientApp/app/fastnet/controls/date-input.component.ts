@@ -5,7 +5,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { forEach } from '@angular/router/src/utils/collection';
 import { InputControlBase, ControlBase2 } from './controlbase2.type';
 import { Data } from '@angular/router';
-import { addDays, addMonths, getMonthNames } from '../types/date.functions';
+import { addDays, addMonths, getMonthNames } from '../core/date.functions';
 
 const startDayofWeek: number = 1; // 0 = Sunday
 

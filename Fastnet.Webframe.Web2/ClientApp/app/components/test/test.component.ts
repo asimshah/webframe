@@ -1,14 +1,15 @@
 ﻿
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { Validator, ControlState, ValidationResult, ValidationContext, ListItem } from '../controls/controls.types';
-import { isNullorUndefined, isWhitespaceOrEmpty, toEnumValues} from '../controls/controlbase2.type';
-import { InlineDialogComponent } from '../controls/inline-dialog.component';
-import { TextInputControl } from '../controls/text-input.component';
+import { ValidationResult, ValidationContext, ListItem } from '../../fastnet/controls/controls.types';
+import { isNullorUndefined, isWhitespaceOrEmpty, toEnumValues } from '../../fastnet/controls/controlbase2.type';
+import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
+import { TextInputControl } from '../../fastnet/controls/text-input.component';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Resizability } from '../controls/multiline-input.component';
-import {  DayStatus, CalendarDay, DaysOfTheWeek } from '../controls/date-input.component';
-import { PopupDialogComponent } from '../controls/popup-dialog.component';
-import { PopupMessageComponent, PopupMessageOptions } from '../controls/popup-message.component';
+import { Resizability } from '../../fastnet/controls/multiline-input.component';
+import { CalendarDay, DaysOfTheWeek } from '../../fastnet/controls/date-input.component';
+//import { PopupDialogComponent } from '../controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions } from '../../fastnet/controls/popup-message.component';
+import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
 //import { TextInputControl2 } from '../controls/text-input-new.component';
 
 enum testEnum {

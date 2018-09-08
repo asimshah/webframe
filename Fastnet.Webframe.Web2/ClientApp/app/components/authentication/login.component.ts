@@ -1,25 +1,19 @@
 ﻿import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-//import { EmailValidator, FormControl } from '@angular/forms';
 
 import { AuthenticationService, Credentials, LoginResult } from './authentication.service';
-//import { ModalDialogService } from '../../components/modaldialog/modal-dialog.service';
 import { PageService } from '../shared/page.service';
-import { ValidationResult, ValidationContext} from '../controls/controls.types';
-
-//import { Dictionary } from '../types/dictionary.types';
-//import { MessageBox } from '../shared/common.types';
 import { BaseComponent } from '../shared/base.component';
-//import { MessageBoxResult } from '../modaldialog/message-box.component';
-//import { ControlBase } from '../controls/controls.component';
-import { PasswordInputControl } from '../controls/password-input.component';
-import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../controls/popup-message.component';
-import { isNullorUndefined, isWhitespaceOrEmpty } from '../controls/controlbase2.type';
-import { EmailInputControl } from '../controls/email-input.component';
-
-//class LoginModel {
-//    message: string;
-//}
+import { PasswordInputControl } from '../../fastnet/controls/password-input.component';
+import { EmailInputControl } from '../../fastnet/controls/email-input.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../../fastnet/controls/popup-message.component';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
+import { isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+//import { ValidationResult, ValidationContext} from '../controls/controls.types';
+//import { PasswordInputControl } from '../controls/password-input.component';
+//import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../controls/popup-message.component';
+//import { isNullorUndefined, isWhitespaceOrEmpty } from '../controls/controlbase2.type';
+//import { EmailInputControl } from '../controls/email-input.component';
 
 @Component({
     selector: 'webframe-login',

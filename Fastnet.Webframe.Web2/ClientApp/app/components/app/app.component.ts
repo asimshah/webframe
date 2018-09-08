@@ -1,14 +1,11 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-//import { ModalDialogService } from '../modaldialog/modal-dialog.service';
-//import { ConfigService } from '../shared/config.service';
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
-//import { AuthenticationService } from '../authentication/authentication.service';
 import { ConfigService } from '../shared/config.service';
-import { ControlBase2 } from '../controls/controlbase2.type';
+import { ControlBase2 } from '../../fastnet/controls/controlbase2.type';
+
 declare var getCustomisation: any;
-//declare var platform: any;
 
 @Component({
     selector: 'app',

@@ -1,6 +1,6 @@
 ﻿import { ControlValueAccessor } from "@angular/forms";
 import { Input, ViewChild, ElementRef, OnInit, AfterViewInit, OnChanges, SimpleChanges } from "@angular/core";
-import { ValidationResult, ControlState, PropertyValidatorAsync, Validator, ValidationContext, EnumValue } from './controls.types';
+import { ValidationResult, ValidationContext, EnumValue } from './controls.types';
 
 /** a method that returns a Promise<ValidationResult>, used for custom control validations */
 export type ValidationMethod = (ctx: ValidationContext, val: any) => Promise<ValidationResult>;

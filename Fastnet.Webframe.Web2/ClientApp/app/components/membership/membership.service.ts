@@ -2,8 +2,10 @@
 import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
 import { Member, Group, MemberIdList } from "../shared/common.types";
-import { ValidationResult, ControlState, ValidationContext } from "../controls/controls.types";
-import { isNullorUndefined, isWhitespaceOrEmpty } from "../controls/controlbase2.type";
+import { ValidationResult, ValidationContext } from "../../fastnet/controls/controls.types";
+import { isNullorUndefined, isWhitespaceOrEmpty } from "../../fastnet/controls/controlbase2.type";
+//import { ValidationResult, ValidationContext } from "../controls/controls.types";
+//import { isNullorUndefined, isWhitespaceOrEmpty } from "../controls/controlbase2.type";
 
 @Injectable()
 export class MembershipService extends BaseService {

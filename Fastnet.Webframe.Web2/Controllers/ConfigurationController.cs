@@ -58,7 +58,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 HttpContext.Session.SetString("SessionId", HttpContext.Session.Id);
                 log.Information($"New session {HttpContext.Session.Id} started from {sa.IpAddress} using {sa.Browser}, {sa.Version}");
             }
-            return SuccessDataResult(null);
+            return SuccessResult();
         }
         //[HttpGet("get/configuration")]
         //public IActionResult GetConfiguration()

@@ -1,8 +1,10 @@
 ﻿
 import { OnInit } from "@angular/core";
 import { PageService } from "./page.service";
-import { ValidationResult, ControlState, ValidationContext } from "../controls/controls.types";
-import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from "../controls/controlbase2.type";
+import { ValidationContext, ValidationResult } from "../../fastnet/controls/controls.types";
+import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from "../../fastnet/controls/controlbase2.type";
+//import { ValidationResult, ValidationContext } from "../controls/controls.types";
+//import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from "../controls/controlbase2.type";
 
 export  function nothingOnClose (r: boolean) { };
 
@@ -20,22 +22,22 @@ export class BaseComponent  implements OnInit{
         return this.bannerPageId;
     }
 
-    passwordValidatorAsync(cs: ControlState): Promise<ValidationResult> {
-        return new Promise<ValidationResult>(resolve => {
-            let vr = cs.validationResult;
-            let text: string = cs.value || "";
-            if (text.trim().length === 0) {
-                vr.valid = false;
-                vr.message = `a password is required`;
-            } else {
-                if (text.trim().length < 8) {
-                    vr.valid = false;
-                    vr.message = "minimum password length is 8 chars"
-                }
-            }
-            resolve(vr);
-        });
-    }
+    //passwordValidatorAsync(cs: ControlState): Promise<ValidationResult> {
+    //    return new Promise<ValidationResult>(resolve => {
+    //        let vr = cs.validationResult;
+    //        let text: string = cs.value || "";
+    //        if (text.trim().length === 0) {
+    //            vr.valid = false;
+    //            vr.message = `a password is required`;
+    //        } else {
+    //            if (text.trim().length < 8) {
+    //                vr.valid = false;
+    //                vr.message = "minimum password length is 8 chars"
+    //            }
+    //        }
+    //        resolve(vr);
+    //    });
+    //}
     passwordValidator2Async(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>(resolve => {
             let vr = new ValidationResult();

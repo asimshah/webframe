@@ -1,15 +1,20 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
 import { BaseComponent } from '../shared/base.component';
 import { MembershipService } from '../membership/membership.service';
 import { Member } from '../shared/common.types';
-import { Router/*, ActivatedRoute*/ } from '@angular/router';
+
 import { AuthenticationService } from './authentication.service';
-import { PopupDialogComponent } from '../controls/popup-dialog.component';
-import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
-import { ValidationContext, ValidationResult } from '../controls/controls.types';
-import { InlineDialogComponent } from '../controls/inline-dialog.component';
+import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
+import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
+import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
+//import { PopupDialogComponent } from '../controls/popup-dialog.component';
+//import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
+//import { ValidationContext, ValidationResult } from '../controls/controls.types';
+//import { InlineDialogComponent } from '../controls/inline-dialog.component';
 
 class registrationModel {
     member: Member;

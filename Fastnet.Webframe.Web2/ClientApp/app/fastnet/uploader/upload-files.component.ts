@@ -1,6 +1,7 @@
 ﻿
 import { Component, ViewChild, ElementRef, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
-import { PopupDialogComponent, PopupCloseHandler } from '../../components/controls/popup-dialog.component';
+import { PopupDialogComponent, PopupCloseHandler } from '../controls/popup-dialog.component';
+//import { PopupDialogComponent, PopupCloseHandler } from '../../components/controls/popup-dialog.component';
 
 export class FileUploadItem {
     file: File;

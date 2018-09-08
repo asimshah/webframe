@@ -1,13 +1,15 @@
 
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { RegisterComponent } from '../register.component';
 import { PageService } from '../../shared/page.service';
 import { DWHMember } from '../../membership/dwh/dwhmembership.types';
 import { DWHMembershipService } from '../../membership/dwh/dwhmembership.service';
-import { ValidationResult, ValidationContext } from '../../controls/controls.types';
-import { Router } from '@angular/router';
 import { AuthenticationService } from '../authentication.service';
-import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
+import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
+import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase2.type';
+//import { ValidationResult, ValidationContext } from '../../controls/controls.types';
+//import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
 
 class registrationModel {
     member: DWHMember;

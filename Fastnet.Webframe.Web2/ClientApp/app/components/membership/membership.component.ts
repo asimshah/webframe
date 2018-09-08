@@ -1,25 +1,28 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { PageService } from '../shared/page.service';
-//import { Dictionary} from '../shared/dictionary.types';
-import {
-    ValidationResult,
-    ValidationContext
-} from '../controls/controls.types';
-//import { ControlBase } from '../controls/controls.component';
-import {  ListItem } from '../controls/controls.types';
-//import { Dictionary } from '../types/dictionary.types';
+
 import { MembershipService } from './membership.service';
 import { Member, Group, GroupTypes, MemberIdList } from '../shared/common.types';
-//import { ModalDialogService } from '../modaldialog/modal-dialog.service';
-//import { AuthenticationService } from '../authentication/authentication.service';
+
 import { BaseComponent } from '../shared/base.component';
 import { GroupTreeComponent } from './group-tree.component';
-//import { MessageBoxResult } from '../modaldialog/message-box.component';
-import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from '../controls/controlbase2.type';
-import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../controls/popup-message.component';
-import { InlineDialogComponent } from '../controls/inline-dialog.component';
-import { PopupDialogComponent } from '../controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../fastnet/controls/popup-message.component';
+import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
+import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
+import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { ValidationContext, ValidationResult, ListItem } from '../../fastnet/controls/controls.types';
+
+//import {
+//    ValidationResult,
+//    ValidationContext
+//} from '../controls/controls.types';
+
+//import { ListItem } from '../controls/controls.types';
+//import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from '../controls/controlbase2.type';
+//import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../controls/popup-message.component';
+//import { InlineDialogComponent } from '../controls/inline-dialog.component';
+//import { PopupDialogComponent } from '../controls/popup-dialog.component';
 
 enum CommandButtons {
     Cancel,
@@ -87,7 +90,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     constructor(pageService: PageService, protected router: Router,
         protected membershipService: MembershipService) {
         super(pageService);
-        console.log(`MembershipComponent: constructor`);
+        //console.log(`MembershipComponent: constructor`);
         this.mode = Modes.Member;
 
     }
@@ -278,8 +281,6 @@ export class MembershipComponent extends BaseComponent implements OnInit {
         console.log(`returning standard new member`);
         return new Member();
     }
-
-
     private async performSearch() {
         if (this.searchText.trim().length > 0) {
             let tab: TabItem | undefined = undefined;
@@ -415,7 +416,7 @@ export class MembershipComponent extends BaseComponent implements OnInit {
     }
     async onSelectedGroup(group: Group) {
         this.selectedGroup = group;
-        console.log(`user selected group ${group.name}`);
+        //console.log(`user selected group ${group.name}`);
         if (!this.isSystemGroup()) {
             this.selectedGroupJson = JSON.stringify(this.selectedGroup);
         }

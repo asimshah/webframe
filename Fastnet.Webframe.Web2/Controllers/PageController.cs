@@ -58,7 +58,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                     //log.LogInformation($"get/page/{id} in {sw.ElapsedMilliseconds} ms (after access check)");
                     if (ar == AccessResult.Rejected)
                     {
-                        return ErrorDataResult("AccessDenied");
+                        return ErrorResult("AccessDenied");
                     }
                     //PageHtmlInformation info = null;
                     if (page.MarkupType == MarkupType.DocX)
@@ -75,7 +75,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             }
             else
             {
-                return ErrorDataResult("PageNotFound");
+                return ErrorResult("PageNotFound");
             }
         }
         [HttpGet("get/default/banner/pageId")]
@@ -84,11 +84,11 @@ namespace Fastnet.Webframe.Web2.Controllers
             var page = await contentAssistant.FindDefaultBannerPage();            
             if(page != null)
             {
-                return SuccessDataResult(page.PageId);
+                return SuccessResult(page.PageId);
             }
             else
             {
-                return ErrorDataResult("PageNotFound");
+                return ErrorResult("PageNotFound");
             }
         }
         [HttpGet("get/pagekeys/{centrePageId?}")]
@@ -108,10 +108,10 @@ namespace Fastnet.Webframe.Web2.Controllers
             }
             if (page == null)
             {
-                return ErrorDataResult("PageNotFound");
+                return ErrorResult("PageNotFound");
             }
             var result = await contentAssistant.GetPageKeys(page);
-            return SuccessDataResult(result);
+            return SuccessResult(result);
         }
         [HttpGet("~/image/{id}")]
         public async Task<IActionResult> GetImage(long id)

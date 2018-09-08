@@ -1,20 +1,16 @@
 ﻿import { Component, ElementRef, ViewChild } from '@angular/core';
-//import { ModalDialogComponent } from '../../modaldialog/modal-dialog.component';
-//import { ModalDialogService } from '../../modaldialog/modal-dialog.service';
 import { EditorService, Directory, Content, UploadData, Image, Page, Document, NewPage, PageType } from './editor.service';
-import { ITreeNode, TreeViewComponent } from '../../controls/tree-view.component';
-import {  ValidationResult,  ValidationContext } from '../../controls/controls.types';
-//import { ControlBase } from '../../controls/controls.component';
-//import { Dictionary } from '../../types/dictionary.types';
-//import { MessageBoxResult } from '../../modaldialog/message-box.component';
-import { Base64ChunkReader } from '../../types/ChunkReader';
-//import { ServiceResult } from '../../shared/base.service';
+
 import { PagePropertiesComponent } from './page-properties.component';
-import { PopupDialogComponent, PopupCloseHandler } from '../../controls/popup-dialog.component';
-import {  isNullorUndefinedorWhitespaceOrEmpty } from '../../controls/controlbase2.type';
-import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../controls/popup-message.component';
-import { noop } from '../../types/date.functions';
+
 import { UploadDialogComponent, FileUploadItem } from '../../../fastnet/uploader/upload-files.component';
+import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
+import { TreeViewComponent, ITreeNode } from '../../../fastnet/controls/tree-view.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
+import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
+import { isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase2.type';
+import { noop } from '../../../fastnet/core/date.functions';
+import { Base64ChunkReader } from '../../../fastnet/core/base64.chunkreader';
 
 
 class treeNode implements ITreeNode {
@@ -45,14 +41,12 @@ enum ContentCommands {
 })
 export class ContentBrowserComponent {
     ContentCommands = ContentCommands;
-
     message: string;
     directoryNodes: treeNode[] = [];
     treeOptions: {};
     selectedDirectory: Directory | null = null;
     content?: Content | null = null;
     subdirectory: Directory;
-
 
     @ViewChild('contentbrowser') private contentBrowserPopup: PopupDialogComponent;
     @ViewChild(TreeViewComponent) private directoryTree: TreeViewComponent;
@@ -63,8 +57,7 @@ export class ContentBrowserComponent {
     @ViewChild('viewImageDialog') imageViewerPopup: PopupDialogComponent;
     @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
     @ViewChild('uploadFilesDialog') uploadFiles: UploadDialogComponent;
-    //directoryNameValidator = new PropertyValidatorAsync((cs) => this.directoryNameValidatorAsync(cs));
-    //newPageNameValidator = new PropertyValidatorAsync((cs) => this.pageNameValidatorAsync(cs));
+
     newPage: NewPage;// | null = null;
     imageOnView: Image;
     uploadInProgress = false;
@@ -89,10 +82,7 @@ export class ContentBrowserComponent {
         //this.content = await this.editorService.getDirectoryContent(node.directory.id);
         //console.log(`content received isEmpty = ${this.content.isEmpty()}`);
     }
-    //async afterOpen() {
-    //    console.log(`afterOpen`);
 
-    //}
     async onAddDirectory() {
         this.newDirectoryPopup.open(async (r) => {
             if (r) {
@@ -315,16 +305,6 @@ export class ContentBrowserComponent {
                 }
             }
             resolve(vr);
-            //let vr = cs.validationResult;
-            //let text = (<string>cs.value || "").trim();
-            //if (text.length === 0) {
-            //    vr.valid = false;
-            //    vr.message = `a directory name is required`;
-            //} else if (text.length < 4) {
-            //    vr.valid = false;
-            //    vr.message = `a directory name must be at 4 characters long`;
-            //}
-            //resolve(cs.validationResult);
         });
     }
     pageNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
@@ -336,17 +316,9 @@ export class ContentBrowserComponent {
                 vr.message = `a page name is required`;
             }
             resolve(vr);
-            //let vr = cs.validationResult;
-            //let text = (<string>cs.value || "").trim();
-            //if (text.length === 0) {
-            //    vr.valid = false;
-            //    vr.message = `a page name is required`;
-            //}
-            //resolve(cs.validationResult);
         });
     }
     onUploadFiles() {
-        //this.uploadInProgress = true;
         this.uploadFiles.open(() => {
             this.reloadContent();
         });

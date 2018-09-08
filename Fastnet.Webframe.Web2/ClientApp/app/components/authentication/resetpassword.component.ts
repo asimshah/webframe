@@ -5,10 +5,14 @@ import { PageService } from '../shared/page.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
 import { Member } from '../shared/common.types';
-import { ValidationResult, ValidationContext } from '../controls/controls.types';
-import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
-import { PopupMessageComponent } from '../controls/popup-message.component';
-import { InlineDialogComponent } from '../controls/inline-dialog.component';
+import { PopupMessageComponent } from '../../fastnet/controls/popup-message.component';
+import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
+import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
+//import { ValidationResult, ValidationContext } from '../controls/controls.types';
+//import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
+//import { PopupMessageComponent } from '../controls/popup-message.component';
+//import { InlineDialogComponent } from '../controls/inline-dialog.component';
 
 @Component({
     selector: 'webframe-resetpassword',
