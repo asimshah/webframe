@@ -1,4 +1,4 @@
-﻿<ul *ngIf="hasNodes()" [ngClass]="{'level-0': level === 0}">
+﻿<ul class="tree-view" *ngIf="hasNodes()" [ngClass]="{'level-0': level === 0}">
     <li  *ngFor="let node of nodes">
         <div >
             <div class="tree-node" >

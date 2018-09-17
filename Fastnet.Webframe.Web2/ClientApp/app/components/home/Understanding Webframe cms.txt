@@ -19,16 +19,16 @@
 	ii. Editors - view and edit
 11. Folders are also used to provide 'side' content for pages. Side content is content shown in the banner, left and right panels. Note css can be used to hide these panels.
 12. Only 'centre' panel pages can be linked using a page url; side panel content is determined by the webframe angualr app.
-13. Whenever a (centre) page is shown, associated side pages are searched for. if a side page for a panel is found in the same fodler as the centre page, it is shown in that panel.
+13. Whenever a (centre) page is shown, associated side pages are searched for. if a side page for a panel is found in the same folder as the centre page, it is shown in that panel.
 14. If no side page is found for a particular centre page in its own folder, than a corresponding side page is searched in parent directories - this search is recursive.
 15. (centre) pages can be created in two ways:
 	i. using the Site Content Browser
 	ii. inserting a link to a new page while editing a page in the page editor - this creates a new centre page in the same folder as the one being edited
 16. (side) pages can be created in only on one way: going to a centre page and entering edit mode. This will show the following:
-	i. the centre page (with a greyish overlay) - clicking on this overlay starts the page editor with this page
+	i. the centre page (with a pale grey overlay) - clicking on this overlay starts the page editor with this page
 	ii. each side page with either:
-		(a) the same greyish overlay. This means that side content for this centre page was found in the same folder as the centre page. Clicking on this overlay starts the page editor.
-		(b) a hatched overlay. This means that any content seen below this overlay is in a folder that is a parent (or grand parent) of the folder of the centre page.
+		(a) the same grey overlay. This means that side content for this centre page was found in the same folder as the centre page. Clicking on this overlay starts the page editor.
+		(b) a hatched/striped overlay. This means that any content seen below this overlay is in a folder that is a parent (or grand parent) of the folder of the centre page.
 		    In this case a button appears on the overlay which can be used to add new side content which will be placed in the same folder as the centre page.
 17. Centre pages can be only be deleted using the Site Content Browser.
 18. Side page content can only be deleted using the page editor.

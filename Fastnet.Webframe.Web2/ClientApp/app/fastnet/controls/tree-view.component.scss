@@ -1,17 +1,24 @@
 ﻿:host {
     font-family: inherit;
-}
-ul {
-    padding-left: 20px;
-    &.level-0 {
-        padding-left: 0;
-    }
+
+
 }
 
-li {
-    list-style:none;
-}
 $selectedColor: cornflowerblue;// #549254;
+
+.tree-view {
+    ul {
+        padding-left: 20px;
+
+        &.level-0 {
+            padding-left: 0;
+        }
+    }
+
+    li {
+        list-style: none;
+    }
+}
 .tree-node {
     display: flex;
     align-items: center;

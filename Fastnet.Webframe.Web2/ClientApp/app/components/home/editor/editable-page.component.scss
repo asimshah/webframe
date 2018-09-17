@@ -2,8 +2,15 @@
     position: relative;
 
     .hatched-1 {
-        background-color: #f1f2f3;
-        background-image: linear-gradient(rgba(0,0,0,.015) 1px, transparent 1px), linear-gradient(0, rgba(0,0,0,.015) 1px, transparent 1px);
+        background-color: #c7c7c7;
+        background-image: linear-gradient(rgba(0,0,0,.3) 1px, transparent 1px), linear-gradient(0, rgba(0,0,0,.015) 1px, transparent 1px);
+        background-size: 5px 5px;
+        background-position: -1px -1px, -1px -1px;
+    }
+
+    .hatched-3 {
+        background-color: #c7c7c7;
+        background-image: linear-gradient(rgba(0,0,0,.3) 1px, transparent 1px), linear-gradient(0, rgba(0,0,0,.3) 1px, transparent 1px);
         background-size: 5px 5px;
         background-position: -1px -1px, -1px -1px;
     }
@@ -18,7 +25,7 @@
 
     .page-overlay {
         position: absolute;
-        @extend .hatched-1;
+        @extend .hatched-3;
         opacity: 0.9;
         top: 0;
         bottom: 0;
@@ -28,7 +35,7 @@
 
         &.is-editable {
             background: none;
-            background-color: #545454;
+            background-color: #e5e5e5;
             opacity: 0.4;
             cursor: pointer;
             pointer-events: all;
