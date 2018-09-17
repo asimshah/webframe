@@ -2,12 +2,12 @@
 import { Component, ContentChildren, QueryList, ViewEncapsulation, Input } from '@angular/core';
 
 //import { Subscription } from 'rxjs/Subscription';
-import { ControlBase2 } from './controlbase2.type';
+import { ControlBase } from './controlbase.type';
 import { ValidationResult } from './controls.types';
 
 export class DialogBase {
     @Input() columns: number = 1;
-    @ContentChildren(ControlBase2) controls: QueryList<ControlBase2>;
+    @ContentChildren(ControlBase) controls: QueryList<ControlBase>;
     gridColumns(): string {
         return "auto ".repeat(this.columns);
     }

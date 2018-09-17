@@ -1,7 +1,7 @@
 ﻿
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ValidationResult, ValidationContext, ListItem } from '../../fastnet/controls/controls.types';
-import { isNullorUndefined, isWhitespaceOrEmpty, toEnumValues } from '../../fastnet/controls/controlbase2.type';
+import { isNullorUndefined, isWhitespaceOrEmpty, toEnumValues } from '../../fastnet/controls/controlbase.type';
 import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
 import { TextInputControl } from '../../fastnet/controls/text-input.component';
 import { DomSanitizer } from '@angular/platform-browser';

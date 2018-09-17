@@ -30,6 +30,7 @@ namespace Fastnet.Webframe.Web2
                 GroupId = group.GroupId,
                 Description = group.Description,
                 Name = group.Name,
+                Fullpath = group.Fullpath,
                 ParentGroupId = group.ParentGroupId,
                 Weight = group.Weight,
                 Type = group.Type
@@ -77,7 +78,8 @@ namespace Fastnet.Webframe.Web2
                 Url = image.Url,
                 Name = image.Name,
                 IconUrl = "/icons/image.png",//image.GetImageTypeImage(),
-                Size = image.Size
+                Height = image.Height,
+                Width = image.Width
             };
             return dto;
         }
@@ -90,6 +92,26 @@ namespace Fastnet.Webframe.Web2
                 Fullname = dir.FullName.Replace("$root", "Site Content"),
                 ParentId = dir.ParentDirectoryId,
                 SubdirectoryCount = dir.SubDirectories != null ? dir.SubDirectories.Count() : 0
+            };
+        }
+        public static DirectoryAccessDTO ToAccessDTO(this Directory dir)
+        {
+            return new DirectoryAccessDTO
+            {
+                DirectoryId = dir.DirectoryId,
+                Name = dir.Name,
+                InheritedRights = dir.GetClosestDirectoryGroups().Select(x => new AccessRightsDTO
+                {
+                    Group = x.Group.ToDTO(),
+                    View = x.ViewAllowed,
+                    Edit = x.EditAllowed
+                }).ToArray(),
+                DirectRights = dir.DirectoryGroups.Select(x => new AccessRightsDTO
+                {
+                    Group = x.Group.ToDTO(),
+                    View = x.ViewAllowed,
+                    Edit = x.EditAllowed
+                }).ToArray()
             };
         }
         private static void FromMemberDTO(MemberDTO dto, Member member)
@@ -226,6 +248,7 @@ namespace Fastnet.Webframe.Web2
         public long GroupId { get; set; }
         public long? ParentGroupId { get; set; }
         public string Name { get; set; }
+        public string Fullpath { get; set; }
         public string Description { get; set; }
         public int Weight { get; set; }
         public GroupTypes Type { get; set; }
@@ -233,6 +256,21 @@ namespace Fastnet.Webframe.Web2
     public class MemberIdList
     {
         public string[] Ids { get; set; }
+    }
+    public class AccessRightsDTO
+    {
+        public GroupDTO Group { get; set; }
+        public bool View { get; set; }
+        public bool Edit { get; set; }
+        public bool Selected { get; set; }
+    }
+    public class DirectoryAccessDTO
+    {
+        public long DirectoryId { get; set; }
+        public string Name { get; set; }
+        public AccessRightsDTO[] InheritedRights { get; set; }
+        public AccessRightsDTO[] DirectRights { get; set; }
+
     }
     public class DirectoryDTO
     {
@@ -293,7 +331,8 @@ namespace Fastnet.Webframe.Web2
         public string Url { get; set; }
         public string Name { get; set; }
         public string IconUrl { get; set; }
-        public string Size { get; set; }
+        public int Height { get; set; }
+        public int Width { get; set; }
     }
     public class NewPageDTO
     {
@@ -301,5 +340,9 @@ namespace Fastnet.Webframe.Web2
         public long? ReferencePageId { get; set; }
         public long DirectoryId { get; set; }
         public string Name { get; set; }
+    }
+    public class HtmlTextDTO
+    {
+        public string HtmlText { get; set; }
     }
 }

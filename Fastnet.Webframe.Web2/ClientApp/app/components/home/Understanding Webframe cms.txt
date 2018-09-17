@@ -1,0 +1,38 @@
+﻿Understanding Webframe cms
+
+1. The site is in fact an angular app with all its pages kept in a sql server database.
+2. Site content consists of html pages, documents (word, pdf, etc..) and images.
+3. Page are linked using normal html tags with urls such page/n, document/n or image/n where the 'n' is the primary ley of that page/document/image
+4. Site content is kept in folders - the primary managment is using the Site Content Browser
+5. The cms is integrated with the webframe membership system as access to the cms (as opposed to the site) is controlled via membership features.
+6. Members can be placed in groups and, in particular, the following standard groups are important:
+	i. Administrators - can do anything (regardless o any other settings)
+	ii. Editors - can create, delete and modify site content
+	iii. Designers - can change the appearance of the site (i.e. modify css)
+	iv. AllMembers - visitors who have logged in and are recognised as memebrs
+	v. Anonymous - visitors who have not logged in and are therefore not known to the site
+7. All access to content is controlled by the combination of the group the visitor belongs to and the rights those groups have to the folder the content resides in. 
+8. Rights are assigned to a folder by group and specify either view only or view and edit.
+9. All folders have rights either by virtue of have them set on the folder (as in 8 above) or inherit the rights of the parent folder
+10. The 'root' folder provides the 'default' rights for all folders - this specifies:
+	i. Anonymous - view only
+	ii. Editors - view and edit
+11. Folders are also used to provide 'side' content for pages. Side content is content shown in the banner, left and right panels. Note css can be used to hide these panels.
+12. Only 'centre' panel pages can be linked using a page url; side panel content is determined by the webframe angualr app.
+13. Whenever a (centre) page is shown, associated side pages are searched for. if a side page for a panel is found in the same fodler as the centre page, it is shown in that panel.
+14. If no side page is found for a particular centre page in its own folder, than a corresponding side page is searched in parent directories - this search is recursive.
+15. (centre) pages can be created in two ways:
+	i. using the Site Content Browser
+	ii. inserting a link to a new page while editing a page in the page editor - this creates a new centre page in the same folder as the one being edited
+16. (side) pages can be created in only on one way: going to a centre page and entering edit mode. This will show the following:
+	i. the centre page (with a greyish overlay) - clicking on this overlay starts the page editor with this page
+	ii. each side page with either:
+		(a) the same greyish overlay. This means that side content for this centre page was found in the same folder as the centre page. Clicking on this overlay starts the page editor.
+		(b) a hatched overlay. This means that any content seen below this overlay is in a folder that is a parent (or grand parent) of the folder of the centre page.
+		    In this case a button appears on the overlay which can be used to add new side content which will be placed in the same folder as the centre page.
+17. Centre pages can be only be deleted using the Site Content Browser.
+18. Side page content can only be deleted using the page editor.
+
+Home Pages
+
+need to describe how home pages work ...

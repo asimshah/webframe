@@ -1,0 +1,20 @@
+﻿<popup-dialog>
+    <div dialogheader>
+        <div>{{getCaption()}}</div>
+    </div>
+    <div dialogbody>
+        <tiny-mce [content]="text" [options]="tinymceOptions" (contentchange)="onContentChange($event)"></tiny-mce>
+        <popup-message [width]="370" caption="Page Editor"></popup-message>
+    </div>
+    <div dialogcommandbar>
+        <div class="left">
+            <button *ngIf="canDelete()" (click)="onDelete()">Delete this page</button>
+        </div>
+        <div class="right">
+            <button [ngClass]="{disabled: !hasContentChanged}" (click)="onSave()">Save</button>
+            <button class="cancel" (click)="onCancel()">Close</button>
+        </div>
+    </div>
+    <insert-link></insert-link>
+    <insert-image></insert-image>
+</popup-dialog>

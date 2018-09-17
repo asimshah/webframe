@@ -1,0 +1,16 @@
+﻿
+.help-text {
+    font-size: 10px;
+    color: dodgerblue;
+}
+.two-column {
+    display: grid;
+    grid-template-columns: auto 170px;
+    grid-column-gap: 0.25em;
+    button {
+        align-self: end;
+    }
+}
+.scale-input {
+    max-width: 200px;
+}

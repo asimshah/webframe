@@ -3,7 +3,7 @@ import { forwardRef, Component, Input } from "@angular/core";
 //import { TextInputControl } from "./text-input.component";
 //import { ControlBase } from "./controls.component";
 import {  ValidationResult, ValidationContext } from "./controls.types";
-import { ControlBase2, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty } from "./controlbase2.type";
+import { ControlBase, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty } from "./controlbase.type";
 
 
 @Component({
@@ -26,7 +26,7 @@ import { ControlBase2, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty 
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => EmailInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => EmailInputControl)
         }
     ]
 })

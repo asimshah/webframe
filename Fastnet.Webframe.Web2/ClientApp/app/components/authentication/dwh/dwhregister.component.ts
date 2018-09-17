@@ -7,7 +7,7 @@ import { DWHMember } from '../../membership/dwh/dwhmembership.types';
 import { DWHMembershipService } from '../../membership/dwh/dwhmembership.service';
 import { AuthenticationService } from '../authentication.service';
 import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
-import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase2.type';
+import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase.type';
 //import { ValidationResult, ValidationContext } from '../../controls/controls.types';
 //import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
 

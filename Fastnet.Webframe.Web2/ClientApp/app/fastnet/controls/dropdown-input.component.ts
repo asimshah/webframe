@@ -2,7 +2,7 @@
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { TextInputControl } from "./text-input.component";
 import { ListItem } from "./controls.types";
-import { InputControlBase } from "./controlbase2.type";
+import { InputControlBase } from "./controlbase.type";
 
 //@Component({
 //    selector: 'dropdown-input',

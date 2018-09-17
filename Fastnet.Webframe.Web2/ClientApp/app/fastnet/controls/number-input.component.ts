@@ -3,7 +3,7 @@ import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { ControlBase } from "./controls.component";
 //import { TextInputControl } from "./text-input.component";
 import { ValidationResult, ValidationContext } from "./controls.types";
-import { isNullorUndefined, InputControlBase, ControlBase2 } from "./controlbase2.type";
+import { isNullorUndefined, InputControlBase, ControlBase } from "./controlbase.type";
 
 
 @Component({
@@ -26,7 +26,7 @@ import { isNullorUndefined, InputControlBase, ControlBase2 } from "./controlbase
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => NumberInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => NumberInputControl)
         }
     ]
 })

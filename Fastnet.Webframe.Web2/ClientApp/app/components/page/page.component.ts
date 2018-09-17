@@ -19,8 +19,8 @@ export class PageComponent {
         this.onPageIdChanged();
     }
         
-    constructor(private pageService: PageService, private sanitizer : DomSanitizer) {
-        //console.log("PageComponent constructor");
+    constructor(protected pageService: PageService, protected sanitizer : DomSanitizer) {
+        console.log("PageComponent constructor");
         this.pageId = null;
     }
     onPageIdChanged() {
@@ -33,8 +33,8 @@ export class PageComponent {
             this.loadPage();
         }
     }
-    private async loadPage() {
-        let r = await this.pageService.getPage(<number>this.pageId);
+    async loadPage() {
+        let r = await this.pageService.getPageHtml(<number>this.pageId);
         if (r !== null) {
             this.innerHtml = <string>this.sanitizer.bypassSecurityTrustHtml(r.htmlText);
         }

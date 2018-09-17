@@ -1,7 +1,7 @@
 ﻿import { Component, forwardRef, Output, EventEmitter } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { ControlBase } from "./controls.component";
-import { InputControlBase, ControlBase2 } from "./controlbase2.type";
+import { InputControlBase, ControlBase } from "./controlbase.type";
 
 @Component({
     selector: 'search-input',
@@ -29,7 +29,7 @@ import { InputControlBase, ControlBase2 } from "./controlbase2.type";
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => SearchInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => SearchInputControl)
         }
     ]
 })

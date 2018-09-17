@@ -1,5 +1,4 @@
-﻿import { Component, QueryList, ContentChildren, AfterContentInit, OnDestroy, ElementRef, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
-import { ControlBase2 } from './controlbase2.type';
+﻿import { Component, ElementRef, OnInit, ViewChild, Input, ViewEncapsulation } from '@angular/core';
 import { DialogBase } from './inline-dialog.component';
 
 const popupZindexBase = 5000;
@@ -36,7 +35,7 @@ export class PopupDialogComponent extends DialogBase implements OnInit {
             this.reference = `pdc-${PopupDialogComponent.counter++}`;            
             this.popupComponentElement.style.display = "none";
             document.body.appendChild(this.popupComponentElement);// move myself to the body
-            console.log(`ngOnInit():moved  ${this.reference} to body`);
+            //console.log(`ngOnInit():moved  ${this.reference} to body`);
             this.isInitialised = true;
         }
     }

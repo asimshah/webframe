@@ -17,6 +17,8 @@ import { ActivateComponent } from './components/authentication/activate.componen
 import { LogoutComponent } from './components/authentication/logout.component';
 import { TestComponent } from './components/test/test.component';
 import { ControlsModule } from './fastnet/controls/controls.module';
+import { MCETestComponent } from './components/test/mcetest.component';
+import { TinyMCEModule } from './fastnet/tinymce/tinymce.module';
 
 @NgModule({
     declarations: [
@@ -29,7 +31,8 @@ import { ControlsModule } from './fastnet/controls/controls.module';
         ActivateComponent,
         PermissionDeniedComponent,
         MembershipPlaceholderComponent,
-        TestComponent
+        TestComponent,
+        MCETestComponent
     ],
     imports: [
         CommonModule,
@@ -37,7 +40,8 @@ import { ControlsModule } from './fastnet/controls/controls.module';
         FormsModule,
         PageModule,
         AppRoutingModule,
-        ControlsModule
+        ControlsModule,
+        TinyMCEModule
     ],
     providers: [
         

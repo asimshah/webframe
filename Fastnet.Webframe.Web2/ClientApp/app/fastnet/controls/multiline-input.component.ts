@@ -1,7 +1,7 @@
 ﻿import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { forwardRef, Component, Input } from "@angular/core";
 //import { TextInputControl } from "./text-input.component";
-import { InputControlBase, ControlBase2 } from "./controlbase2.type";
+import { InputControlBase, ControlBase } from "./controlbase.type";
 
 export enum Resizability {
     HorizontalOnly,
@@ -30,7 +30,7 @@ export enum Resizability {
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => MultilineTextInput)
+            provide: ControlBase, useExisting: forwardRef(() => MultilineTextInput)
         }
     ]
 })

@@ -1,0 +1,35 @@
+﻿<popup-dialog [width]="470">
+    <div dialogheader>
+        <div>Insert Image</div>
+    </div>
+    <div dialogbody>
+        <div class="two-column">
+            <div>
+                <text-input label="Image Url" [(ngModel)]="imageUrl" [validator]="validateImageUrl"></text-input>
+            </div>
+            <button (click)="onContentBrowserForImage()">Browse for image...</button>
+        </div>
+        <div *ngIf="imageDimensionsPresent()" class="help-text">image size is {{imageWidth}}w x {{imageHeight}}h</div>
+        <number-input class="scale-input" label="Scale by (%)" [(ngModel)]="imageScale" [minNumber]="1" [maxNumber]="100"></number-input>
+        <div *ngIf="imageDimensionsPresent()" class="help-text">scaled size is {{(imageWidth * imageScale) / 100 }}w x {{(imageHeight * imageScale) / 100}}h</div>
+        <bool-input label="Make image a link" [(ngModel)]="imageIsLink"></bool-input>
+        <div class="help-text">so that visitors can click on the image</div>
+        <ng-container *ngIf="imageIsLink === true">
+            <div class="two-column">
+                <text-input label="Link Url" [(ngModel)]="linkUrl" [validator]="validateLinkUrl"></text-input>
+                <button (click)="onContentBrowserForLink()">Browse for link...</button>
+            </div>
+            <div class="help-text">an internal url such as page/nn or document/nn, or an external link such as https://www.bbc.co.uk</div>
+        </ng-container>
+    </div>
+    <div dialogcommandbar>
+        <div class="left">
+            
+        </div>
+        <div class="right">
+            <button [ngClass]="{disabled: !canInsert()}" (click)="onInsert()">Insert</button>
+            <button class="cancel" (click)="onCancel()">Close</button>
+        </div>
+        <content-browser [selectmode]="true"></content-browser>
+    </div>
+</popup-dialog>

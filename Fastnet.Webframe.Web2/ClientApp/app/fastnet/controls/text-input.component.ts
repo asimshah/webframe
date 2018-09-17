@@ -1,7 +1,7 @@
 ﻿import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { forwardRef, Component, Input, OnInit } from "@angular/core";
 //import { ControlBase } from "./controls.component";
-import { ControlBase2, InputControlBase } from "./controlbase2.type";
+import { ControlBase, InputControlBase } from "./controlbase.type";
 import { ValidationContext } from "./controls.types";
 
 
@@ -26,7 +26,7 @@ import { ValidationContext } from "./controls.types";
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => TextInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => TextInputControl)
         }
     ]
 })

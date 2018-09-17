@@ -10,7 +10,7 @@ import { GroupTreeComponent } from './group-tree.component';
 import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../fastnet/controls/popup-message.component';
 import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
 import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
-import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
 import { ValidationContext, ValidationResult, ListItem } from '../../fastnet/controls/controls.types';
 
 //import {

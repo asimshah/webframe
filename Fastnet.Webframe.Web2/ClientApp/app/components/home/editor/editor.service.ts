@@ -1,7 +1,23 @@
 ﻿import { Injectable } from '@angular/core';
 import { BaseService, ServiceResult } from '../../shared/base.service';
 import { Http, RequestOptionsArgs } from '@angular/http';
+import { Group } from '../../shared/common.types';
 
+export class HtmlText {
+    htmlText: string;
+}
+export class AccessRights {
+    group: Group;
+    view: boolean;
+    edit: boolean;
+    selected: boolean;
+}
+export class DirectoryAccess {
+    directoryid: number;
+    //name: string;
+    inheritedRights: AccessRights[];
+    directRights: AccessRights[];
+}
 export class Directory {
     id: number;
     parentId: number;
@@ -61,7 +77,8 @@ export class Image implements IContent {
     url: string;
     name: string;
     iconUrl: string;
-    size: string;
+    height: number;
+    width: number;
 }
 export class Content {
     pages: Page[] = [];
@@ -142,8 +159,22 @@ export class EditorService extends BaseService {
             }
         });
     }
-    async deletePage(page: Page, dir: Directory) {
-        let query = `content/delete/page/${page.id}/${dir.id}`;
+    async getPage(id: number): Promise<Page> {
+        let query = `content/get/page/${id}`;
+        return new Promise<Page>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } 
+        });
+    }
+    async deletePage(page: Page, dir?: Directory) {
+        let query = '';
+        if (dir) {
+            query = `content/delete/page/${page.id}/${dir.id}`;
+        } else {
+            query = `content/delete/page/${page.id}`;
+        }        
         return new Promise<void>(async resolve => {
             let dr = await this.post(query, null);
             resolve();
@@ -183,12 +214,52 @@ export class EditorService extends BaseService {
             }
         });
     }
-    async createPage(np: NewPage): Promise<ServiceResult> {
-        let query = "content/create/page";
+    async getDirectoryAccess(dir: Directory): Promise<DirectoryAccess> {
+        let query = `content/get/directory/access/${dir.id}`;
+        return new Promise<DirectoryAccess>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } 
+        });
+    }
+    async updateDirectory(dir: Directory): Promise<ServiceResult> {
+        let query = `content/update/directory`;
         return new Promise<ServiceResult>(async resolve => {
-            let dr = await this.post(query, np);
+            let dr = await this.post(query, dir);
             if (dr.success) {
                 resolve({ success: true, errors: [] });
+            } else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+        });
+    }
+    async updateDirectoryAccess(da: DirectoryAccess): Promise<ServiceResult> {
+        let query = `content/update/directory/access`;
+        return new Promise<ServiceResult>(async resolve => {
+            let dr = await this.post(query, da);
+            if (dr.success) {
+                resolve({ success: true, errors: [] });
+            } else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+        });
+    }
+    async getDirectoryAccessByGroups(dir: Directory): Promise<AccessRights[]> {
+        let query = `content/get/directory/groups/${dir.id}`;
+        return new Promise<AccessRights[]>(async resolve => {
+            let dr = await this.query(query);
+            if (dr.success) {
+                resolve(dr.data);
+            } 
+        });
+    }
+    async createPage(np: NewPage): Promise<ServiceResult> {
+        let query = "content/create/page";
+        return new Promise<ServiceResult >(async resolve => {
+            let dr = await this.post(query, np);
+            if (dr.success) {
+                resolve({ success: true, errors: [], data: dr.data  });
             } else {
                 resolve({ success: false, errors: [dr.message] });
             }
@@ -198,6 +269,19 @@ export class EditorService extends BaseService {
         let query = "content/update/page";
         return new Promise<ServiceResult>(async resolve => {
             let dr = await this.post(query, page);
+            if (dr.success) {
+                resolve({ success: true, errors: [] });
+            } else {
+                resolve({ success: false, errors: [dr.message] });
+            }
+        });
+    }
+    async updatePageContent(page: Page, htmlText: string): Promise<ServiceResult> {
+        let data = new HtmlText();
+        data.htmlText = htmlText;
+        let query = `content/update/page/content/${page.id}`;
+        return new Promise<ServiceResult>(async resolve => {
+            let dr = await this.post(query, data);
             if (dr.success) {
                 resolve({ success: true, errors: [] });
             } else {

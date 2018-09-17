@@ -34,6 +34,12 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             return this.coreDataContext;
         }
+        [HttpGet("get/page/{id}")]
+        public async Task<IActionResult> GetPage(long id)
+        {
+            var page = await coreDataContext.Pages.FindAsync(id);
+            return SuccessResult(page.ToDTO());
+        }
         [HttpGet("get/directories/{id?}")]
         public async Task<IActionResult> GetDirectories(long? id = null)
         {
@@ -51,8 +57,60 @@ namespace Fastnet.Webframe.Web2.Controllers
                     .OrderBy(x => x.Name)
                     .ToArray()
                     .Select(x => x.ToDTO());
-                    //.Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, ParentId = x.ParentDirectoryId, SubdirectoryCount = x.SubDirectories.Count() });
+                //.Select(x => new DirectoryDTO { Id = x.DirectoryId, Name = x.Name, ParentId = x.ParentDirectoryId, SubdirectoryCount = x.SubDirectories.Count() });
                 return SuccessResult(directories);
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpGet("get/directory/access/{id}")]
+        public async Task<IActionResult> GetDirectoryDetails(long id)
+        {
+            try
+            {
+                var dir = await coreDataContext.Directories.FindAsync(id);
+                var result = dir.ToAccessDTO();
+                return SuccessResult(result);
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpGet("get/directory/groups/{id}")]
+        public async Task<IActionResult> GetDirectoryGroups(long id)
+        {
+            try
+            {
+                var dir = await coreDataContext.Directories.FindAsync(id);
+                var currentRestrictions = dir.DirectoryGroups.ToArray();
+                var groups = dir.GetClosestDirectoryGroups().Select(dg => dg.Group);
+                List<Group> list = new List<Group>();
+                foreach (var group in groups)
+                {
+                    list.AddRange(group.Descendants);
+                }
+                var result = new List<AccessRightsDTO>();
+                foreach (var group in list.Where(g => (g.Type.HasFlag(GroupTypes.System) && g.Name == SystemGroups.Anonymous.ToString()) == false))
+                {
+                    var item = new AccessRightsDTO
+                    {
+                        Group = group.ToDTO(),
+                    };
+                    var selectedDg = currentRestrictions.SingleOrDefault(x => x.Group == group);
+                    if (selectedDg != null)
+                    {
+                        item.View = selectedDg.ViewAllowed;
+                        item.Edit = selectedDg.EditAllowed;
+                        item.Selected = true;
+                    }
+                    result.Add(item);
+                }
+                return SuccessResult(result);
             }
             catch (Exception xe)
             {
@@ -121,12 +179,70 @@ namespace Fastnet.Webframe.Web2.Controllers
                 return ExceptionResult(xe);
             }
         }
+        [HttpPost("update/directory")]
+        public async Task<IActionResult> UpdateDirectory()
+        {
+            try
+            {
+                var dto = Request.FromBody<DirectoryDTO>();
+                var dir = await coreDataContext.Directories.FindAsync(dto.Id);
+                dir.Name = dto.Name;
+                await coreDataContext.SaveChangesAsync();
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpPost("update/directory/access")]
+        public async Task<IActionResult> UpdateDirectoryAccess()
+        {
+            try
+            {
+                var dto = Request.FromBody<DirectoryAccessDTO>();
+                var dir = await coreDataContext.Directories.FindAsync(dto.DirectoryId);
+                foreach (var item in dto.DirectRights)
+                {
+                    var groupId = item.Group.GroupId;
+                    var group = await coreDataContext.Groups.FindAsync(item.Group.GroupId);
+                    if (group != null)
+                    {
+                        var dg = dir.DirectoryGroups.SingleOrDefault(x => x.GroupId == groupId);
+                        if (dg == null)
+                        {
+                            dg = new DirectoryGroup
+                            {
+                                Group = group,
+                                Directory = dir
+                            };
+                            coreDataContext.DirectoryGroups.Add(dg);
+                        }
+                        dg.SetView(item.View);
+                        dg.SetEdit(item.Edit);
+
+                    }
+                    else
+                    {
+                        throw new Exception("Group not found");
+                    }
+                }
+                await coreDataContext.SaveChangesAsync();
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
         [HttpPost("create/page")]
         public async Task<IActionResult> CreatePage()
         {
             var dto = Request.FromBody<NewPageDTO>();
             Directory dir = null;
-            if(dto.ReferencePageId.HasValue)
+            if (dto.ReferencePageId.HasValue)
             {
                 var refPage = await coreDataContext.Pages.FindAsync(dto.ReferencePageId.Value);
                 dir = refPage.Directory;
@@ -135,7 +251,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             {
                 dir = await coreDataContext.Directories.FindAsync(dto.DirectoryId);
             }
-            if(dir != null)
+            if (dir != null)
             {
                 if (!ItemExists(dir, dto.Name))
                 {
@@ -150,7 +266,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                     var htmlData = await System.IO.File.ReadAllBytesAsync(defaultPage);
                     page.PageMarkup.HtmlText = Encoding.Default.GetString(htmlData);
                     await coreDataContext.SaveChangesAsync();
-                    return SuccessResult();
+                    return SuccessResult(page.PageId);
                 }
                 else
                 {
@@ -169,14 +285,14 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             var dto = Request.FromBody<PageDTO>();
             var page = await coreDataContext.Pages.FindAsync(dto.Id);
-            if(page != null)
+            if (page != null)
             {
                 page.Name = dto.Name;
-                if(dto.LandingPage && !page.IsLandingPage)
+                if (dto.LandingPage && !page.IsLandingPage)
                 {
                     // changing this page to be the landing page
                     var existingLandingPage = page.Directory.Pages.Where(p => p != page).SingleOrDefault(p => p.IsLandingPage);
-                    if(existingLandingPage != null)
+                    if (existingLandingPage != null)
                     {
                         existingLandingPage.IsLandingPage = false;
                         await coreDataContext.RecordChanges(existingLandingPage, GetCurrentMember().Fullname, EditingAction.EditingActionTypes.PageModified, page.Directory);
@@ -204,6 +320,27 @@ namespace Fastnet.Webframe.Web2.Controllers
             else
             {
                 var xe = new Exception("page not found");
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpPost("update/page/content/{id}")]
+        public async Task<IActionResult> UpdatePageContent(long id)
+        {
+            try
+            {
+                var page = await coreDataContext.Pages.FindAsync(id);
+                var dto = Request.FromBody<HtmlTextDTO>();
+                page.PageMarkup.HtmlText = dto.HtmlText;
+                page.PageMarkup.HtmlTextLength = dto.HtmlText.Length;
+                page.PageMarkup.ModifiedBy = this.GetCurrentMember().Fullname;
+                page.PageMarkup.ModifiedOn = DateTime.UtcNow;
+                await coreDataContext.RecordChanges(page, this.GetCurrentMember().Fullname, EditingAction.EditingActionTypes.PageContentModified, page.Directory);
+                await coreDataContext.SaveChangesAsync();
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
                 log.Error(xe);
                 return ExceptionResult(xe);
             }
@@ -238,7 +375,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             if (dir != null)
             {
                 var doc = await coreDataContext.Documents.FindAsync(docId);
-                if(doc.DirectoryId == dirId)
+                if (doc.DirectoryId == dirId)
                 {
                     await DeleteDocument(doc, dir);
                     await coreDataContext.SaveChangesAsync();
@@ -285,13 +422,18 @@ namespace Fastnet.Webframe.Web2.Controllers
                 return ExceptionResult(xe);
             }
         }
-        [HttpPost("delete/page/{pageId}/{dirId}")]
-        public async Task<IActionResult> DeletePage(long pageId, long dirId)
+        [HttpPost("delete/page/{pageId}/{dirId?}")]
+        public async Task<IActionResult> DeletePage(long pageId, long? dirId)
         {
+            var page = await coreDataContext.Pages.FindAsync(pageId);
+            if(dirId.HasValue == false)
+            {
+                dirId = page.DirectoryId;
+            }
             var dir = await coreDataContext.Directories.FindAsync(dirId);
             if (dir != null)
             {
-                var page = await coreDataContext.Pages.FindAsync(pageId);
+                
                 if (page.DirectoryId == dirId)
                 {
                     await DeletePage(page, dir);
@@ -340,7 +482,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             }
             else
             {
-                ulf = await coreDataContext.UploadFiles.SingleOrDefaultAsync(x => x.Guid == key);  
+                ulf = await coreDataContext.UploadFiles.SingleOrDefaultAsync(x => x.Guid == key);
             }
             if (ulf != null)
             {
@@ -355,7 +497,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                 if (dto.IsLastChunk)
                 {
                     var directory = await coreDataContext.Directories.FindAsync(dto.DirectoryId);
-                    if(directory != null)
+                    if (directory != null)
                     {
                         StringBuilder sb = new StringBuilder();
                         var bufs = new List<byte[]>();
@@ -366,17 +508,17 @@ namespace Fastnet.Webframe.Web2.Controllers
                             bufs.Add(data);
                             //ValidateChunk(item.ChunkNumber, item.Base64String);
                         }
-                        var dataLength = bufs.Sum(x => x.Length);                        
+                        var dataLength = bufs.Sum(x => x.Length);
                         var fileData = new byte[dataLength];
                         int offset = 0;
-                        foreach(var buf in bufs)
+                        foreach (var buf in bufs)
                         {
                             Array.Copy(buf, 0, fileData, offset, buf.Length);
                             offset += buf.Length;
                         }
                         //var path = System.IO.Path.Combine(env.ContentRootPath, "data", "test.pdf");
                         //System.IO.File.WriteAllBytes(path, fileData);
-                        switch(ulf.MimeType)
+                        switch (ulf.MimeType)
                         {
                             case "image/jpeg":
                             case "image/png":
@@ -417,11 +559,11 @@ namespace Fastnet.Webframe.Web2.Controllers
         }
         private async Task DeleteDirectory(Directory dir)
         {
-            foreach(var sd in dir.SubDirectories.ToArray())
+            foreach (var sd in dir.SubDirectories.ToArray())
             {
                 await DeleteDirectory(sd);
             }
-            foreach(var page in dir.Pages.ToArray())
+            foreach (var page in dir.Pages.ToArray())
             {
                 await DeletePage(page, dir);
             }

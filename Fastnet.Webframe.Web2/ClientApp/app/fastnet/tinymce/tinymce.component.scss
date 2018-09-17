@@ -1,0 +1,41 @@
+﻿
+%toolbar-button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+
+    &:focus {
+        border: none;
+        outline: none;
+    }
+
+    &:hover {
+        border: none;
+        outline: none;
+        color: white;
+    }
+}
+
+.mce-btn {
+    border: none;
+    margin: 0;
+
+    &:hover {
+        border: none;
+        outline: none;
+        color: white;
+    }
+}
+
+.popup-dialog {
+    .popup-overlay {
+        .dialog-body {
+            tiny-mce {
+                button {
+                    @extend %toolbar-button;
+                }
+            }
+        }
+    }
+}

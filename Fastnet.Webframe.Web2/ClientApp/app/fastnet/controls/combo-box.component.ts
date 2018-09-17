@@ -1,6 +1,6 @@
 ﻿
 import { Component, AfterViewInit, ViewChild, ElementRef, Renderer2, Input, AfterViewChecked, HostListener, OnDestroy, forwardRef, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
-import { InputControlBase, ControlBase2 } from './controlbase2.type';
+import { InputControlBase, ControlBase } from './controlbase.type';
 import { ListItem } from './controls.types';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -15,7 +15,7 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => ComboBoxComponent)
+            provide: ControlBase, useExisting: forwardRef(() => ComboBoxComponent)
         }
     ]
 })

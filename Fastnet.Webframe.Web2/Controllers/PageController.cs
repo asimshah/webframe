@@ -13,6 +13,7 @@ using Fastnet.Core.Web.Controllers;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using Fastnet.Core;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -40,7 +41,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             return this.coreDataContext;
         }
-        [HttpGet("get/page/{id}")]
+        [HttpGet("get/page/html/{id}")]
         public async Task<IActionResult> GetPage(long id)
         {
             Stopwatch sw = new Stopwatch();
@@ -117,16 +118,17 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> GetImage(long id)
         {
             Image image = await coreDataContext.Images.FindAsync(id);
-            MemoryStream ms = new MemoryStream(image.Data);
-            var r = File(ms, image.MimeType);
-            return CacheableResult(r, image.CreatedOn);
-            //return CacheableSuccessResult(r, image.CreatedOn);
-            //HttpResponseMessage response = this.Request.CreateResponse(HttpStatusCode.OK);
-            //response.Content = new StreamContent(ms);
-            //response.Content.Headers.ContentType = new MediaTypeHeaderValue(image.MimeType);
-            //CacheControlHeaderValue cchv = new CacheControlHeaderValue { Public = true, MaxAge = TimeSpan.FromDays(30) };
-            //response.Headers.CacheControl = cchv;
-            //return response;
+            if (image != null)
+            {
+                MemoryStream ms = new MemoryStream(image.Data);
+                var r = File(ms, image.MimeType);
+                return CacheableResult(r, image.CreatedOn);
+            }
+            else
+            {
+                log.Warning($"Image id {id} not found");
+                return ErrorResult($"Image id {id} not found");
+            }
         }
         [HttpGet("get/menus")]
         public async Task<IActionResult> GetMenus()

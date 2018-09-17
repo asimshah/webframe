@@ -1,7 +1,7 @@
 ﻿//import { TextInputControl } from "./text-input.component";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { Component, forwardRef } from "@angular/core";
-import { ControlBase2, InputControlBase } from "./controlbase2.type";
+import { ControlBase, InputControlBase } from "./controlbase.type";
 //import { ControlBase } from "./controls.component";
 
 
@@ -25,7 +25,7 @@ import { ControlBase2, InputControlBase } from "./controlbase2.type";
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => PasswordInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => PasswordInputControl)
         }
     ]
 })

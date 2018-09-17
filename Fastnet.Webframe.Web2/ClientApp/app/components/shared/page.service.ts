@@ -8,6 +8,9 @@ export class PageKeys {
     bannerPanelPageId?: number;
     leftPanelPageId?: number;
     rightPanelPageId?: number;
+    bannerPanelEditable: boolean;
+    leftPanelEditable: boolean;
+    rightPanelEditable: boolean;
 }
 export class PageHtmlInformation {
     pageId: number;
@@ -60,8 +63,8 @@ export class PageService extends BaseService {
             return new Promise<PageKeys>(resolve => resolve(result.data as PageKeys));
         }
     }
-    public async getPage(id: number): Promise<PageHtmlInformation | null> {
-        let query = `/pageapi/get/page/${id}`;
+    public async getPageHtml(id: number): Promise<PageHtmlInformation | null> {
+        let query = `/pageapi/get/page/html/${id}`;
         let result = await this.query(query);
         if (!result.success) {
             return new Promise<null>(resolve => resolve(null));

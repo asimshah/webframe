@@ -3,7 +3,7 @@ import { Component, Input, ViewChild } from '@angular/core';
 import { Page, Content, EditorService } from './editor.service';
 import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
 import { PopupMessageComponent, PopupMessageOptions } from '../../../fastnet/controls/popup-message.component';
-import { ValidationMethod, isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase2.type';
+import { ValidationMethod, isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
 import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
 
 //import {  ValidationResult,  ValidationContext } from '../../controls/controls.types';
@@ -26,7 +26,7 @@ export class PagePropertiesComponent  {
     existingNames: string[];
     originalPageName: string;
     originalLandingPage: boolean;
-    message: string;
+    //message: string;
     constructor(private editorService: EditorService) {
     }
     open(page: Page) {

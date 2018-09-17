@@ -20,6 +20,9 @@ namespace Fastnet.Webframe.CoreData2
         public long? BannerPanelPageId { get; set; }
         public long? LeftPanelPageId { get; set; }
         public long? RightPanelPageId { get; set; }
+        public bool BannerPanelEditable { get; set; }
+        public bool LeftPanelEditable { get; set; }
+        public bool RightPanelEditable { get; set; }
     }
     public class PageHtmlInformation
     {
@@ -348,6 +351,9 @@ namespace Fastnet.Webframe.CoreData2
                 LeftPanelPageId = leftPage?.PageId,
                 RightPanelPageId = rightPage?.PageId
             };
+            result.BannerPanelEditable = bannerPage?.Directory == centrePage.Directory;
+            result.LeftPanelEditable = leftPage?.Directory == centrePage.Directory;
+            result.RightPanelEditable = rightPage?.Directory == centrePage.Directory;
             return result;
         }
         public async Task<Page> FindDefaultBannerPage()
@@ -379,16 +385,21 @@ namespace Fastnet.Webframe.CoreData2
         }
         private async Task<Page> FindSidePage(Page cp, PageType pt)
         {
+            var pageDirectory = cp.Directory;
+            Page sp = null;
             foreach (var dir in cp.Directory.SelfAndParents)
             {
                 await coreDataContext.Entry(dir).Collection(x => x.Pages).LoadAsync();
                 var sidepage = dir.Pages.SingleOrDefault(p => p.Type == pt);
                 if (sidepage != null)
                 {
-                    return sidepage;
+                    sp = sidepage;
+                    break;
                 }
             }
-            return null;
+            var spInfo = sp == null ? "none" : $"{sp.Url} in {sp.Directory.Name}";
+            log.LogInformation($"{cp.Url} in {pageDirectory.Name}, {pt.ToString()} is {spInfo}");
+            return sp;// null;
         }
         //public bool IsMemberOf(Member member, Group group)
         //{

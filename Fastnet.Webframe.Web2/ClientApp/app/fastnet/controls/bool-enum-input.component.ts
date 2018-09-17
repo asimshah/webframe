@@ -2,7 +2,7 @@
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { EnumInputControl } from "./enum-input.component";
 import { EnumValue } from "./controls.types";
-import { ControlBase2, EnumControlBase } from "./controlbase2.type";
+import { ControlBase, EnumControlBase } from "./controlbase.type";
 
 
 
@@ -31,7 +31,7 @@ import { ControlBase2, EnumControlBase } from "./controlbase2.type";
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => BoolEnumInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => BoolEnumInputControl)
         }
     ]
 })

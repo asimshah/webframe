@@ -1,5 +1,7 @@
 ﻿@import "shared.component.scss";
-
+:host {
+    display: block;
+}
 .number-input {
     @extend %std-text-input;
 

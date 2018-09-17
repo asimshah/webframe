@@ -51,7 +51,7 @@ const noop = () => { };
  * [disabled] set to true or false, use this to detect and set custom control as disabled, default is false
  * [focus] if true, sets initial focus to this control, use only on one control within the dialog
  * */
-export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
+export class ControlBase implements ControlValueAccessor, AfterViewInit  {
     private static counter = 0;
     private static _trace: boolean = false;
     private reference: string = "";
@@ -69,7 +69,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         return   this._isTouched;
     }
     protected set isTouched(val: boolean) {
-        console.log(`${this.getReference()}: changing isTouched from ${this._isTouched} to ${val}`);
+        //console.log(`${this.getReference()}: changing isTouched from ${this._isTouched} to ${val}`);
         this._isTouched = val;
     }
     protected localChangeCallBack: (_: any) => void = noop;
@@ -125,7 +125,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         this.preValidator = validator;// new PropertyValidatorAsync(validator);
     }
     get traceReferences(): boolean {
-        return ControlBase2._trace;
+        return ControlBase._trace;
     }
     /** set focus on the control
      *  the html for the control must have an element marked with #focushere */
@@ -165,7 +165,7 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         return this.reference;
     }
     protected setReference(prefix: string) {
-        this.reference = `${prefix}-${ControlBase2.counter++}`;
+        this.reference = `${prefix}-${ControlBase.counter++}`;
     }
     private onValueChanged() {
         this.localChangeCallBack(this.innerValue);
@@ -207,15 +207,15 @@ export class ControlBase2 implements ControlValueAccessor, AfterViewInit  {
         });
     }
     public static enableTrace(tf: boolean) {
-        ControlBase2._trace = tf;
-        console.log(`custom control trace enabled = ${ControlBase2._trace}`);
+        ControlBase._trace = tf;
+        console.log(`custom control trace enabled = ${ControlBase._trace}`);
     }
 }
 /** Use this as a base for any control based on the HTML <input> element
  * Note that (1) all input events are caught and used to set isTouched to true
  * and (2) lostfocus event will cause validation with ValidationContext.LostFocus
  */
-export class InputControlBase extends ControlBase2 implements OnChanges, AfterViewInit {
+export class InputControlBase extends ControlBase implements OnChanges, AfterViewInit {
     onBlur() {
         super.onBlur();
         this.validate(ValidationContext.LostFocus);
@@ -249,7 +249,7 @@ export class InputControlBase extends ControlBase2 implements OnChanges, AfterVi
  * [items]     internal use only (can this be removed as an @Input()?)
  * [names]     user friendly names to use for each enum value
  * */
-export class EnumControlBase<T> extends ControlBase2 {
+export class EnumControlBase<T> extends ControlBase {
     /**
      * Number of columns in which to layout the radio buttons
      */

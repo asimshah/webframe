@@ -9,7 +9,8 @@ import 'rxjs/add/operator/catch';
 
 export class ServiceResult {
     success: boolean;
-    errors: string[]
+    errors: string[];
+    data?: any;
 }
 class DataResult {
     data: any;

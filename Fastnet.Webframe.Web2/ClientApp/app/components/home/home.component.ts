@@ -27,8 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     public member: Member;
     public isEditor: boolean = false;
     protected idSub: Subscription;
-    //private canQueryPages: boolean = false;
-    private current: PageKeys | null;
+    protected current: PageKeys | null;
     protected pageId: number | undefined;
     constructor(protected router: Router,
         private route: ActivatedRoute,
@@ -39,42 +38,31 @@ export class HomeComponent implements OnInit, OnDestroy {
         //this.canQueryPages = false;// !this.RunningInNode();
     }
     async ngOnInit() {
-        console.log(`HomeComponent: ${this.router.url}, ${this.route.snapshot.url[0].path}`);
-        //if (this.route.snapshot.url[0].path.toLowerCase() == 'logout') {
-        //    await this.authenticationService.logout();
-        //    this.router.navigate(['home']); // we need this to ensure that the logout has completed
-        //}
+        //console.log(`HomeComponent: ${this.router.url}, ${this.route.snapshot.url[0].path}`);
         this.idSub = this.route.params.subscribe(params => {
             this.pageId = +params['id'];
             console.log(`HomeComponent: pageId set to ${this.pageId}`);
 
         });
         this.navigatedHere();
-        //if (this.canQueryPages) {
-        //    if (this.routerSub === null) {
-        //        this.routerSub = this.router.events.subscribe((evt) => {
-        //            //console.log("home component router event occurred");
-        //            if (evt instanceof NavigationEnd) {
-        //                this.navigatedHere();
-        //            }
-        //        });
-        //    }
-        //}
 
         let authenticated = await this.authenticationService.isAuthenticated();
         if (authenticated === true && this.authenticationService.currentUser) {
             this.member = this.authenticationService.currentUser.member;
-            console.log(`home component ngOnInit(): member = ${this.member.name}`);
+            //console.log(`home component ngOnInit(): member = ${this.member.name}`);
         }
         this.isEditor = await this.authenticationService.isEditor();
-        console.log(`home component ngOnInit(): editor = ${this.isEditor}`);
+        //console.log(`home component ngOnInit(): editor = ${this.isEditor}`);
     }
     ngOnDestroy() {
-        //this.idSub.unsubscribe();
+        if (this.idSub) {
+            this.idSub.unsubscribe();
+        }
     }
     protected async loadPages(pageId?: number) {
 
         this.current = await this.pageService.getPageKeys(pageId);
+        console.log(`${JSON.stringify(this.current, null, 2)}`);
         if (this.current === null) {
             this.router.navigate(['pagenotfound']);
         } else {

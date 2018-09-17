@@ -9,47 +9,31 @@ $default-sitepanel-width: 840px;
 .SitePanel {
     .edit-panel {
         background-color: black;
-        padding-left: 0.25em;
-        padding-right: 0.25em;
-    }
-
-}
-
-
-#site-content-browser {
-    .modal-container {
-        width: 75%;
-
-        .command-buttons {
-            border-top: 1px solid lightgray;
-        }
-
-        .form-body {
-            .caption {
-                padding: 0.25em;
-                margin-bottom: 0.25em;
-            }
-
-            .content-browser-panel {
-                display: flex;
-
-                .tree-view {
-                    padding: 0.25em;
-                    min-height: 25vh;
-                    border: 1px solid white;
-                }
-
-                .content-view {
-                    padding: 0.25em;
-                    border-left: 1px solid lightgray;
-                    //border-radius: 0.25em;
-                    width: 100%;
-                }
+        /*padding-left: 0.25em;
+        padding-right: 0.25em;*/
+        padding: 0.25em;
+        color: white;
+        display: grid;
+        grid-template-columns: fit-content(100px) auto fit-content(200px);
+        grid-column-gap: 4px;
+        button {
+            width: auto;
+            background-color: cornflowerblue;
+            font-size: 12px;
+            color: white;
+            border: none;
+            border-radius: 0.25em;
+            &:hover {
+                background-color: darkorange;
             }
         }
     }
 }
-
+webframe-page {
+    .hide {
+        display: none;
+    }
+}
 @media all and (max-width: 748px) {
     .BannerPanel {
         webframe-sidebarmenu {

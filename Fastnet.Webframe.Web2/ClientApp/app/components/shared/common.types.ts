@@ -33,6 +33,7 @@ export class Group {
     groupId: number;
     parentGroupId?: number;
     name: string;
+    fullpath: string;
     description: string;
     weight: number;
     type: GroupTypes;

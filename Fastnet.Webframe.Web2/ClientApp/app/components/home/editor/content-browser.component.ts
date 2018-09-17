@@ -1,16 +1,20 @@
-﻿import { Component, ElementRef, ViewChild } from '@angular/core';
+﻿import { Component, ElementRef, ViewChild, Input } from '@angular/core';
 import { EditorService, Directory, Content, UploadData, Image, Page, Document, NewPage, PageType } from './editor.service';
 
 import { PagePropertiesComponent } from './page-properties.component';
 
 import { UploadDialogComponent, FileUploadItem } from '../../../fastnet/uploader/upload-files.component';
-import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
+import { PopupDialogComponent, PopupCloseHandler } from '../../../fastnet/controls/popup-dialog.component';
 import { TreeViewComponent, ITreeNode } from '../../../fastnet/controls/tree-view.component';
 import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
 import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
-import { isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase2.type';
+import { isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
 import { noop } from '../../../fastnet/core/date.functions';
 import { Base64ChunkReader } from '../../../fastnet/core/base64.chunkreader';
+import { DirectoryPropertiesComponent } from './directory-properties.component';
+import { PageService } from '../../shared/page.service';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 
 class treeNode implements ITreeNode {
@@ -33,7 +37,17 @@ enum ContentCommands {
     UploadFiles,
     AddNewPage
 }
-
+export enum SelectableContent {
+    ImagesOnly,
+    PagesAndDocuments
+}
+export class SelectedItem {
+    iconUrl: string;
+    url: string;
+    name: string;
+    width?: number; // these two only for images
+    height?: number; // these two only for images
+}
 @Component({
     selector: 'content-browser',
     templateUrl: './content-browser.component.html',
@@ -41,32 +55,58 @@ enum ContentCommands {
 })
 export class ContentBrowserComponent {
     ContentCommands = ContentCommands;
+    PageType = PageType;
+    @ViewChild('contentbrowser') private contentBrowserPopup: PopupDialogComponent;
+    @ViewChild(TreeViewComponent) private directoryTree: TreeViewComponent;
+    @ViewChild("fileInput") uploadInputElement: ElementRef;
+    @ViewChild(PagePropertiesComponent) pageProperties: PagePropertiesComponent;
+    @ViewChild('newDirectoryDialog') newDirectoryPopup: PopupDialogComponent;
+    @ViewChild('newPageDialog') newPagePopup: PopupDialogComponent;
+    @ViewChild('viewImageDialog') imageViewerPopup: PopupDialogComponent;
+    @ViewChild('viewPageDialog') pageViewerPopup: PopupDialogComponent;
+    @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
+    @ViewChild('uploadFilesDialog') uploadFiles: UploadDialogComponent;
+    @ViewChild(DirectoryPropertiesComponent) directoryProperties: DirectoryPropertiesComponent;
+    @Input() selectmode = false;
+    selection: SelectedItem;
+    selectableContent: SelectableContent;
     message: string;
     directoryNodes: treeNode[] = [];
     treeOptions: {};
     selectedDirectory: Directory | null = null;
     content?: Content | null = null;
     subdirectory: Directory;
-
-    @ViewChild('contentbrowser') private contentBrowserPopup: PopupDialogComponent;
-    @ViewChild(TreeViewComponent) private directoryTree: TreeViewComponent;
-    @ViewChild("fileInput") uploadInputElement: ElementRef;
-    @ViewChild("pageProperties") pageProperties: PagePropertiesComponent;
-    @ViewChild('newDirectoryDialog') newDirectoryPopup: PopupDialogComponent;
-    @ViewChild('newPageDialog') newPagePopup: PopupDialogComponent;
-    @ViewChild('viewImageDialog') imageViewerPopup: PopupDialogComponent;
-    @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
-    @ViewChild('uploadFilesDialog') uploadFiles: UploadDialogComponent;
-
     newPage: NewPage;// | null = null;
     imageOnView: Image;
+    pageOnView: Page;
+    pageInnerHtml: string;
     uploadInProgress = false;
-    constructor(private editorService: EditorService, el: ElementRef) {
+    constructor(private pageService: PageService,
+        private sanitizer: DomSanitizer,
+        private editorService: EditorService, el: ElementRef) {
 
+    }
+    getCaption(): string {
+        if (this.selectmode === true) {
+            return this.selectableContent === SelectableContent.ImagesOnly ? "Select Image" : "Select Page or Document";
+        } else {
+            return  "Site Content Browser";
+        }
+        
     }
     open() {
         this.contentBrowserPopup.open(() => {
-
+        }, async () => {
+            await this.reload();
+        });
+        //this.modalDialogService.open(this.id);
+    }
+    openForSelection(selectables: SelectableContent, onClose?: PopupCloseHandler) {
+        this.selectableContent = selectables;
+        this.contentBrowserPopup.open((si?: SelectedItem) => {
+            if (onClose) {
+                onClose(si);
+            }
         }, async () => {
             await this.reload();
         });
@@ -74,6 +114,18 @@ export class ContentBrowserComponent {
     }
     onClose() {
         this.contentBrowserPopup.close();
+    }
+    onSelect() {
+        this.contentBrowserPopup.close(this.selection);
+    }
+    pageSelected(p: Page) {
+        this.selection = { iconUrl: p.iconUrl, url: p.url, name: p.name };
+    }
+    documentSelected(d: Document) {
+        this.selection = { iconUrl: d.iconUrl, url: d.url, name: d.name };
+    }
+    imageSelected(image: Image) {
+        this.selection = { iconUrl: image.iconUrl, url: image.url, name: image.name, height: image.height, width: image.width  };
     }
     async onTreeNodeSelected(node: treeNode) {
         console.log(`selected directory ${node.directory.fullname}`);
@@ -128,14 +180,6 @@ export class ContentBrowserComponent {
                     }
                 }, options);
         }
-        //if (this.selectedDirectory !== null) {
-        //    this.message = "Deleting a directory will also delete all the contents of that directory. Deletions are not reversible. Select OK to proceed";
-        //    let r = await this.modalDialogService.showMessageBox("confirmBox");
-        //    if (r === MessageBoxResult.ok) {
-        //        let sr = await this.editorService.deleteDirectory(this.selectedDirectory!.id);
-        //        await this.reload();
-        //    }
-        //}
     }
 
     async onDeleteDocument(doc: Document) {
@@ -163,13 +207,7 @@ export class ContentBrowserComponent {
                         await this.editorService.deleteImage(image, this.selectedDirectory!);
                         await this.reloadContent();
                     }
-                }, options);
-            //this.message = "Deleting an image is a permanent step. Select OK to proceed";
-            //let r = await this.modalDialogService.showMessageBox("confirmBox");
-            //if (r === MessageBoxResult.ok) {
-            //    await this.editorService.deleteImage(image, this.selectedDirectory);
-            //    await this.reloadContent();
-            //}        
+                }, options);  
         }
     }
     onViewImage(image: Image) {
@@ -183,6 +221,24 @@ export class ContentBrowserComponent {
     onCloseImageViewer() {
         this.imageViewerPopup.close();
     }
+    getPageViewCaption() {
+        if (this.pageOnView) {
+            return `Page Viewer: ${this.pageOnView.url}`;
+        }
+        return '';
+    }
+    async onViewPage(page: Page) {
+        this.pageOnView = page;
+        let r = await this.pageService.getPageHtml(this.pageOnView.id);
+        if (r !== null) {
+            this.pageInnerHtml = <string>this.sanitizer.bypassSecurityTrustHtml(r.htmlText);
+        }
+        //this.pageOnView = page;
+        this.pageViewerPopup.open(() => { });
+    }
+    onClosePageViewer() {
+        this.pageViewerPopup.close();
+    }
     async onDeletePage(page: Page) {
         if (this.selectedDirectory !== null) {
             let options = new PopupMessageOptions();
@@ -195,12 +251,6 @@ export class ContentBrowserComponent {
                         await this.reloadContent();
                     }
                 }, options);
-            //this.message = "Deleting a page is a permanent step. Select OK to proceed";
-            //let r = await this.modalDialogService.showMessageBox("confirmBox");
-            //if (r === MessageBoxResult.ok) {
-            //    let sr = await this.editorService.deletePage(page, this.selectedDirectory);
-            //    await this.reloadContent();
-            //}  
         }
     }
     onAddNewPage() {
@@ -235,21 +285,6 @@ export class ContentBrowserComponent {
         if (await this.newPagePopup.isValid()) {
             this.newPagePopup.close(true);
         }
-        //if (this.newPage != null) {
-        //    if (await this.modalDialogService.isValid("new-page")) {
-        //        let sr = await this.editorService.createPage(this.newPage);
-        //        if (!sr.success) {
-        //            this.message = sr.errors[0];
-        //            await this.modalDialogService.showMessageBox("warningBox");
-        //        } else {
-        //            this.reloadContent();
-        //            this.newPage = null;
-        //            this.modalDialogService.close("new-page");
-        //        }
-        //    } else {
-        //        console.log("onCreateNewPage(): form not valid");
-        //    }
-        //}
     }
 
     getNewDirectoryCaption(): string {
@@ -273,7 +308,7 @@ export class ContentBrowserComponent {
     }
     canExecute(cmd: ContentCommands): boolean {
         let r = false;
-        if (!this.uploadInProgress) {
+        if (!this.uploadInProgress && this.selectmode === false) {
             switch (cmd) {
                 default:
                     break;
@@ -291,7 +326,7 @@ export class ContentBrowserComponent {
         return r;
     }
     directoryNameValidatorAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
-        console.log(`directoryNameValidatorAsync`);
+        //console.log(`directoryNameValidatorAsync`);
         return new Promise<ValidationResult>((resolve) => {
             let vr = new ValidationResult();
             if (isNullorUndefinedorWhitespaceOrEmpty(value)) {
@@ -343,14 +378,12 @@ export class ContentBrowserComponent {
         }
         this.uploadFiles.uploadInProgress = false;
     }
-    //onCancelFileUpload() {
-    //    //this.filesToUpload = [];
-    //    //this.uploadInProgress = false;
-    //    //this.modalDialogService.close("upload-files");
-    //}
     onPageProperties(page: Page) {
         //this.pageProperties.currentPage = page;
         this.pageProperties.open(page);
+    }
+    onDirectoryProperties() {
+        this.directoryProperties.open(this.selectedDirectory!);
     }
     private async reload() {
         this.subdirectory = new Directory();
@@ -368,6 +401,20 @@ export class ContentBrowserComponent {
     private async reloadContent() {
         if (this.selectedDirectory !== null) {
             this.content = await this.editorService.getDirectoryContent(this.selectedDirectory.id);
+            if (this.selectmode) {
+                // remove side pages
+                switch (this.selectableContent) {
+                    case SelectableContent.ImagesOnly:
+                        this.content.pages = [];
+                        this.content.documents = [];
+                        break;
+                    case SelectableContent.PagesAndDocuments:
+                        // remove images abd side pages
+                        this.content.images = [];
+                        this.content.pages = this.content.pages.filter(x => x.pageType === PageType.Centre);
+                        break;
+                }
+            }
             console.log(`content reloaded for directory ${this.selectedDirectory.name}`);
         }
     }

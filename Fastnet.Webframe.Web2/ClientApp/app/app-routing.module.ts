@@ -22,6 +22,7 @@ import { ActivateComponent } from './components/authentication/activate.componen
 import { EditorGuard } from './components/routeguards/editor-guard.service';
 import { LogoutComponent } from './components/authentication/logout.component';
 import { TestComponent } from './components/test/test.component';
+import { MCETestComponent } from './components/test/mcetest.component';
 
 
 const appRoutes: Routes = [
@@ -35,12 +36,12 @@ const appRoutes: Routes = [
     //{ path: 'membership', component: MembershipPlaceholderComponent},
     { path: 'register', loadChildren: './components/authentication/register.module#RegisterModule' },
     { path: 'activate/:id/:code', component: ActivateComponent },
-    { path: 'test', component: TestComponent},
+    { path: 'test', component: MCETestComponent},
     { path: 'membership', loadChildren: './components/membership/membership.module#MembershipModule', canLoad: [AdminGuard], canActivate: [AdminGuard] },
     { path: 'booking', loadChildren: './components/booking/booking.module#BookingModule', canLoad: [MemberGuard] },
     { path: 'cms', loadChildren: './components/cms/cms.module#CmsModule', canLoad: [AdminGuard] },
     { path: 'designer', loadChildren: './components/designer/designer.module#DesignerModule', canLoad: [AdminGuard] },
-    { path: 'edit/:id', loadChildren: './components/home/editor/editor.module#EditorModule', canLoad:[EditorGuard], canActivate:[EditorGuard] },
+    { path: 'edit/:id', loadChildren: './components/home/editor/webframe-editor.module#WebframeEditorModule', canLoad:[EditorGuard], canActivate:[EditorGuard] },
     { path: 'permissiondenied/:msg/:allowLogin', component: PermissionDeniedComponent },
     { path: 'pagenotfound', component: PageNotFoundComponent },
     { path: '**', redirectTo: 'home' },

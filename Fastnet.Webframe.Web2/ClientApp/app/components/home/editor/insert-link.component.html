@@ -1,0 +1,22 @@
+﻿<popup-dialog [width]="470">
+    <div dialogheader>
+        <div>Insert Link</div>
+    </div>
+    <div dialogbody>
+        <text-input label="Link Url" [(ngModel)]="linkUrl" [validator]="validateLinkUrl"></text-input>
+        <div class="help-text">an internal url such as page/nn or document/nn, or an external link such as https://www.bbc.co.uk</div>
+        <text-input label="Link Text" [(ngModel)]="linkText"></text-input>
+        <div class="help-text">the text in the page that the user will see</div>
+        <div class="help-text">leave blank to use the url as the link text</div>
+    </div>
+    <div dialogcommandbar>
+        <div class="left">
+            <button (click)="onContentBrowser()" >Browse for  link...</button>
+        </div>
+        <div class="right">
+            <button [ngClass]="{disabled: !linkUrl || linkUrl.length == 0}" (click)="onInsert()">Insert</button>
+            <button class="cancel" (click)="onCancel()">Close</button>
+        </div>
+        <content-browser [selectmode]="true"></content-browser>
+    </div>
+</popup-dialog>

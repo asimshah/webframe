@@ -1,32 +1,4 @@
-﻿//@import "../../modaldialog/modal-dialog.variables.scss";
-
-/*:host {
-    @extend .modal-dialog-settings;
-
-
-
-    .modal-container {
-        width: 75%;
-
-        .command-buttons {
-            //border-top: 1px solid lightgray;
-        }
-
-        .form-body {
-            .caption {
-                background-color: cornflowerblue;
-                color: white;
-                padding: 0.25em;
-                margin-bottom: 0.25em;
-            }
-
-
-        }
-    }
-}*/
-/*.folder-colour {
-    color: darkorange;
-}*/
+﻿
 .command-bar {
     background-color: lightgray;
     padding-top: 0.125em;
@@ -81,7 +53,7 @@
 
         .content-table {
             display: grid;
-            grid-template-columns: fit-content(48px) fit-content(120px) auto 24px 24px;
+            grid-template-columns: fit-content(48px) fit-content(120px) auto 24px 24px 24px;
             grid-row-gap: 3px;
             grid-column-gap: 5px;
             max-height: 300px;
@@ -108,12 +80,17 @@
                 }
             }
 
-            .image-size {
+            .image-size, .page-type {
                 font-size: smaller;
                 font-style: italic;
                 color: #808080;
             }
-
+            .selectable {
+                cursor: pointer;
+                &:hover {
+                    background-color: palegoldenrod;
+                }
+            }
             /*.content-url {
                 padding-left: 0.25em;
                 padding-right: 0.25em;
@@ -121,63 +98,14 @@
         }
     }
 }
-#new-directory, #new-page, #upload-files {
-    /*.modal-container {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .form-body {
-        padding-left: 1em;
-        padding-right: 1em;
-        padding-top: 0.5em;
-        padding-bottom: 1em;
-    }
-
-    .caption {
-        padding: 0.25em;
-        margin-bottom: 0.25em;
-    }*/
-}
-#upload-files {
-    /*.form-body {
-        min-height: 200px;
-    }
-
-    .help-text {
-        font-size: smaller;
-        font-style: italic;
-        color: royalblue;
-    }
-
-    .upload-list {
-        display: grid;
-        grid-template-columns: auto 80px 80px;
-
-        .p-bar {
-            height: 10px;
-            align-self: center;
-            position: relative;
-
-            > div {
-                border-radius: 2px;
-                position: absolute;
-                height: 100%;
-
-                &.lower {
-                    border: 1px solid #808080;
-                    width: 100%;
-                }
-
-                &.upper {
-                    border: 1px solid transparent;
-                    background-color: green;
-                }
-            }
-        }
-    }*/
+.selection-tray {
+    border: 1px solid #979797;
+    border-radius: 0.25em;
+    padding: 0.25em;
+    background-color: palegoldenrod;
+    height: 48px;
+    width: 100%;
+    margin-top: 0.25em;
 }
 
 

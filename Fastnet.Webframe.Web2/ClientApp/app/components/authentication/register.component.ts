@@ -9,7 +9,7 @@ import { Member } from '../shared/common.types';
 import { AuthenticationService } from './authentication.service';
 import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
 import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
-import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
 import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
 //import { PopupDialogComponent } from '../controls/popup-dialog.component';
 //import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';

@@ -85,74 +85,7 @@ $default-leftpanel-width: 210px;
     }
 }
 
-button {
-    /*$button-background: white;
-    $default-button-background: #337ab7;
-    $button-colour: black;
-    $button-hover: orange;
-    $disabled-colour: gray;
-    $warning-colour: red;
-    $secondary-colour: green;
-    $link-colour: #30b0e9;
-    border: 1px solid $default-button-background;
-    border-radius: 0.25em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    height: 28px;
-    background-color: $default-button-background;
-    color: $button-background;*/
-    &.small {
-        height: auto;
-        font-size: 10px;
-    }
-    /*&.cancel {
-        border: 1px solid $button-background;
-        background-color: $button-background;
-        color: $button-colour;
-    }
-    &.secondary {
-        border: 1px solid $secondary-colour;
-        background-color: $secondary-colour;
-        color: $button-background;
-    }
-
-    &.warning {
-        border: none;
-        border: 1px solid $warning-colour;
-        background-color: $warning-colour;
-        color: $button-background;
-    }
-
-    &:hover {
-        background-color: $button-hover;
-        color: $button-background;
-    }
-
-
-
-    &[disabled], &.disabled {
-        cursor: none;
-        pointer-events: none;
-        background-color: $disabled-colour;
-        border-color: $disabled-colour;
-        color: $button-background;
-    }
-
-    &.link {
-        background: none;
-        border: none;
-        color: $link-colour;
-        font-size: 12px;
-        &:hover {
-            text-decoration: underline;
-        }
-
-        &[disabled], &.disabled {
-            color: gray;
-        }
-    }*/
-}
-.command-buttons {
+/*.command-buttons {
     font-size: 0.8em;
     margin-top: 0.5em;
     display: grid;
@@ -187,7 +120,7 @@ button {
         margin-top: 0.25em;
         margin-bottom: 0.25em;
     }
-}
+}*/
 .message-body {
     margin: 0.5em;
 }

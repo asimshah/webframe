@@ -1,0 +1,9 @@
+﻿<div class="editable-page">
+    <div *ngIf="hasContent()" [innerHtml]="innerHtml" class="editable-content"></div>
+    <div class="page-overlay" [ngClass]="{'is-editable': editable}" (click)="onOverlayClick()"></div>
+    <div *ngIf="canAddContent()" class="content-button">
+        <button (click)="onAddContentClick($event)">Add Content</button>
+    </div>
+    <page-editor (contentsaved)="onContentSaved($event)" (pagedeleted)="onPageDeleted()"></page-editor>
+    <popup-message [width]="370" caption="Page Editor"></popup-message>
+</div>

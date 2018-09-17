@@ -1,58 +1,35 @@
 <div class="SitePanel" (click)="onSitePanelClick($event)">
-    <div  class="edit-panel command-buttons">
-        <div class="top-row-left">
-            <button class="default small">Edit this page</button>
-        </div>
-        <div class="top-row-right">
-            <button class="secondary small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
-            <button class="default small" >Save Changes</button>
-        </div>
-        <content-browser id="cb-1" #contentBrowser  ></content-browser>
+    <div class="edit-panel" (click)="onEditPanelClick($event)">
+        <bool-input label="Enable Editing" [(ngModel)]="editMode"></bool-input>
+        <div class="spacer"></div>
+        <button class="small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
     </div>
+    <content-browser ></content-browser>
     <div *ngIf="member" class="login-status">
         <div class="login-name">{{member.name}}</div>
     </div>
     <div class="BannerPanel">
-        <webframe-page class="page-component" [pageId]="this.getBannerPageId()"></webframe-page>
-        <webframe-sidebarmenu></webframe-sidebarmenu>
+        <editable-page *ngIf="editMode === true" [pageId]="this.getBannerPageId()" [pagetype]="PageType.Banner" [centrePageId]="this.getCentrePageId()" [editable]="isBannerPageEditable()" (contentsaved)="bannerpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
+        <webframe-page #bannerpage  [pageId]="this.getBannerPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
+        <webframe-sidebarmenu *ngIf="editMode === false"></webframe-sidebarmenu>
     </div>
     <div class="MenuPanel">
-        <webframe-menu></webframe-menu>
+        <webframe-menu *ngIf="editMode === false"></webframe-menu>
     </div>
     <div class="ContentPanel">
         <div class="LeftPanel">
-            <webframe-page class="page-component" [pageId]="this.getLeftPageId()" ></webframe-page>
+            <editable-page *ngIf="editMode === true" [pageId]="this.getLeftPageId()" [pagetype]="PageType.Left" [centrePageId]="this.getCentrePageId()" [editable]="isLeftPageEditable()" (contentsaved)="leftpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
+            <webframe-page #leftpage  [pageId]="this.getLeftPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
         <div class="CentrePanel">
-            <webframe-page class="page-component" [pageId]="this.getCentrePageId()"></webframe-page>
+            <editable-page *ngIf="editMode === true" [pageId]="this.getCentrePageId()" [pagetype]="PageType.Centre" [editable]="true" (contentsaved)="centrepage.loadPage()"></editable-page>
+            <webframe-page #centrepage [pageId]="this.getCentrePageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
         <div class="RightPanel">
-            <webframe-page class="page-component" [pageId]="this.getRightPageId()"></webframe-page>
+            <editable-page *ngIf="editMode === true" [pageId]="this.getRightPageId()"  [pagetype]="PageType.Right" [centrePageId]="this.getCentrePageId()" [editable]="isRightPageEditable()" (contentsaved)="rightpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
+            <webframe-page #rightpage  [pageId]="this.getRightPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
     </div>
 </div>
-<!--<modal-dialog id="site-content-browser">
-    <div class="modal-overlay">
-        <div class="modal-container">
-            <div class="form-body">
-                <div class="caption">Site Content Browser</div>
-                <div class="content-browser-panel">
-                    <div class="tree-view">
-                        treeview here
-                    </div>
-                    <div class="content-view">
-                        content here
-                    </div>
-                </div>
-            </div>
-            <div class="command-buttons align-centrally">
-                <div>
-                    <button class="default">Add New Page</button>
-                    <button class="secondary">Upload File(s)</button>
-                    <button class="cancel" (click)="onCloseSiteContentBrowser()">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</modal-dialog>-->
+
 

@@ -1,0 +1,21 @@
+﻿<div>
+    <div>
+        <button (click)="buttonClick()">debug content</button>
+    </div>
+    <tiny-mce #ed1 [content]="text" (contentchange)="onEd1Change($event)" ></tiny-mce>
+    <pre>{{text | json}}</pre>
+</div>
+<popup-dialog #modalEditorDialog [width]="400">
+    <div dialogheader>
+        <div>Modal Editor</div>
+    </div>
+    <div dialogbody>
+        <tiny-mce #ed2 [content]="modaltext" (contentchange)="onEd2Change($event)" ></tiny-mce>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button (click)="onModalSave()">Save</button>
+            <button class="cancel" (click)="onModalCancel()">Cancel</button>
+        </div>
+    </div>
+</popup-dialog>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { ClientCustomisation, FactoryName, RouteRedirection} from '../shared/config.types'
 import { ConfigService } from '../shared/config.service';
-import { ControlBase2 } from '../../fastnet/controls/controlbase2.type';
+import { ControlBase } from '../../fastnet/controls/controlbase.type';
 
 declare var getCustomisation: any;
 
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
         for (let rr of this.customisation.routeRedirections) {
             this.redirect(rr.fromRoute, rr.toRoute);
         }
-        ControlBase2.enableTrace(true);
+        //ControlBase.enableTrace(true);
     }
     async ngOnInit() {
         console.log(`AppComponent constructor(): ngOnInit`);

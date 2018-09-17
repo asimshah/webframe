@@ -2,7 +2,7 @@
 import { OnInit } from "@angular/core";
 import { PageService } from "./page.service";
 import { ValidationContext, ValidationResult } from "../../fastnet/controls/controls.types";
-import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from "../../fastnet/controls/controlbase2.type";
+import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from "../../fastnet/controls/controlbase.type";
 //import { ValidationResult, ValidationContext } from "../controls/controls.types";
 //import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from "../controls/controlbase2.type";
 

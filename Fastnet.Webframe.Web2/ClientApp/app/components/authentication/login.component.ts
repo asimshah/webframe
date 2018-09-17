@@ -8,7 +8,7 @@ import { PasswordInputControl } from '../../fastnet/controls/password-input.comp
 import { EmailInputControl } from '../../fastnet/controls/email-input.component';
 import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../../fastnet/controls/popup-message.component';
 import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
-import { isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase2.type';
+import { isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
 //import { ValidationResult, ValidationContext} from '../controls/controls.types';
 //import { PasswordInputControl } from '../controls/password-input.component';
 //import { PopupMessageComponent, PopupMessageOptions, PopupMessageCloseHandler } from '../controls/popup-message.component';

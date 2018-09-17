@@ -1,0 +1,60 @@
+﻿.editable-page {
+    position: relative;
+
+    .hatched-1 {
+        background-color: #f1f2f3;
+        background-image: linear-gradient(rgba(0,0,0,.015) 1px, transparent 1px), linear-gradient(0, rgba(0,0,0,.015) 1px, transparent 1px);
+        background-size: 5px 5px;
+        background-position: -1px -1px, -1px -1px;
+    }
+
+    .hatched-2 {
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAYSURBVChTY6AW+A+lcQKCCgiCQW4FAwMAYRcF+/9jf+YAAAAASUVORK5CYII=);
+    }
+
+    .editable-content {
+        min-height: 48px;
+    }
+
+    .page-overlay {
+        position: absolute;
+        @extend .hatched-1;
+        opacity: 0.9;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        pointer-events: none;
+
+        &.is-editable {
+            background: none;
+            background-color: #545454;
+            opacity: 0.4;
+            cursor: pointer;
+            pointer-events: all;
+
+            &:hover {
+                border: 3px solid #0f46a8;
+                opacity: 0.2;
+            }
+        }
+    }
+
+    .content-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        button {
+            background-color: cornflowerblue;
+            color: white;
+            border: none;
+            border-radius: 0.25em;
+            font-size: 12px;
+
+            &:hover {
+                background-color: darkorange;
+            }
+        }
+    }
+}

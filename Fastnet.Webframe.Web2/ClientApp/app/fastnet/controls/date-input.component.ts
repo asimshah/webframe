@@ -3,7 +3,7 @@ import { Component, forwardRef, Input, EventEmitter, Output, ViewEncapsulation, 
 import { ListItem } from './controls.types';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { forEach } from '@angular/router/src/utils/collection';
-import { InputControlBase, ControlBase2 } from './controlbase2.type';
+import { InputControlBase, ControlBase } from './controlbase.type';
 import { Data } from '@angular/router';
 import { addDays, addMonths, getMonthNames } from '../core/date.functions';
 
@@ -51,7 +51,7 @@ export class CalendarDay {
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => DateInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => DateInputControl)
         }
     ],
     encapsulation: ViewEncapsulation.None

@@ -2,7 +2,7 @@
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { TextInputControl } from "./text-input.component";
 import { EnumValue } from "./controls.types";
-import { ControlBase2, InputControlBase, toEnumValues, EnumControlBase } from "./controlbase2.type";
+import { ControlBase, InputControlBase, toEnumValues, EnumControlBase } from "./controlbase.type";
 
 //@Component({
 //    selector: 'enum-input',
@@ -81,7 +81,7 @@ import { ControlBase2, InputControlBase, toEnumValues, EnumControlBase } from ".
             multi: true
         },
         {
-            provide: ControlBase2, useExisting: forwardRef(() => EnumInputControl)
+            provide: ControlBase, useExisting: forwardRef(() => EnumInputControl)
         }
     ]
 })

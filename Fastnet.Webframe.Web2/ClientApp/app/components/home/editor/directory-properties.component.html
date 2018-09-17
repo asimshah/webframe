@@ -1,0 +1,54 @@
+﻿<popup-dialog #directoryPropertiesDialog [width]="400">
+    <div dialogheader>
+        <div>Directory Properties</div>
+    </div>
+    <div dialogbody>
+        <ng-container *ngIf="currentDirectory && directoryAccess">
+            <text-input label="Name" [(ngModel)]="currentDirectory.name" [validator]="directoryNameValidator"></text-input>
+            <div class="inherited-restrictions">
+                <div class="heading">Inherited Access Restrictions</div>
+                <div *ngFor="let ar of directoryAccess.inheritedRights">
+                    <span>{{ar.group.name}},</span>
+                    <span>{{getRightsDescription(ar)}}</span>
+                </div>
+            </div>
+            <div class="direct-restrictions">
+                <div class="heading">
+                    <div>Direct Access Restrictions</div>
+                    <button (click)="onChangeRestrictions()" >Change Restrictions</button>
+                </div>
+                <div *ngFor="let ar of directoryAccess.directRights">
+                    <span>{{ar.group.name}},</span>
+                    <span>{{getRightsDescription(ar)}}</span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button (click)="onSave()">Save</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
+        </div>
+    </div>
+</popup-dialog>
+<popup-dialog #accessListDialog [width]="300">
+    <div dialogheader>
+        <div>Directory Access By Group</div>
+    </div>
+    <div dialogbody>
+        <div class="access-list-table">
+            <div *ngFor="let item of accessList" class="access-list-rows">
+                <bool-input [label]="item.group.name" [(ngModel)]="item.selected" ></bool-input>
+                <bool-input label="View" [(ngModel)]="item.view" [disabled]="!item.selected"></bool-input>
+                <bool-input label="Edit" [(ngModel)]="item.edit" [disabled]="!item.selected"></bool-input>
+            </div>
+        </div>
+    </div>
+    <div dialogcommandbar>
+        <div class="centre">
+            <button (click)="onSaveAccessList()">Save</button>
+            <button class="cancel" (click)="onCancelAccessList()">Cancel</button>
+        </div>
+    </div>
+</popup-dialog>
+<popup-message caption="Directory Properties" [width]="500"></popup-message>

@@ -44,6 +44,12 @@ body {
         margin: auto auto;
     }
 }
+.page-view {
+    transform: scale(0.75);
+    transform-origin: left top;
+    max-height: 75vh;
+    overflow: auto;
+}
 /*#message-box {
     $caption-background: cornflowerblue;
     $caption-colour: white;

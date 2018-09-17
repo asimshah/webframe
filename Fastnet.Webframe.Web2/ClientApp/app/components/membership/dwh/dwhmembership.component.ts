@@ -6,7 +6,7 @@ import { DWHMember } from './dwhmembership.types';
 import { DWHMembershipService } from './dwhmembership.service';
 import { PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
 import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
-import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase2.type';
+import { isWhitespaceOrEmpty, isNullorUndefined } from '../../../fastnet/controls/controlbase.type';
 //import { ValidationResult, ValidationContext } from '../../controls/controls.types';
 //import { isNullorUndefined, isWhitespaceOrEmpty } from '../../controls/controlbase2.type';
 //import { PopupMessageOptions, PopupMessageResult } from '../../controls/popup-message.component';

@@ -3,7 +3,7 @@ import { BaseService, ServiceResult } from "../shared/base.service";
 import { Http } from "@angular/http";
 import { Member, Group, MemberIdList } from "../shared/common.types";
 import { ValidationResult, ValidationContext } from "../../fastnet/controls/controls.types";
-import { isNullorUndefined, isWhitespaceOrEmpty } from "../../fastnet/controls/controlbase2.type";
+import { isNullorUndefined, isWhitespaceOrEmpty } from "../../fastnet/controls/controlbase.type";
 //import { ValidationResult, ValidationContext } from "../controls/controls.types";
 //import { isNullorUndefined, isWhitespaceOrEmpty } from "../controls/controlbase2.type";
 
