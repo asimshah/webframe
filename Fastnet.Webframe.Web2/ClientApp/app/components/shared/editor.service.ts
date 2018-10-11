@@ -1,7 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
-import { BaseService, ServiceResult } from '../../shared/base.service';
+import { BaseService, ServiceResult } from './base.service';
 import { Http, RequestOptionsArgs } from '@angular/http';
-import { Group } from '../../shared/common.types';
+import { Group } from './common.types';
+//import { Group } from '../../shared/common.types';
 
 export class HtmlText {
     htmlText: string;

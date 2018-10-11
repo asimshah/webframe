@@ -1,11 +1,12 @@
 ﻿
 import { Component, ViewChild, ChangeDetectorRef, Output, EventEmitter } from '@angular/core';
 import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
-import { Page, PageType, EditorService } from './editor.service';
+//import { Page, PageType, EditorService } from './editor.service';
 import { TinyMCEComponent, TinyMCEOptions, TinyMCEMenuButtonConfiguration, TinyMCEButtonBaseConfiguration, TinyMCEButtonConfiguration, TinyMCEToolbarButtons, TinyMCEToolbarItem } from '../../../fastnet/tinymce/tinymce.component';
 import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
 import { InsertLinkComponent } from './insert-link.component';
 import { InsertImageComponent } from './insert-image.component';
+import { Page, EditorService, PageType } from '../../shared/editor.service';
 
 @Component({
     selector: 'page-editor',

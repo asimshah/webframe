@@ -1,9 +1,9 @@
 ﻿import { Component, ViewChild, Input } from '@angular/core';
-import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
-import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
+import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../fastnet/controls/popup-message.component';
 import { Directory, EditorService, Content, DirectoryAccess, AccessRights } from './editor.service';
-import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
-import { isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
+import { isNullorUndefinedorWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
 
 @Component({
     selector: 'directory-properties',

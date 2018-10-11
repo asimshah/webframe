@@ -114,6 +114,16 @@ namespace Fastnet.Webframe.Web2
                 }).ToArray()
             };
         }
+        public static MenuDTO ToDTO(this Menu m)
+        {
+            return new MenuDTO
+            {
+                Id = m.Id,
+                Index = m.Index,
+                Text = m.Text,
+                Url = m.Url
+            };
+        }
         private static void FromMemberDTO(MemberDTO dto, Member member)
         {
             member.FirstName = dto.FirstName;
@@ -344,5 +354,12 @@ namespace Fastnet.Webframe.Web2
     public class HtmlTextDTO
     {
         public string HtmlText { get; set; }
+    }
+    public class MenuDTO
+    {
+        public long Id { get; set; }
+        public int Index { get; set; }
+        public string Text { get; set; }
+        public string Url { get; set; }
     }
 }

@@ -1,10 +1,10 @@
 ﻿
 import { Component, Input, ViewChild } from '@angular/core';
 import { Page, Content, EditorService } from './editor.service';
-import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
-import { PopupMessageComponent, PopupMessageOptions } from '../../../fastnet/controls/popup-message.component';
-import { ValidationMethod, isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
-import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
+import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions } from '../../fastnet/controls/popup-message.component';
+import { ValidationMethod, isNullorUndefinedorWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
 
 //import {  ValidationResult,  ValidationContext } from '../../controls/controls.types';
 //import { isNullorUndefinedorWhitespaceOrEmpty, ValidationMethod } from '../../controls/controlbase2.type';

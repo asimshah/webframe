@@ -1,9 +1,10 @@
 ﻿import { Component, ViewChild } from '@angular/core';
 import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
-import { ContentBrowserComponent, SelectedItem, SelectableContent } from './content-browser.component';
+//import { ContentBrowserComponent, SelectedItem, SelectableContent } from './content-browser.component';
 import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
 import {  isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
 import { validateUrl, validateNumericNoLeadingZeroes } from '../../../fastnet/core/regex.functions';
+import { ContentBrowserComponent, SelectedItem, SelectableContent } from '../../shared/content-browser.component';
 
 @Component({
     selector: 'insert-link',

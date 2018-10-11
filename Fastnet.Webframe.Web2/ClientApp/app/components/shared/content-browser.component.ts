@@ -3,18 +3,18 @@ import { EditorService, Directory, Content, UploadData, Image, Page, Document, N
 
 import { PagePropertiesComponent } from './page-properties.component';
 
-import { UploadDialogComponent, FileUploadItem } from '../../../fastnet/uploader/upload-files.component';
-import { PopupDialogComponent, PopupCloseHandler } from '../../../fastnet/controls/popup-dialog.component';
-import { TreeViewComponent, ITreeNode } from '../../../fastnet/controls/tree-view.component';
-import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../../fastnet/controls/popup-message.component';
-import { ValidationContext, ValidationResult } from '../../../fastnet/controls/controls.types';
-import { isNullorUndefinedorWhitespaceOrEmpty } from '../../../fastnet/controls/controlbase.type';
-import { noop } from '../../../fastnet/core/date.functions';
-import { Base64ChunkReader } from '../../../fastnet/core/base64.chunkreader';
+import { isNullorUndefinedorWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
+import { noop } from '../../fastnet/core/date.functions';
 import { DirectoryPropertiesComponent } from './directory-properties.component';
-import { PageService } from '../../shared/page.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { PageService } from './page.service';
+import { TreeViewComponent, ITreeNode } from '../../fastnet/controls/tree-view.component';
+import { PopupDialogComponent, PopupCloseHandler } from '../../fastnet/controls/popup-dialog.component';
+import { PopupMessageComponent, PopupMessageOptions, PopupMessageResult } from '../../fastnet/controls/popup-message.component';
+import { UploadDialogComponent, FileUploadItem } from '../../fastnet/uploader/upload-files.component';
+import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
+import { Base64ChunkReader } from '../../fastnet/core/base64.chunkreader';
 
 
 class treeNode implements ITreeNode {
@@ -39,6 +39,7 @@ enum ContentCommands {
 }
 export enum SelectableContent {
     ImagesOnly,
+    PagesOnly,
     PagesAndDocuments
 }
 export class SelectedItem {
@@ -88,7 +89,15 @@ export class ContentBrowserComponent {
     }
     getCaption(): string {
         if (this.selectmode === true) {
-            return this.selectableContent === SelectableContent.ImagesOnly ? "Select Image" : "Select Page or Document";
+            switch (this.selectableContent) {
+                case SelectableContent.ImagesOnly:
+                    return "Select Image";
+                case SelectableContent.PagesOnly:
+                    return "Select Page";
+                case SelectableContent.PagesAndDocuments:
+                    return "Select Page or Document";
+            }
+            return "error!";
         } else {
             return  "Site Content Browser";
         }
@@ -329,6 +338,7 @@ export class ContentBrowserComponent {
         //console.log(`directoryNameValidatorAsync`);
         return new Promise<ValidationResult>((resolve) => {
             let vr = new ValidationResult();
+
             if (isNullorUndefinedorWhitespaceOrEmpty(value)) {
                 vr.valid = false;
                 vr.message = `a directory name is required`;
@@ -409,8 +419,14 @@ export class ContentBrowserComponent {
                         this.content.documents = [];
                         break;
                     case SelectableContent.PagesAndDocuments:
-                        // remove images abd side pages
+                        // remove images and side pages
                         this.content.images = [];
+                        this.content.pages = this.content.pages.filter(x => x.pageType === PageType.Centre);
+                        break;
+                    case SelectableContent.PagesOnly:
+                        // remove images, documents and side pages
+                        this.content.images = [];
+                        this.content.documents = [];
                         this.content.pages = this.content.pages.filter(x => x.pageType === PageType.Centre);
                         break;
                 }

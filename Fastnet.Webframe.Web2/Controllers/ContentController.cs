@@ -34,6 +34,62 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             return this.coreDataContext;
         }
+        [HttpGet("get/menus")]
+        public async Task<IActionResult> GetMenus()
+        {
+            try
+            {
+                var menus = await coreDataContext.Menus
+                    .Where(m => m.ParentMenu == null)
+                    .OrderBy(m => m.Index)
+                    .ToArrayAsync();
+                        return SuccessResult(menus.Select(x => x.ToDTO()));
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpPost("update/menus")]
+        public async Task<IActionResult> UpdateMenus()
+        {
+            try
+            {
+                var menuDTOs = Request.FromBody<MenuDTO[]>();
+                var menus = await coreDataContext.Menus
+                    .Where(m => m.ParentMenu == null).ToArrayAsync();
+                coreDataContext.Menus.RemoveRange(menus);
+                foreach (var dto in menuDTOs.OrderBy(x => x.Index))
+                {
+                    var nm = new Menu
+                    {
+                        Text = dto.Text,
+                        Url = dto.Url.ToLower(),
+                        Index = dto.Index,
+                        ParentMenu = null
+                    };
+                    if (nm.Url.StartsWith("page"))
+                    {
+                        nm.Url = "/" + nm.Url;
+                    }
+                    if (nm.Url.StartsWith("/page"))
+                    {
+                        var pn = nm.Url.Substring(6);
+                        var pageNumber = Int32.Parse(pn);
+                        nm.Page = coreDataContext.Pages.SingleOrDefault(x => x.PageId == pageNumber);
+                    }
+                    await coreDataContext.Menus.AddAsync(nm);
+                }
+                await coreDataContext.SaveChangesAsync();
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
         [HttpGet("get/page/{id}")]
         public async Task<IActionResult> GetPage(long id)
         {
@@ -426,14 +482,14 @@ namespace Fastnet.Webframe.Web2.Controllers
         public async Task<IActionResult> DeletePage(long pageId, long? dirId)
         {
             var page = await coreDataContext.Pages.FindAsync(pageId);
-            if(dirId.HasValue == false)
+            if (dirId.HasValue == false)
             {
                 dirId = page.DirectoryId;
             }
             var dir = await coreDataContext.Directories.FindAsync(dirId);
             if (dir != null)
             {
-                
+
                 if (page.DirectoryId == dirId)
                 {
                     await DeletePage(page, dir);

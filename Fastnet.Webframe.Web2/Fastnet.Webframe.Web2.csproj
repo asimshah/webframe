@@ -72,6 +72,7 @@
     <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
+    <None Remove="ClientApp\app\components\designer\designer.service.ts" />
     <None Remove="ClientApp\app\components\home\editor\directory-properties.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editable-page.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\insert-image.component.html" />
@@ -82,6 +83,7 @@
     <None Remove="ClientApp\app\components\home\editor\insert-link.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\page-editor.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\webframe-editor.module.ts" />
+    <None Remove="ClientApp\app\components\shared\content-browser.module.ts" />
     <None Remove="ClientApp\app\components\test\mcetest.component.ts" />
     <None Remove="ClientApp\app\fastnet\controls\controlbase.type.ts" />
     <None Remove="ClientApp\app\fastnet\core\base64.chunkreader.ts" />
@@ -142,7 +144,6 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\app\components\cms\" />
-    <Folder Include="ClientApp\app\components\designer\" />
     <Folder Include="data\" />
     <Folder Include="logs\" />
     <Folder Include="Default Pages\" />
@@ -343,7 +344,8 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\editor\directory-properties.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\designer\designer.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\directory-properties.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editable-page.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\insert-image.component.html" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\insert-image.component.scss" />
@@ -352,6 +354,7 @@
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\insert-link.component.scss" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\insert-link.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\page-editor.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\content-browser.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\test\mcetest.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\controls\bool-enum-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\controls\bool-input.component.ts" />
@@ -370,11 +373,11 @@
     <TypeScriptCompile Include="ClientApp\app\fastnet\controls\search-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\controls\text-input.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\fastnet\controls\tree-view.component.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\editor\content-browser.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\content-browser.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\webframe-editor.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editor.routing.ts" />
-    <TypeScriptCompile Include="ClientApp\app\components\home\editor\page-properties.component.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\shared\page-properties.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\membership\membership.shared.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\menu.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\page\sidebarmenu.component.ts" />

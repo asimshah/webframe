@@ -4,8 +4,9 @@ import { PageComponent } from '../../page/page.component';
 import { PageEditorComponent } from './page-editor.component';
 import { PageService } from '../../shared/page.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { EditorService, Page, PageType, NewPage } from './editor.service';
+//import { EditorService, Page, PageType, NewPage } from './editor.service';
 import { PopupMessageComponent, PopupMessageOptions } from '../../../fastnet/controls/popup-message.component';
+import { Page, PageType, EditorService, NewPage } from '../../shared/editor.service';
 
 @Component({
     selector: 'editable-page',

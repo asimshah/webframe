@@ -1,4 +1,44 @@
-﻿<div>
-    <div>This is the designer app</div>
-    <router-outlet></router-outlet>
+﻿<div class="SitePanel">
+    <div class="BannerPanel">
+        <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
+    </div>
+    <div class="command-bar">
+        <button (click)="goBack()">Back</button>
+        <button (click)="goToMenuEditor()">Menu Editor</button>
+        <button (click)="goToStyleEditor()">Style Editor</button>
+    </div>
+    <div *ngIf="currentMode === Modes.MenuEditor">
+        <h2>Menu Editor</h2>
+        <inline-dialog>
+            <div dialogbody>
+                <ng-container *ngIf="menus && menus.length > 0">
+                    <div class="menu-edit-panel">
+                        <ng-container *ngFor="let m of menus; let first = first; let last = last">
+                            <span *ngIf="!first; else blank" title="Move Item  Up" class=" fa fa-arrow-up" (click)="moveMenuItemUp(m)"></span>
+                            <span *ngIf="!last; else blank" title="Move Item Down" class=" fa fa-arrow-down" (click)="moveMenuItemDown(m)"></span>
+                            <span title="Delete Item" class=" fa fa-remove" (click)="removeMenuItem(m)"></span>
+                            <text-input label="Text" [(ngModel)]="m.text"></text-input>
+                            <text-input label="Url" [(ngModel)]="m.url"></text-input>
+                            <span title="Search for Site Page" class="fa fa-search" (click)="showContentBrowser(m)"></span>
+                            <ng-template #blank><span></span></ng-template>
+                        </ng-container>
+                    </div>
+                </ng-container>
+            </div>
+            <div dialogcommandbar>
+                <div class="left">
+                    <button tabindex="0" (click)="addMenuItem()">Add Menu Item</button>
+                </div>
+                <div class="right">
+                    <button tabindex="3" [disabled]="!menusHaveChanged()" (click)="saveChanges()">Save Changes</button>
+                    <button tabindex="4" class="cancel" (click)="cancelChanges()">Cancel</button>
+                </div>
+            </div>
+        </inline-dialog>
+        <content-browser [selectmode]="true"></content-browser>
+    </div>
+    <div *ngIf="currentMode === Modes.StyleEditor">
+        <h2>Style Editor</h2>
+    </div>
+    <popup-message caption="Designer" [width]="400"></popup-message>
 </div>

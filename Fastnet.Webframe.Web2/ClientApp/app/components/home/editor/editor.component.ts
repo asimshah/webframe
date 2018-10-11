@@ -5,8 +5,10 @@ import { Router, ActivatedRoute, Event } from '@angular/router';
 import { PageService } from '../../shared/page.service';
 import { AuthenticationService } from '../../authentication/authentication.service';
 import { AdminGuard } from '../../routeguards/admin-guard.service';
-import { ContentBrowserComponent } from './content-browser.component';
-import { PageType } from './editor.service';
+//import { ContentBrowserComponent } from './content-browser.component';
+//import { PageType } from './editor.service';
+import { ContentBrowserComponent } from '../../shared/content-browser.component';
+import { PageType } from '../../shared/editor.service';
 
 
 @Component({
