@@ -72,6 +72,7 @@
     <None Remove="ClientApp\app\components\authentication\resetpassword.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
+    <None Remove="ClientApp\app\components\cms\cms.service.ts" />
     <None Remove="ClientApp\app\components\designer\designer.service.ts" />
     <None Remove="ClientApp\app\components\home\editor\directory-properties.component.ts" />
     <None Remove="ClientApp\app\components\home\editor\editable-page.component.ts" />
@@ -136,6 +137,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="ClientApp\app\components\designer\less\less.js" />
+    <Content Include="ClientApp\app\components\designer\less\less.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Fastnet.webframe.BookingData2\Fastnet.Webframe.BookingData2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.Common2\Fastnet.Webframe.Common2.csproj" />
     <ProjectReference Include="..\Fastnet.Webframe.CoreData2\Fastnet.Webframe.CoreData2.csproj" />
@@ -143,10 +149,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ClientApp\app\components\cms\" />
     <Folder Include="data\" />
     <Folder Include="logs\" />
     <Folder Include="Default Pages\" />
+    <Folder Include="CustomStyles\" />
     <Folder Include="Screenshots\" />
   </ItemGroup>
 
@@ -344,7 +350,9 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\cms\cms.service.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\designer\designer.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\page\custom-css.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\shared\directory-properties.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\editable-page.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\home\editor\insert-image.component.html" />

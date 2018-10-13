@@ -3,16 +3,20 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../shared/base.component';
 import { PageService } from '../shared/page.service';
 import { Router } from '@angular/router';
-import { DesignerService, Menu } from './designer.service';
+import { DesignerService, Menu, StyleTexts } from './designer.service';
 import { forEach } from '@angular/router/src/utils/collection';
 import { ContentBrowserComponent, SelectableContent, SelectedItem } from '../shared/content-browser.component';
 import { PopupMessageComponent, PopupMessageOptions } from '../../fastnet/controls/popup-message.component';
+import "brace";
+import "brace/mode/less";
+import "brace/theme/cobalt";
+import "../designer/less/less.js";
+declare var less: any;
 
 enum Modes {
     MenuEditor,
     StyleEditor
 }
-
 
 @Component({
     selector: 'webframe-designer',
@@ -26,6 +30,9 @@ export class DesignerComponent extends BaseComponent implements OnInit {
     public currentMode: Modes = Modes.MenuEditor;
     public menus: Menu[];
     private originalMenus: string;
+    public styleTexts: StyleTexts;
+    private originalLessText: string;
+    public aceEditorOptions: any = {maxLines: 35, printMargin: false};
     constructor(pageService: PageService, private designerService: DesignerService, private router: Router) {
         super(pageService);
     }
@@ -41,9 +48,10 @@ export class DesignerComponent extends BaseComponent implements OnInit {
             await this.loadMenus();
         }
     }
-    public goToStyleEditor() {
+    public async goToStyleEditor() {
         if (this.currentMode !== Modes.StyleEditor) {
             this.currentMode = Modes.StyleEditor;
+            await this.loadStylesheet();
         }
     }
     public addMenuItem() {
@@ -59,8 +67,12 @@ export class DesignerComponent extends BaseComponent implements OnInit {
         index = 0;
         this.menus.forEach((m) => { m.index = index++;});
     }
-    public menusHaveChanged(): boolean {
-        return JSON.stringify(this.menus) !== this.originalMenus;
+    public changesExist(): boolean {
+        if (this.currentMode === Modes.MenuEditor) {
+            return JSON.stringify(this.menus) !== this.originalMenus;
+        } else {
+            return this.styleTexts && this.styleTexts.less !== this.originalLessText;
+        }
     }
     public moveMenuItemUp(m: Menu) {
         let index = this.menus.findIndex(x => x === m);
@@ -75,7 +87,11 @@ export class DesignerComponent extends BaseComponent implements OnInit {
         this.sortMenus();
     }
     public async cancelChanges() {
-        await this.loadMenus();
+        if (this.currentMode === Modes.MenuEditor) {
+            await this.loadMenus();
+        } else {
+            await this.loadStylesheet();
+        }
     }
     public showContentBrowser(m: Menu) {
         this.contentBrowser.openForSelection(SelectableContent.PagesOnly, (si?: SelectedItem) => {
@@ -85,16 +101,33 @@ export class DesignerComponent extends BaseComponent implements OnInit {
         });
     }
     public async saveChanges() {
-        let sr = await this.designerService.updateMenus(this.menus);
-        if (sr.success === false) {
-            let options = new PopupMessageOptions();
-            options.warning = true;
-            this.popupMessage.open(sr.errors, () => { });
+        if (this.currentMode === Modes.MenuEditor) {
+            let sr = await this.designerService.updateMenus(this.menus);
+            if (sr.success === false) {
+                let options = new PopupMessageOptions();
+                options.warning = true;
+                this.popupMessage.open(sr.errors, () => { });
+            } else {
+                this.popupMessage.open("Menu changes saved", async () => {
+                    await this.loadMenus();
+                });
+            }
         } else {
-            this.popupMessage.open("Menu changes saved", async () => {
-                await this.loadMenus();
+            less.render(this.styleTexts.less, async (e: any, output: any) => {
+                //let cssText = output.css;
+                //console.log(`${JSON.stringify(cssText)}`);
+                this.styleTexts.css = output.css;
+                await this.designerService.updateCustomStylesheet(this.styleTexts);
+                this.popupMessage.open("Style changes saved", async () => {
+                    await this.loadStylesheet();
+                });
             });
         }
+    }
+    public async loadStylesheet() {
+        this.styleTexts = await this.designerService.getCustomStylesheet();
+        this.originalLessText = this.styleTexts.less;
+        //console.log(`${JSON.stringify(ss)}`);
     }
     private sortMenus() {
         this.menus.sort((l, r) => {
@@ -105,9 +138,6 @@ export class DesignerComponent extends BaseComponent implements OnInit {
     }
     private async loadMenus() {
         this.menus = await this.designerService.getMenus();
-        this.saveOriginalmenus();
-    }
-    private saveOriginalmenus() {
         this.originalMenus = JSON.stringify(this.menus);
     }
 }

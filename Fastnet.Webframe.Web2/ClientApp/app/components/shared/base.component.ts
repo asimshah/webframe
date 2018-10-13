@@ -1,5 +1,5 @@
 ﻿
-import { OnInit } from "@angular/core";
+import { OnInit, AfterViewInit } from "@angular/core";
 import { PageService } from "./page.service";
 import { ValidationContext, ValidationResult } from "../../fastnet/controls/controls.types";
 import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from "../../fastnet/controls/controlbase.type";
@@ -8,11 +8,15 @@ import { isWhitespaceOrEmpty, isNullorUndefined, ValidationMethod } from "../../
 
 export  function nothingOnClose (r: boolean) { };
 
-export class BaseComponent  implements OnInit{
+export class BaseComponent  implements OnInit, AfterViewInit {
     protected bannerPageId: number | null;
     passwordValidator: ValidationMethod = (ctx: ValidationContext, val: any) => this.passwordValidator2Async(ctx, val);
     constructor(protected pageService: PageService) {
 
+    }
+    async ngAfterViewInit() {
+        console.log("BaseComponent: ngAfterViewInit()");
+        this.bannerPageId = await this.pageService.getDefaultBanner();
     }
     async ngOnInit() {
         console.log("BaseComponent: ngOnInit");

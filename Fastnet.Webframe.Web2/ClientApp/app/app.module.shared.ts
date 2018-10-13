@@ -19,10 +19,12 @@ import { TestComponent } from './components/test/test.component';
 import { ControlsModule } from './fastnet/controls/controls.module';
 import { MCETestComponent } from './components/test/mcetest.component';
 import { TinyMCEModule } from './fastnet/tinymce/tinymce.module';
+//import { CustomCssComponent } from './components/home/custom-css.component';
 
 @NgModule({
     declarations: [
         AppComponent,
+        //CustomCssComponent,
         HomeComponent,
         PageNotFoundComponent,
         LoginComponent,

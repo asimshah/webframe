@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MenuComponent } from './menu.component';
@@ -7,7 +7,8 @@ import { PageService, MenuDetails } from '../shared/page.service';
 @Component({
     selector: 'webframe-sidebarmenu',
     templateUrl: './sidebarmenu.component.html',
-    styleUrls: ['./sidebarmenu.component.scss']
+    styleUrls: ['./sidebarmenu.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class SidebarMenuComponent extends MenuComponent {
     hideMenus: boolean = true;

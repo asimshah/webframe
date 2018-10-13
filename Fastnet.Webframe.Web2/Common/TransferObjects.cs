@@ -362,4 +362,24 @@ namespace Fastnet.Webframe.Web2
         public string Text { get; set; }
         public string Url { get; set; }
     }
+    public class StylesheetDTO
+    {
+        public string Less { get; set; }
+        public string Css { get; set; }
+    }
+    public class MailDTO
+    {
+        public long Id { get; set; }
+        public string Failure { get; set; }
+        public string From { get; set; }
+        public bool MailDisabled { get; set; }
+        public string MailTemplate { get; set; }
+        public string RecordedOn { get; set; }
+        public bool Redirected { get; set; }
+        public string RedirectedTo { get; set; }
+        public string Subject { get; set; }
+        public string To { get; set; }
+        public string Remark { get; set; }
+        public string CombinedDescription { get; set; }
+    }
 }

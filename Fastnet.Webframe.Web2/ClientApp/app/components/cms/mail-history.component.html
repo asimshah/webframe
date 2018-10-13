@@ -1,0 +1,45 @@
+﻿<div class="mail-history">
+    <div class="top-panel">
+        <h2>Mail History</h2>
+        <div class="search-panel">
+            <search-input label="Search" [(ngModel)]="searchText" (clearClick)="onSearchClear()" (searchClick)="onSearch()"></search-input>
+        </div>
+    </div>
+    <div class="headings">
+        <div class="recorded-on">Date/Time</div>
+        <div class="sent-to">To</div>
+        <div class="recorded-on">Subject</div>
+        <div class="sent-from">From</div>
+        <div class="template">Template</div>
+        <div class="template">&nbsp;</div>
+    </div>
+    <div class="history-table">
+        <ng-container *ngIf="filteredHistory && filteredHistory.length > 0">
+            <ng-container *ngFor="let m of filteredHistory; let o = odd">
+                <div class="history-item" [ngClass]="{'odd-row': o}">
+                    <div class="recorded-on">{{m.recordedOn}}</div>
+                    <div class="sent-to" (click)="showBody(m)">{{m.to}}</div>
+                    <div class="recorded-on">{{m.subject}}</div>
+                    <div class="sent-from">{{m.from}}</div>
+                    <div class="template">{{m.mailTemplate}}</div>
+                    <div *ngIf="m.combinedDescription && m.combinedDescription.trim().length > 0; else blank"
+                         class="remark" [ngClass]="{'redirectedto': m.redirectedTo, 'mail-disabled': m.mailDisabled, 'mail-failed-delivery':  m.failure && m.failure.trim().length > 0}">{{m.combinedDescription}}</div>
+                    <ng-template #blank><div class="remark">&nbsp;</div></ng-template>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+    <popup-dialog #mailbody [width]="600">
+        <div dialogheader>
+            <div>{{mailBodyCaption}}</div>
+        </div>
+        <div dialogbody>
+            <div class="mail-body" [innerHTML]="mailBody"></div>
+        </div>
+        <div dialogcommandbar>
+            <div class="centre">
+                <button (click)="onCloseMailBody()" >Close</button>
+            </div>
+        </div>
+    </popup-dialog>
+</div>

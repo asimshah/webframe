@@ -4,13 +4,13 @@
         <div class="spacer"></div>
         <button class="small" (click)="onOpenSiteContentBrowser()">Site Content Browser</button>
     </div>
-    <content-browser ></content-browser>
+    <content-browser></content-browser>
     <div *ngIf="member" class="login-status">
         <div class="login-name">{{member.name}}</div>
     </div>
     <div class="BannerPanel">
         <editable-page *ngIf="editMode === true" [pageId]="this.getBannerPageId()" [pagetype]="PageType.Banner" [centrePageId]="this.getCentrePageId()" [editable]="isBannerPageEditable()" (contentsaved)="bannerpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
-        <webframe-page #bannerpage  [pageId]="this.getBannerPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
+        <webframe-page #bannerpage [pageId]="this.getBannerPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         <webframe-sidebarmenu *ngIf="editMode === false"></webframe-sidebarmenu>
     </div>
     <div class="MenuPanel">
@@ -19,17 +19,18 @@
     <div class="ContentPanel">
         <div class="LeftPanel">
             <editable-page *ngIf="editMode === true" [pageId]="this.getLeftPageId()" [pagetype]="PageType.Left" [centrePageId]="this.getCentrePageId()" [editable]="isLeftPageEditable()" (contentsaved)="leftpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
-            <webframe-page #leftpage  [pageId]="this.getLeftPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
+            <webframe-page #leftpage [pageId]="this.getLeftPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
         <div class="CentrePanel">
             <editable-page *ngIf="editMode === true" [pageId]="this.getCentrePageId()" [pagetype]="PageType.Centre" [editable]="true" (contentsaved)="centrepage.loadPage()"></editable-page>
             <webframe-page #centrepage [pageId]="this.getCentrePageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
         <div class="RightPanel">
-            <editable-page *ngIf="editMode === true" [pageId]="this.getRightPageId()"  [pagetype]="PageType.Right" [centrePageId]="this.getCentrePageId()" [editable]="isRightPageEditable()" (contentsaved)="rightpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
-            <webframe-page #rightpage  [pageId]="this.getRightPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
+            <editable-page *ngIf="editMode === true" [pageId]="this.getRightPageId()" [pagetype]="PageType.Right" [centrePageId]="this.getCentrePageId()" [editable]="isRightPageEditable()" (contentsaved)="rightpage.loadPage()" (sidecontentchanged)="onSideContentChanged()"></editable-page>
+            <webframe-page #rightpage [pageId]="this.getRightPageId()" [ngClass]="{'hide': editMode === true}"></webframe-page>
         </div>
     </div>
+    <custom-css></custom-css>
 </div>
 
 

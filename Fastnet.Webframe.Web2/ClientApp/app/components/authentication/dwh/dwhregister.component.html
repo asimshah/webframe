@@ -4,22 +4,23 @@
     </div>
     <inline-dialog>
         <div dialogbody>
-            <email-input label="Email Address" [(ngModel)]="model.member.emailAddress" [validator]="emailAddressValidator" ></email-input>
-            <password-input label="Password"  [(ngModel)]="model.member.password" [validator]="passwordValidator2Async"></password-input>
-            <password-input label="Confirm Password"  [(ngModel)]="model.passwordConfirmation" [validator]="confirmPasswordValidator"></password-input>
-            <text-input label="First Name"  [(ngModel)]="model.member.firstName" [validator]="firstNameValidatorAsync"></text-input>
-            <text-input label="Last Name"  [(ngModel)]="model.member.lastName" [validator]="lastNameValidatorAsync"></text-input>
-            <text-input label="Club/Organisation"  [(ngModel)]="model.member.organisation"></text-input>
-            <text-input label="BMC Membership"  [(ngModel)]="model.member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>
+            <email-input label="Email Address" [(ngModel)]="model.member.emailAddress" [validator]="emailAddressValidator"></email-input>
+            <password-input label="Password" [(ngModel)]="model.member.password" [validator]="passwordValidator2Async"></password-input>
+            <password-input label="Confirm Password" [(ngModel)]="model.passwordConfirmation" [validator]="confirmPasswordValidator"></password-input>
+            <text-input label="First Name" [(ngModel)]="model.member.firstName" [validator]="firstNameValidatorAsync"></text-input>
+            <text-input label="Last Name" [(ngModel)]="model.member.lastName" [validator]="lastNameValidatorAsync"></text-input>
+            <text-input label="Club/Organisation" [(ngModel)]="model.member.organisation"></text-input>
+            <text-input label="BMC Membership" [(ngModel)]="model.member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>
         </div>
         <div dialogcommandbar>
             <div class="right">
                 <button (click)="onRegister()">Register</button>
-                <button class="cancel"  (click)="onCancel()">Cancel</button>
+                <button class="cancel" (click)="onCancel()">Cancel</button>
             </div>
         </div>
     </inline-dialog>
-    <pre>{{model | json}}</pre>
+    <custom-css></custom-css>
+    <!--<pre>{{model | json}}</pre>-->
 </div>
 <popup-dialog>
     <div dialogheader>

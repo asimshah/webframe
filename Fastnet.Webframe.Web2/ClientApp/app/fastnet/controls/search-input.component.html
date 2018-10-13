@@ -1,0 +1,17 @@
+﻿<div class="search-input">
+    <label [for]="controlId">
+        <span>{{label}}</span>
+    </label>
+    <div class="control-container">
+        <input [id]="controlId" #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="onTextChanged($event)" (keyup)="onKeyUp($event)" />
+        <button class="clear-button" [ngClass]="{'not-visible': value?.length === 0}" (click)="clearSearchText()">
+            <span class="fa fa-remove"></span>
+        </button>
+        <button class="search-button" (click)="onSearchClick($event)">
+            <span class="fa fa-search"></span>
+        </button>
+    </div>
+    <div class="validation-text">
+        <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
+    </div>
+</div>

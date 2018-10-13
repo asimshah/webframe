@@ -34,6 +34,105 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             return this.coreDataContext;
         }
+        [HttpGet("get/mail/body/{id}")]
+        public async Task<IActionResult> GetMailBody(long id)
+        {
+            try
+            {
+                var mail = await coreDataContext.MailActions.SingleOrDefaultAsync(x => x.ActionBaseId == id);
+                if (mail != null)
+                {
+                    return SuccessResult(mail.MailBody);
+                }
+                else
+                {
+                    throw new Exception($"mail id {id} not found");
+                }
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpGet("get/mailhistory")]
+        public async Task<IActionResult> GetMailHistory()
+        {
+            //Func<string, bool, string, bool, string, string> buildText = (failure, redirected, redirectedTo, disabled, remark) =>
+            string buildText(string failure, bool redirected, string redirectedTo, bool disabled, string remark)
+            {
+                List<string> parts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(remark))
+                {
+                    parts.Add(remark);
+                }
+                if (redirected)
+                {
+                    parts.Add($"Redirected to {redirectedTo}");
+                }
+                if (disabled)
+                {
+                    parts.Add("Mail is disabled");
+                }
+                if (!string.IsNullOrWhiteSpace(failure))
+                {
+                    parts.Add(failure);
+                }
+                return parts.Count() > 0 ? string.Join(" ", parts) : " ";
+            };
+            var mails = await coreDataContext.Actions.OfType<MailAction>()
+                .OrderByDescending(x => x.RecordedOn)
+                .ToArrayAsync();
+            var result = mails.Select(x => new MailDTO
+            {
+                Id = x.ActionBaseId,
+                Failure = x.Failure,
+                From = x.From,
+                MailDisabled = x.MailDisabled,
+                MailTemplate = x.MailTemplate,
+                RecordedOn = x.RecordedOn.UtcDateTime.ToString("ddMMMyyyy HH:mm:ss"),
+                Redirected = x.Redirected,
+                RedirectedTo = x.RedirectedTo,
+                Subject = x.Subject,
+                To = x.To,
+                Remark = x.Remark,
+                CombinedDescription = buildText(x.Failure, x.Redirected, x.RedirectedTo, x.MailDisabled, x.Remark)
+            });
+            return SuccessResult(result);
+        }
+        [HttpGet("get/stylesheet")]
+        public async Task<IActionResult> GetCustomStyleSheet()
+        {
+            var location = System.IO.Path.Combine(env.ContentRootPath, "CustomStyles");
+            var customLessFile = System.IO.Path.Combine(location, "custom.less");
+            var lessText = await System.IO.File.ReadAllTextAsync(customLessFile);
+            var dto = new StylesheetDTO
+            {
+                Less = lessText,
+                Css = string.Empty
+            };
+            return SuccessResult(dto);
+        }
+        [HttpPost("update/stylesheet")]
+        public async Task<IActionResult> UpdateCustomStylesheet()
+        {
+            try
+            {
+                var dto = Request.FromBody<StylesheetDTO>();
+                var location = System.IO.Path.Combine(env.ContentRootPath, "CustomStyles");
+                var customLessFile = System.IO.Path.Combine(location, "custom.less");
+                await System.IO.File.WriteAllTextAsync(customLessFile, dto.Less);
+                location = System.IO.Path.Combine(env.WebRootPath, "css");
+                var customCssFile = System.IO.Path.Combine(location, "custom.css");
+                await System.IO.File.WriteAllTextAsync(customCssFile, dto.Css);
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
         [HttpGet("get/menus")]
         public async Task<IActionResult> GetMenus()
         {

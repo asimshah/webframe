@@ -7,11 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { PageModule } from '../page/page.module';
 import { DesignerService } from './designer.service';
 import { ControlsModule } from '../../fastnet/controls/controls.module';
-//import { ContentBrowserComponent } from '../shared/content-browser.component';
-//import { PagePropertiesComponent } from '../shared/page-properties.component';
-//import { DirectoryPropertiesComponent } from '../shared/directory-properties.component';
 import { ContentBrowserModule } from '../shared/content-browser.module';
 import { EditorService } from '../shared/editor.service';
+import { AceEditorModule } from 'ng2-ace-editor';
 
 @NgModule({
     imports: [
@@ -21,6 +19,7 @@ import { EditorService } from '../shared/editor.service';
         PageModule,
         ControlsModule,
         ContentBrowserModule,
+        AceEditorModule
     ],
     exports: [],
     declarations: [

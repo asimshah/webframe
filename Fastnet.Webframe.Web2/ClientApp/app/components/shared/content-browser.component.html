@@ -45,7 +45,8 @@
                                 <img src="{{page.iconUrl}}" />
                                 <img *ngIf="page.landingPage" src="{{page.landingPageIconUrl}}" />
                             </div>
-                            <a  href="/edit/{{page.id}}">{{page.url}}</a>
+                            <a *ngIf="page.pageType === PageType.Centre" href="/edit/{{page.id}}">{{page.url}}</a>
+                            <div *ngIf="page.pageType !== PageType.Centre">{{page.url}}</div>
                             <div>
                                 <span> {{page.name}}</span>
                                 <span class="page-type"> {{PageType[page.pageType]}}</span>

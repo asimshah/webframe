@@ -7,29 +7,14 @@ $default-sitepanel-width: 840px;
 }
 
 .SitePanel {
-    /*.edit-panel {
-        background-color: black;
-        padding-left: 0.25em;
-        padding-right: 0.25em;
-    }*/
 
     .login-status {
         z-index: 333;
-        /*&.enable {
-            display: block;
-        }
 
-        &:not(.enable) {
-            display: none;
-        }*/
         position: relative;
 
         .login-name {
             text-decoration: none;
-            /*cursor: pointer;*/
-            /*&:hover {
-                text-decoration: underline;
-            }*/
         }
 
         div {
@@ -49,7 +34,13 @@ $default-sitepanel-width: 840px;
         display: none;
     }
 }
-
+webframe-sidebarmenu {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+}
 
 
 @media all and (max-width: 748px) {

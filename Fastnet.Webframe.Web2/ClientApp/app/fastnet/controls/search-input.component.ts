@@ -5,22 +5,7 @@ import { InputControlBase, ControlBase } from "./controlbase.type";
 
 @Component({
     selector: 'search-input',
-    template: `<div class="search-input" >               
-            <label>
-                <span>{{label}}</span>
-            <input #focusable type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (ngModelChange)="onTextChanged($event)" (keyup)="onKeyUp($event)"/>
-            
-            </label>
-                <button class="clear-button" [ngClass]="{'not-visible': value?.length === 0}" (click)="clearSearchText()">
-                    <span class="fa fa-remove"></span>
-                </button>
-                <button class="search-button"(click)="onSearchClick($event)">
-                    <span class="fa fa-search"></span>
-                </button>
-            <div class="validation-text">
-                <span *ngIf="vr && vr.valid === false" class="text-error">{{vr.message}}</span>
-            </div>
-        </div>`,
+    templateUrl: './search-input.component.html',
     styleUrls: ['./search-input.component.scss'],
     providers: [
         {
@@ -34,8 +19,10 @@ import { InputControlBase, ControlBase } from "./controlbase.type";
     ]
 })
 export class SearchInputControl extends InputControlBase {
+    private static controlCount = 0;
     @Output() searchClick = new EventEmitter();
     @Output() clearClick = new EventEmitter();
+    public controlId: string = `sic_${++SearchInputControl.controlCount}`;
     constructor() {
         super();
         this.setReference("search");
