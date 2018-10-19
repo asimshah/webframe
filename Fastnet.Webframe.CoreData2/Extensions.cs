@@ -216,6 +216,7 @@ namespace Fastnet.Webframe.CoreData2
                 Failure = failure
             };
             await ctx.Actions.AddAsync(ma);
+
         }
         public static async Task RecordChanges(this CoreDataContext ctx, Group group, string actionBy, GroupAction.GroupActionTypes actionType, Member m = null)
         {
@@ -283,6 +284,8 @@ namespace Fastnet.Webframe.CoreData2
                 case MemberAction.MemberActionTypes.PasswordReset:
                 case MemberAction.MemberActionTypes.Deactivation:
                 case MemberAction.MemberActionTypes.Deletion:
+                case MemberAction.MemberActionTypes.LoggedIn:
+                case MemberAction.MemberActionTypes.LoggedOut:
                     MemberAction ma = new MemberAction
                     {
                         MemberId = m.Id,

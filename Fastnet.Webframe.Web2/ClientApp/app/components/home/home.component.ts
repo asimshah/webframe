@@ -8,6 +8,7 @@ import { PageKeys, PageService } from '../shared/page.service';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { AdminGuard } from '../routeguards/admin-guard.service';
 import { Member } from '../shared/common.types';
+import { MemberGuard } from '../routeguards/member-guard.service';
 
 
 // Notes
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private pageService: PageService,
         private authenticationService: AuthenticationService,
-        private adminGuard: AdminGuard) {
+        private adminGuard: AdminGuard, private memberGuard: MemberGuard) {
         this.isEditorComponent = false;
         //this.canQueryPages = false;// !this.RunningInNode();
     }
@@ -105,7 +106,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             if (link.href.startsWith(localUrl)) {
                 let path = link.href.substr(localUrl.length + 1);
                 let parts = path.split("/");
-                let routeName = parts[0].toLocaleLowerCase();
+                let routeName = parts[0].toLowerCase();
                 switch (routeName) {
                     case "home":
                     case "login":
@@ -117,12 +118,22 @@ export class HomeComponent implements OnInit, OnDestroy {
                     case "cms":
                     case "designer":
                     case "booking":
-                        if (this.adminGuard.canActivate()) {
-                            this.routeTo(e, routeName);
+                        if (parts.length > 1 && parts[1].toLowerCase() === "admin") {
+                            if (this.adminGuard.canActivate()) {
+                                this.routeTo(e, path);
+                            } else {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                this.router.navigate(["permissiondenied", "This feature is restricted", "false"]);
+                            }
                         } else {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            this.router.navigate(["permissiondenied", "This feature is restricted", "false"]);
+                            if (this.memberGuard.canActivate()) {
+                                this.routeTo(e, routeName);
+                            } else {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                this.router.navigate(["permissiondenied", "This feature is restricted", "false"]);
+                            }
                         }
                         break;
                     case "page":

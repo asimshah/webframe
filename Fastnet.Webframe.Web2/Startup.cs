@@ -150,16 +150,27 @@ namespace Fastnet.Webframe.Web2
             {
                 try
                 {
-                    var db = scope.ServiceProvider.GetService<CoreDataContext>();
+                    var coreDb = scope.ServiceProvider.GetService<CoreDataContext>();
                     var log = scope.ServiceProvider.GetService<ILogger<CoreDataDbInitialiser>>();
-                    CoreDataDbInitialiser.Initialise(db, log, hostingEnvironment);
+                    CoreDataDbInitialiser.Initialise(coreDb, log, hostingEnvironment);
                     var aa = new ApplicationAction { Version = version, Remark = $"Webframe startup, machine {Environment.MachineName}, process {System.Diagnostics.Process.GetCurrentProcess().Id}" };
-                    db.Actions.Add(aa);
-                    db.SaveChanges();
+                    coreDb.Actions.Add(aa);
+                    coreDb.SaveChanges();
                 }
                 catch (Exception xe)
                 {
                     log.Error(xe, "Error initialising CoreDataContext");
+                }
+
+                try
+                {
+                    var bookingDb2 = scope.ServiceProvider.GetService<BookingDataContext>();
+                    var log2 = scope.ServiceProvider.GetService<ILogger<BookingDbInitialiser>>();
+                    BookingDbInitialiser.Initialise(bookingDb2, log2);
+                }
+                catch (Exception xe)
+                {
+                    log.Error(xe, "Error initialising BookingDataContext");
                 }
             }
             if (appDb.Users.ToArray().Count(x => string.IsNullOrWhiteSpace(x.NormalizedUserName)) > 0)

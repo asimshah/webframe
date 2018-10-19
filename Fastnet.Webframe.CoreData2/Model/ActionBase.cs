@@ -210,8 +210,13 @@ namespace Fastnet.Webframe.CoreData2
             Modification,
             [Description("Account Deactivated")]
             Deactivation,
+            [Description("Logged In")]
+            LoggedIn,
+            [Description("Logged Out")]
+            LoggedOut,
             [Description("Account Deleted")]
-            Deletion = 64
+            Deletion = 64,
+
         }
         public string MemberId { get; set; }
         [Column("FullName1")]

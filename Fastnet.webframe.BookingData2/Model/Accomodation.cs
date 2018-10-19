@@ -15,7 +15,7 @@ namespace Fastnet.Webframe.BookingData2
         public long AccomodationExtraId { get; set; }
         public OptionalExtras Extra { get; set; }
         [ForeignKey("Accomodation_AccomodationId")]
-        public Accomodation Accomodation { get; set; }
+        public virtual Accomodation Accomodation { get; set; }
 
         public long Accomodation_AccomodationId { get; set; }
     }
@@ -34,14 +34,15 @@ namespace Fastnet.Webframe.BookingData2
         public string Fullname { get; set; }
         public bool SubAccomodationSeparatelyBookable { get; set; }
         public bool Bookable { get; set; } // if false, then SubAccomodationSeparatelyBookable should be true, else it is means this accomodation has been taken out of service
-        [ForeignKey("ParentAccomodation_AccomodationId")]
-        public Accomodation ParentAccomodation { get; set; }
-        public ICollection<AccomodationExtra> Extras { get; set; }
-        public ICollection<Accomodation> SubAccomodation { get; set; }
-        public ICollection<Availability> Availabilities { get; set; }
-        public ICollection<BookingAccomodation> BookingAccomodations { get; set; }
+        //[ForeignKey("ParentAccomodation_AccomodationId")]
 
-        internal long ParentAccomodation_AccomodationId { get; set; }
+        public virtual Accomodation ParentAccomodation { get; set; }
+        public virtual ICollection<AccomodationExtra> Extras { get; set; }
+        public virtual ICollection<Accomodation> SubAccomodation { get; set; }
+        public virtual ICollection<Availability> Availabilities { get; set; }
+        public virtual ICollection<BookingAccomodation> BookingAccomodations { get; set; }
+
+        public long? ParentAccomodation_AccomodationId { get; set; }
 
         public override Accomodation GetParent()
         {

@@ -382,4 +382,23 @@ namespace Fastnet.Webframe.Web2
         public string Remark { get; set; }
         public string CombinedDescription { get; set; }
     }
+    public class MemberHistoryDTO
+    {
+        public long Id { get; internal set; }
+        public string RecordedOn { get; internal set; }
+        public string ActionName { get; internal set; }
+        public string EmailAddress { get; internal set; }
+        public string FullName { get; internal set; }
+        public string ActionBy { get; internal set; }
+        public bool HasPropertyChanged { get; internal set; }
+        public string PropertyChanged { get; internal set; }
+        public string OldValue { get; internal set; }
+        public string NewValue { get; internal set; }
+    }
+    public class Email
+    {
+        public string Destination { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
+    }
 }

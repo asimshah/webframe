@@ -14,6 +14,6 @@ namespace Fastnet.Webframe.BookingData2
         public long PriceStructureId { get; set; }
         [Required]
         public string Name { get; set; }
-        public ICollection<Period> Periods { get; set; }
+        public virtual ICollection<Period> Periods { get; set; }
     }
 }

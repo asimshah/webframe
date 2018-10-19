@@ -1,1 +1,34 @@
-﻿<div>Membership History</div>
+﻿<div class="membership-history">
+    <div class="top-panel">
+        <h2>Membership History</h2>
+        <div class="search-panel">
+            <search-input label="Search" [(ngModel)]="searchText" (clearClick)="onSearchClear()" (searchClick)="onSearch()"></search-input>
+        </div>
+    </div>
+    <div class="headings">
+        <div class="recorded-on">Date/Time</div>
+        <div class="action">Action</div>
+        <div class="email">Email</div>
+        <div class="name">Name</div>
+        <div class="action-by">By</div>
+        <div class="property">Property</div>
+        <div class="old-value">Old</div>
+        <div class="new-value">New</div>
+    </div>
+    <div class="history-table">
+        <ng-container *ngIf="filteredHistory && filteredHistory.length > 0">
+            <ng-container *ngFor="let mh of filteredHistory; let o = odd">
+                <div class="history-item" [ngClass]="{'odd-row': o}">
+                    <div class="recorded-on">{{mh.recordedOn}}</div>
+                    <div class="action">{{mh.actionName}}</div>
+                    <div class="email">{{mh.emailAddress}}</div>
+                    <div class="name">{{mh.fullName}}</div>
+                    <div class="action-by">{{mh.actionBy}}</div>
+                    <div class="property">{{mh.propertyChanged}}</div>
+                    <div class="old-value">{{mh.oldValue}}</div>
+                    <div class="new-value">{{mh.newValue}}</div>
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>

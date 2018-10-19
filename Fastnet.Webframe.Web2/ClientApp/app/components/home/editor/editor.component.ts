@@ -9,6 +9,7 @@ import { AdminGuard } from '../../routeguards/admin-guard.service';
 //import { PageType } from './editor.service';
 import { ContentBrowserComponent } from '../../shared/content-browser.component';
 import { PageType } from '../../shared/editor.service';
+import { MemberGuard } from '../../routeguards/member-guard.service';
 
 
 @Component({
@@ -27,8 +28,8 @@ export class EditorComponent extends HomeComponent {
         route: ActivatedRoute,
         pageService: PageService,
         authenticationService: AuthenticationService,
-        adminGuard: AdminGuard) {
-        super(router, route, pageService, authenticationService, adminGuard);
+        adminGuard: AdminGuard, memberGuard: MemberGuard) {
+        super(router, route, pageService, authenticationService, adminGuard, memberGuard);
         this.isEditorComponent = true;
         //console.log(`editor component`);
     }

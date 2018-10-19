@@ -1,0 +1,41 @@
+﻿<div class="booking-list">
+
+    <scrollable-table class="booking-list-table" [caption]="getCaption()"
+        (searchclear)="onSearchClear()" (search)="onSearch($event)"
+        busyText="Loading bookings, please wait ...">
+        <table-header>
+            <table-column width="64px">Reference</table-column>
+            <table-column width="64px">From</table-column>
+            <table-column class="right-align" width="50px">Nights</table-column>
+            <table-column width="80px">Status</table-column>
+            <table-column class="right-align" width="50px">Party</table-column>
+            <table-column class="centre-align" width="50px">Under 18s</table-column>
+            <table-column width="120px">Name</table-column>
+            <table-column width="200px">Email Address</table-column>
+            <table-column width="80px">Phone</table-column>
+            <table-column *ngIf="canShowPaidColumn()" width="64px">Paid</table-column>
+        </table-header>
+        <table-body>
+            <table-row *ngFor="let b of bookings">
+                <table-cell>{{b.reference}}</table-cell>
+                <table-cell>{{b.from}}</table-cell>
+                <table-cell class="right-align">{{b.numberOfNights}}</table-cell>
+                <table-cell>{{BookingStatus[b.status]}}</table-cell>
+                <table-cell class="right-align">{{b.partySize}}</table-cell>
+                <table-cell class="centre-align">{{b.under18sInParty ? 'Yes': ''}}</table-cell>
+                <table-cell>
+                    <div>{{b.memberName}}</div>
+                    <div class="bmc-membership">{{b.bmcMembership}}</div>
+                </table-cell>
+                <table-cell>{{b.memberEmailAddress}}</table-cell>
+                <table-cell>{{b.memberPhoneNumber}}</table-cell>
+                <ng-container *ngIf="canShowPaidColumn()">
+                    <table-cell *ngIf="!b.isPaid;else blank"><button class="small">Set Paid</button></table-cell>
+                    <ng-template #blank>
+                        <table-cell>&nbsp;</table-cell>
+                    </ng-template>
+                </ng-container>
+            </table-row>
+        </table-body>
+    </scrollable-table>
+</div>

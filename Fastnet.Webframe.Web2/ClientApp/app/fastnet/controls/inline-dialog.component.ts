@@ -31,8 +31,8 @@ export class DialogBase {
 @Component({
     selector: 'inline-dialog',
     templateUrl: './inline-dialog.component.html',
-    styleUrls: ['./inline-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./inline-dialog.component.scss']//,
+    //encapsulation: ViewEncapsulation.None
 })
 export class InlineDialogComponent extends DialogBase  {
 

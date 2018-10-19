@@ -13,11 +13,11 @@ namespace Fastnet.Webframe.BookingData2
         public int AvailabilityId { get; set; }
         public string Description { get; set; }
         [ForeignKey("Accomodation_AccomodationId")]
-        public Accomodation Accomodation { get; set; }
+        public virtual Accomodation Accomodation { get; set; }
         [ForeignKey("Period_PeriodId")]
-        public Period Period { get; set; }
+        public virtual Period Period { get; set; }
         public bool Blocked { get; set; }
-        internal long? Accomodation_AccomodationId { get; set; }
-        internal long? Period_PeriodId { get; set; }
+        public long? Accomodation_AccomodationId { get; set; }
+        public long? Period_PeriodId { get; set; }
     }
 }

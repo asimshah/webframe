@@ -7,6 +7,10 @@ using System.IO;
 
 namespace Fastnet.Webframe.IdentityData2 
 {
+    // ****************************
+    // only used at design time (to allow the database to be found for migrations ....)
+    // change the connection string if required 
+    // ******************************
     public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         public ApplicationDbContext CreateDbContext(string[] args)

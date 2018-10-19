@@ -224,13 +224,15 @@ namespace Fastnet.Webframe.Web2.Controllers
                 // member is activated and not disabled or is the admin
                 if(IsAuthenticated)
                 {
-                    await signInManager.SignOutAsync();
+                    //await signInManager.SignOutAsync();
+                    await Logout();
                 }
                 var result = await signInManager.PasswordSignInAsync(user, credentials.password,  true, false);
                 if(result.Succeeded)
                 {
                     member.LastLoginDate = DateTime.UtcNow;
                     var groupNames = await GetGroupsForMember(member);
+                    await coreDataContext.RecordChanges(member, member.Fullname, MemberAction.MemberActionTypes.LoggedIn);
                     await coreDataContext.SaveChangesAsync();
                     var userData = memberfactory.ToUserCredentialsDTO(member, groupNames);
                     log.LogInformation($"Member {member.Fullname}, {member.EmailAddress} logged in.");
@@ -264,6 +266,9 @@ namespace Fastnet.Webframe.Web2.Controllers
                 var user = await userManager.GetUserAsync(User);
                 await signInManager.SignOutAsync();
                 await userManager.UpdateSecurityStampAsync(user);
+                var member = await coreDataContext.Members.FindAsync(user.Id);
+                await coreDataContext.RecordChanges(member, member.Fullname, MemberAction.MemberActionTypes.LoggedOut);
+                await coreDataContext.SaveChangesAsync();
                 this.log.LogInformation($"{user.Email} logged out");
             }
             return SuccessResult(null);

@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
 enum cmsModes {
     Index,
     MailHistory,
-    MembershipHistory
+    MembershipHistory,
+    SendMail
 }
 
 @Component({
@@ -18,7 +19,10 @@ export class CmsComponent extends BaseComponent {
     cmsModes = cmsModes;
     currentMode = cmsModes.Index;
     constructor(pageService: PageService, private router: Router) {
-        super(pageService)
+        super(pageService);
+    }
+    public goToSendMail() {
+        this.currentMode = cmsModes.SendMail;
     }
     public goToMailHistory() {
         this.currentMode = cmsModes.MailHistory;

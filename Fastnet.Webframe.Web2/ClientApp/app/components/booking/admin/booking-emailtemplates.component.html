@@ -1,0 +1,18 @@
+﻿<div class="email-templates">
+    <h2>Email Template Editor</h2>
+    <inline-dialog >
+        <ng-container dialogbody>
+            <dropdown-input label="Email Template" [(ngModel)]="selectedTemplate" [items]="templateList" (selectionChanged)="onTemplateChanged()"></dropdown-input>
+            <ng-container *ngIf="currentTemplate">
+                <text-input label="Email Subject" [(ngModel)]="currentTemplate.subject"></text-input>
+                <tiny-mce [content]="currentTemplate.body" [options]="tinymceOptions" ></tiny-mce>
+            </ng-container>
+        </ng-container>
+        <div dialogcommandbar>
+            <div class="right">
+                <button >Save Changes</button>
+            </div>
+        </div>
+    </inline-dialog>
+
+</div>

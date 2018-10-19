@@ -16,7 +16,7 @@ namespace Fastnet.Webframe.BookingData2
         //private ICollection<Accomodation> accomodationSet;
         //private ICollection<BookingEmail> emails;
         public long BookingId { get; set; }
-        public bookingStatus Status { get; set; }
+        public BookingStatus Status { get; set; }
         [MaxLength(32)]
         public string Reference { get; set; }
         [MaxLength(128)]
@@ -25,7 +25,7 @@ namespace Fastnet.Webframe.BookingData2
         public DateTime To { get; set; } // **NB** From/To are inclusive dates, i.e. for a one day booking To will equal From
         public DateTime CreatedOn { get; set; }
         public DateTime StatusLastChanged { get; set; }
-        public Decimal TotalCost { get; set; }
+        public decimal TotalCost { get; set; }
         public int PartySize { get; set; }
         public bool IsPaid { get; set; }
         public string Notes { get; set; }
@@ -33,8 +33,8 @@ namespace Fastnet.Webframe.BookingData2
         [MaxLength(128)]
         public string EntryInformation { get; set; }
         public bool Under18sInParty { get; set; }
-        public ICollection<BookingAccomodation> BookingAccomodations { get; set; }
-        public ICollection<BookingEmail> Emails { get; set; }
+        public virtual ICollection<BookingAccomodation> BookingAccomodations { get; set; }
+        public virtual ICollection<BookingEmail> Emails { get; set; }
         public void AddHistory(string name, string text)
         {
             var today = DateTime.Today;// BookingGlobals.GetToday();

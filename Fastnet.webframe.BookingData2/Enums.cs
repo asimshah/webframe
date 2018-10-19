@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Fastnet.Webframe.BookingData2
 {
-    public enum bookingStatus
+    public enum BookingStatus
     {
         WaitingApproval,
         WaitingPayment,

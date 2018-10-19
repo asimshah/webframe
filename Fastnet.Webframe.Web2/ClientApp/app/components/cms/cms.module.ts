@@ -9,6 +9,7 @@ import { ControlsModule } from '../../fastnet/controls/controls.module';
 import { MailHistoryComponent } from './mail-history.component';
 import { MembershipHistoryComponent } from './membership-history.component';
 import { CmsService } from './cms.service';
+import { SendMailComponent } from './send-mail.component';
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import { CmsService } from './cms.service';
     declarations: [
         CmsComponent,
         MailHistoryComponent,
-        MembershipHistoryComponent
+        MembershipHistoryComponent,
+        SendMailComponent
     ],
     providers: [
         CmsService

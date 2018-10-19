@@ -24,15 +24,53 @@ namespace Fastnet.Webframe.Web2.Controllers
     {
         private readonly CoreDataContext coreDataContext;
         private readonly IHostingEnvironment env;
+        private readonly MailHelper mailHelper;
         public ContentController(ILogger<ContentController> logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager,
-            CoreDataContext coreDataContext) : base(logger, env, userManager)
+            CoreDataContext coreDataContext, MailHelper mh) : base(logger, env, userManager)
         {
             this.coreDataContext = coreDataContext;
             this.env = env;
+            this.mailHelper = mh;
         }
         protected override CoreDataContext GetCoreDataContext()
         {
             return this.coreDataContext;
+        }
+        [HttpPost("send/mail")]
+        public async Task<IActionResult> SendMail()
+        {
+            try
+            {
+                var email = Request.FromBody<Email>();
+                await mailHelper.SendMailAsync(email.Destination, email.Subject, email.Body);
+                return SuccessResult();
+            }
+            catch (Exception xe)
+            {
+                log.Error(xe);
+                return ExceptionResult(xe);
+            }
+        }
+        [HttpGet("get/membershiphistory")]
+        public async Task<IActionResult> GetMembershipHistory()
+        {
+            var history = await coreDataContext.MemberActions
+                .OrderByDescending(x => x.RecordedOn)
+                .ToArrayAsync();
+            var result = history.Select(x =>  new MemberHistoryDTO
+            {
+                Id = x.ActionBaseId,
+                RecordedOn = x.RecordedOn.UtcDateTime.ToString("ddMMMyyyy HH:mm:ss"),
+                ActionName = x.ActionName,
+                EmailAddress = x.EmailAddress,
+                FullName = x.FullName,
+                ActionBy = x.ActionBy,
+                HasPropertyChanged = !string.IsNullOrWhiteSpace(x.PropertyChanged),
+                PropertyChanged = x.PropertyChanged,
+                OldValue = x.OldValue,
+                NewValue = x.NewValue
+            });
+            return SuccessResult(result);
         }
         [HttpGet("get/mail/body/{id}")]
         public async Task<IActionResult> GetMailBody(long id)

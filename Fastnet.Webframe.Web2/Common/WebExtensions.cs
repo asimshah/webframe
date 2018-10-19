@@ -51,7 +51,9 @@ namespace Fastnet.Webframe.Web2
             switch(customisation.Value.Factory)
             {
                 case FactoryName.DonWhillansHut:
-                    services.AddDbContext<BookingDataContext>(o => o.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+                    services.Configure<BookingDbOptions>(config.GetSection("BookingDbOptions"));
+                    services.AddWebDbContext<BookingDataContext, BookingDbContextFactory, BookingDbOptions>(config, "BookingDbOptions");
+                    //services.AddDbContext<BookingDataContext>(o => o.UseSqlServer(config.GetConnectionString("DefaultConnection")));
                     services.AddTransient<IMemberFactory, DWHMemberFactory>();
                     services.AddTransient<BMCApiClient, BMCApiClient>();
                     break;

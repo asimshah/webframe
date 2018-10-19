@@ -1,54 +1,8 @@
-﻿import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectorRef } from "@angular/core";
+﻿import { Component, forwardRef, Input, Output, EventEmitter, ChangeDetectorRef, OnInit } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { TextInputControl } from "./text-input.component";
 import { ListItem } from "./controls.types";
 import { InputControlBase } from "./controlbase.type";
-
-//@Component({
-//    selector: 'dropdown-input',
-//    template: `<div class="dropdown-input">
-//            <label *ngIf="label">
-//                <span>{{label}}</span>
-//            </label>
-//            <select class="focus-able" #sl1 [ngModel]="value" (ngModelChange)="modelChange($event)" >
-//                <option *ngFor="let item of items" label="{{item.name}}" [value]="item.value" [attr.selected]="item.value === selectedValue ? '': null"  >
-//            </select>
-//        </div>`,
-//    styleUrls: ['./controls.component.scss'],
-//    providers: [
-//        {
-//            provide: NG_VALUE_ACCESSOR,
-//            useExisting: forwardRef(() => DropDownControl),
-//            multi: true
-//        }
-//    ],
-//})
-//export class DropDownControl extends TextInputControl {
-//    @Input() items: ListItem[] = [];
-//    @Input() label: string;// = '';
-//    @Output() change = new EventEmitter<string>();
-//    selectedValue: any;// number;
-//    constructor() {
-//        super();
-//        this.localChangeCallBack = (v) => {
-//            if (v !== null) {
-//                this.selectedValue = v;// this.items[i];
-//                //console.log(`ddc ${JSON.stringify(this.selectedValue)}`);
-//            } else {
-//                //console.log("localChangeCallBack() called with null");
-//            }
-//        };
-//    }
-//    modelChange(val: any) {
-//        this.value = val;// +this.value;
-//        console.log(`modelChange(): ${JSON.stringify(this.value)} (called with ${JSON.stringify(val)})`);
-//        this.change.emit(this.value);
-//    }
-//    selectChange(e: Event) {
-//        //this.change.emit(e);
-//    }
-//    get debug() { return JSON.stringify(this, null, 2); }
-//}
 
 @Component({
     selector: 'dropdown-input',
@@ -58,8 +12,8 @@ import { InputControlBase } from "./controlbase.type";
                 <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             </label>
             <div class="dropdown-border">
-                <select #focushere [ngModel]="value" (ngModelChange)="modelChange($event)" [size]="getSize()" (focus)="onSelectFocus()" (blur)="onSelectBlur()"  >
-                    <option *ngFor="let item of items" label="{{item.name}}" [ngValue]="item" [attr.selected]="item.value === selectedValue ? '': null"  >
+                <select #focushere [(ngModel)]="value" (ngModelChange)="modelChange($event)" [size]="getSize()" (focus)="onSelectFocus()" (blur)="onSelectBlur()"  >
+                    <option *ngFor="let item of items" [label]="getDisplayProperty(item)" [ngValue]="item" [attr.selected]="selectedItem(item)"></option>
                 </select>
             </div>
         </div>`,
@@ -73,8 +27,9 @@ import { InputControlBase } from "./controlbase.type";
     ],
 })
 export class DropDownControl extends InputControlBase {
-    @Input() items: ListItem<any>[] = [];
-    @Output() selectionChanged = new EventEmitter<ListItem<any>>();
+    @Input() displayproperty: string = "name";
+    @Input() items: any[] = [];
+    @Output() selectionChanged = new EventEmitter<any>();
     @Input() showItemCount: number = 1;
     @Input() keepOpen: boolean = false;
     private inFocus: boolean = false;
@@ -88,13 +43,11 @@ export class DropDownControl extends InputControlBase {
     onSelectBlur() {
         this.inFocus = false;
     }
-    modelChange(val: ListItem<any>) {
-        console.log("model change");
-        this.value = val;// +this.value;
+    modelChange(val: any) {
+        //console.log("model change");
+        //this.value = val;// +this.value;
         this.selectionChanged.emit(this.value);
         this.focusableElement.nativeElement.blur();
-        //this.inFocus = false;
-        //this.changeDetector.detectChanges();
     }
     getSize() {
         if (this.keepOpen) {
@@ -107,11 +60,19 @@ export class DropDownControl extends InputControlBase {
             }
         }
     }
-    //selectChange(e: Event) {
-    //    //this.change.emit(e);
-    //}
-    private findListItem(val: any): ListItem<any> {
-        return this.items.find(x => x.value === val)!;
+    getDisplayProperty(item: any): string {
+        if (typeof item === "string") {
+            return <string>item;
+        } else if (typeof item === "number") {
+            return item.toString();
+        } else {
+            return item[this.displayproperty];
+        }
+    }
+    selectedItem(item: any): string | undefined {        
+        let result = item === this.value ? 'selected' : undefined;
+        //console.log(`checking ${item.name} result is ${result}`);
+        return result;
     }
     get debug() { return JSON.stringify(this, null, 2); }
 }

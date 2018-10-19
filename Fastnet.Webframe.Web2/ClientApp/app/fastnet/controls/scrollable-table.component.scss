@@ -1,0 +1,16 @@
+﻿.busy-text {
+    margin: auto auto;
+    padding: 1em;
+}
+
+.caption-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: flex-end;
+    margin-bottom: 0.5em;
+    .caption {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 0.5em;
+    }
+}

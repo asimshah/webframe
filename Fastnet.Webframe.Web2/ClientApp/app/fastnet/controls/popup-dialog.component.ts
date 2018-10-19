@@ -9,8 +9,8 @@ export type PopupAfterOpenHandler = () => void;
 @Component({
     selector: 'popup-dialog',
     templateUrl: './popup-dialog.component.html',
-    styleUrls: ['./popup-dialog.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./popup-dialog.component.scss']//,
+    //encapsulation: ViewEncapsulation.None
 })
 export class PopupDialogComponent extends DialogBase implements OnInit {
     public static openPopupsCount = 0;

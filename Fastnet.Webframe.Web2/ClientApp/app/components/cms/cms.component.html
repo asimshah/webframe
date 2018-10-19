@@ -44,7 +44,7 @@
         <div class="toc">
             <div class="title">Tools</div>
             <div class="toc-item">
-                <button>Test Mail</button>
+                <button (click)="goToSendMail()">Test Mail</button>
                 <div class="description">Mail testing form</div>
             </div>
         </div>
@@ -55,6 +55,9 @@
         </ng-container>
         <ng-container *ngIf="currentMode === cmsModes.MembershipHistory">
             <membership-history></membership-history>
+        </ng-container>
+        <ng-container *ngIf="currentMode === cmsModes.SendMail">
+            <send-mail></send-mail>
         </ng-container>
     </div>
     <custom-css></custom-css>

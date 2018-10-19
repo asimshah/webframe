@@ -1,0 +1,15 @@
+﻿@import "../_booking.app.scss";
+
+.booking-parameters {
+    padding-left: $page-gutter;
+    padding-right: $page-gutter;
+}
+.two-columns {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: $form-gutter;
+    dropdown-input, button {
+        align-self: end;
+    }
+}
+

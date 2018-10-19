@@ -1,15 +1,10 @@
-﻿
-inline-dialog {
-    //border: 1px solid red;
-    border-radius: 0.25em;
-    //height: 400px;
-    // width: 800px;
-    margin-left: 40px;
-    margin-right: 40px;
+﻿$theme: 'music';
+@import "_palette.scss";
+@import "_themes";
 
-    .control-panel {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        grid-gap: 1em;
-    }
+.test-button-table {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 0.5em;
+    justify-items: left;
 }

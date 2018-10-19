@@ -35,8 +35,6 @@ $secondary-button-colour: white;
     margin-right: 0;
 }
 
-
-
 %set-disabled {
     pointer-events: none;
 
@@ -209,6 +207,7 @@ label {
         padding-left: 0.5em;
         padding-right: 0.5em;
         padding-bottom: 0.25em;
+        height: 24px;
         /*height: 28px;
         min-width: 60px;*/
         background-color: $button-background;

@@ -10,13 +10,13 @@ namespace Fastnet.Webframe.BookingData2
         [Key]
         public long PriceId { get; set; }
         [ForeignKey("Period_PeriodId")]
-        public Period Period { get; set; }
+        public virtual Period Period { get; set; }
         public AccomodationType Type { get; set; }
         public AccomodationClass Class { get; set; }
         public int Capacity { get; set; }
         [Required]
-        public Decimal Amount { get; set; }
-        internal long? Period_PeriodId { get; set; }
+        public decimal Amount { get; set; }
+        public long? Period_PeriodId { get; set; }
     }
 
 

@@ -1,0 +1,59 @@
+﻿<div class="booking-parameters">
+    <h2>Booking System Parameters</h2>
+    <inline-dialog columns="3">
+        <ng-container *ngIf="parameters" dialogbody>
+            <div >
+                <div>
+                    <number-input label="Payment Interval" [(ngModel)]="parameters.paymentInterval"></number-input>
+                    <div class="annotation">Enter a number of days. Payment is due within this many days of the booking start date.</div>
+                </div>
+                <div>
+                    <number-input label="Cancellation Interval" [(ngModel)]="parameters.cancellationInterval"></number-input>
+                    <div class="annotation">Enter a number of days. Unpaid bookings are automatically cancelled after this many days from the booking start date.</div>
+                </div>
+                <div>
+                    <text-input label="Terms and Conditions Url" [(ngModel)]="parameters.termsAndConditionsUrl"></text-input>
+                    <div class="annotation">Enter the internal url of the terms and conditions page, e.g. page/n.</div>
+                </div>
+                <div>
+                    <div class="two-columns">
+                        <dropdown-input label="Privileged Members Group"  [(ngModel)]="parameters.privilegedMembers" [items]="parameters.availableGroups" ></dropdown-input>
+                        <button (click)="clearPrivilegedGroup()">Clear</button>
+                    </div>
+                    <div class="annotation">Bookings for members of this group are confirmed whether paid or not.</div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <number-input label="First Reminder Interval" [(ngModel)]="parameters.firstReminderInterval"></number-input>
+                    <div class="annotation">Enter a number of days. The first payment reminder is sent this many days before the booking start date.</div>
+                </div>
+                <div>
+                    <number-input label="Second Reminder Interval" [(ngModel)]="parameters.secondReminderInterval"></number-input>
+                    <div class="annotation">Enter a number of days. The second payment reminder is sent this many days before the booking start date.</div>
+                </div>
+                <div>
+                    <number-input label="Reminder Suppression Interval" [(ngModel)]="parameters.reminderSuppressionInterval"></number-input>
+                    <div class="annotation">Enter a number of days. A reminder is held up if a relevant email has been sent within this many days.</div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <number-input label="Entry Code Notification Interval" [(ngModel)]="parameters.entryCodeNotificationInterval"></number-input>
+                    <div class="annotation">Enter a number of days. Entry code notification is sent within this period of a confirmed booking start date.</div>
+                </div>
+                <div>
+                    <number-input label="Entry Code Bridge Interval" [(ngModel)]="parameters.entryCodeBridgeInterval"></number-input>
+                    <div class="annotation">Enter a number of days. Both current and previous entry codes are sent for this number of days after a code changes.</div>
+                </div>
+            </div>
+        </ng-container>
+        <div dialogcommandbar>
+            <div class="right">
+                <button (click)="onSave()">Save</button>
+                <button class="cancel" (click)="onCancel()">Cancel</button>
+            </div>
+        </div>
+    </inline-dialog>
+    <popup-message [width]="370" caption="Booking Admin"></popup-message>
+</div>

@@ -55,6 +55,10 @@ namespace Fastnet.Webframe.Web2
             string body = string.Format(htmlText, siteUrl, callbackUrl, GetAdminEmailAddress());
             await Send(destination, subject, body, "PasswordReset");
         }
+        public async Task SendMailAsync(string destination, string subject, string body)
+        {
+            await Send(destination, subject, body, "No Template");
+        }
         //public void SendAccountActivationAsync(CoreDataContext ctx, string destination, string UrlScheme, string UrlAuthority, string userId, string activationCode)
         //{
         //    string siteUrl = GetSiteUrl(UrlScheme, UrlAuthority);// string.Format("{0}://{1}", UrlScheme, UrlAuthority);
@@ -88,11 +92,7 @@ namespace Fastnet.Webframe.Web2
         //    Log.Write($"EmailAddressChanged email prepared for {destination}");
         //    SendAndForget(ctx, new SendMailObject(destination, subject, body, "EmailAddressChanged"));
         //}
-        //public void SendTestMailAsync(CoreDataContext ctx, string destination, string subject, string body)
-        //{
-        //    Log.Write($"TestMail email prepared for {destination}");
-        //    SendAndForget(ctx, new SendMailObject(destination, subject, body, "TestMail"));
-        //}
+
         //private void SendAndForget(CoreDataContext ctx, SendMailObject smo)
         //{
         //    Task.Run(async () => {
@@ -170,6 +170,7 @@ namespace Fastnet.Webframe.Web2
             }
             await coreDataContext.RecordChanges(customOptions.MailFromAddress, originalDestination, subject, body,
                 redirected, redirected ? customOptions.RedirectMailTo : "", templateName, remark, customOptions.MailEnabled, failure);
+            await coreDataContext.SaveChangesAsync();
         }
     }
 }

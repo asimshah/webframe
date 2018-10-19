@@ -18,7 +18,7 @@ import { InlineDialogComponent } from './inline-dialog.component';
 import { ComboBoxComponent } from './combo-box.component';
 import { PopupDialogComponent } from './popup-dialog.component';
 import { PopupMessageComponent } from './popup-message.component';
-
+import { ScrollableTableComponent, ScrollableTableColumnComponent, ScrollableTableRowComponent, ScrollableTableHeaderComponent, ScrollableTableBodyComponent, ScrollableTableCellComponent } from './scrollable-table.component';
 
 
 @NgModule({
@@ -42,7 +42,13 @@ import { PopupMessageComponent } from './popup-message.component';
         InlineDialogComponent,
         ComboBoxComponent,
         PopupDialogComponent,
-        PopupMessageComponent
+        PopupMessageComponent,
+        ScrollableTableComponent,
+        ScrollableTableHeaderComponent,
+        ScrollableTableBodyComponent,
+        ScrollableTableColumnComponent,
+        ScrollableTableRowComponent,
+        ScrollableTableCellComponent
     ],
     declarations: [
         TextInputControl,
@@ -60,9 +66,16 @@ import { PopupMessageComponent } from './popup-message.component';
         InlineDialogComponent,
         ComboBoxComponent,
         PopupDialogComponent,
-        PopupMessageComponent
+        PopupMessageComponent,
+        ScrollableTableComponent,
+        ScrollableTableHeaderComponent,
+        ScrollableTableBodyComponent,
+        ScrollableTableColumnComponent,
+        ScrollableTableRowComponent,
+        ScrollableTableCellComponent
+    ],
+    providers: [
 
     ],
-    providers: [],
 })
 export class ControlsModule { }

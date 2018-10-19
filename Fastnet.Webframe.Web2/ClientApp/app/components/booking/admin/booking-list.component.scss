@@ -1,0 +1,64 @@
+﻿.booking-list {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+
+    .booking-list-table {
+        font-size: 11px;
+
+        table-header {
+            background-color: darkblue;
+            color: white;
+            font-weight: bold;
+
+            table-column {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+            }
+        }
+
+        table-body {
+            height: 300px;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            table-row {
+                padding-top: 0.1em;
+                padding-bottom: 0.1em;
+                border-top: 1px solid #eeeeee;
+            }
+
+            table-cell {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+
+                button.small {
+                    width: auto;
+                    border: none;
+                    background-color: cornflowerblue;
+                    border-radius: 0.25em;
+                    color: white;
+                    padding-top: 1px;
+                    padding-bottom: 2px;
+                    padding-left: 3px;
+                    padding-right: 3px;
+                    font-size: 8px;
+                    line-height: 1.5;
+
+                    &:hover {
+                        background-color: darkorange;
+                    }
+                }
+            }
+        }
+    }
+}

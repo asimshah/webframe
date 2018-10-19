@@ -80,8 +80,8 @@ export class TinyMCEOptions {
 @Component({
     selector: 'tiny-mce',
     templateUrl: './tinymce.component.html',
-    styleUrls: ['./tinymce.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./tinymce.component.scss']//,
+    //encapsulation: ViewEncapsulation.None
 })
 export class TinyMCEComponent implements AfterViewInit, OnDestroy {
     @ViewChild('mcetarget') mceTarget: ElementRef;

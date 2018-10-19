@@ -1,0 +1,47 @@
+﻿// themes are named:
+// default, musical, etc
+@import "_material-design-color-palettes.scss";
+
+$theme: 'default' !default;
+
+
+// theme colours
+// 'background'     use this for application backgrounds (typically the app pages)
+// 'surface'        use this for things on the background: default text colour, control borders, rules, etc
+// 'primary'        use for main widgets: buttons, control icons
+// 'accent'      use for addtional widgets to distinguish them from primary
+// 'error'          use for error messages, error caption backgrounds, error borders
+// 'warning'        use for warnings, to draw attention
+// 'disabled'       use for showing widgets that are disabled
+//
+
+// default theme is largely blue
+$default-colours: (
+    'background' : ( 'base': white, 'light': white, 'dark': #e9e9e9 ),
+    'surface' : ( 'base': $mdc-grey-900, 'light': $mdc-grey-600, 'dark': black ),
+    'error' : ( 'base': $mdc-red-600, 'light': $mdc-red-500, 'dark': $mdc-red-900 ),
+    'warning' : ( 'base': $mdc-orange-600, 'light': $mdc-orange-500, 'dark': $mdc-orange-900 ),
+    'disabled': ('base': $mdc-grey-500, 'light': $mdc-grey-300, 'dark': $mdc-grey-800),
+    'primary' : ('base': $mdc-blue-500, 'light': $mdc-blue-300, 'dark': $mdc-blue-800),
+    'accent': ('base': $mdc-blue-A400, 'light': $mdc-blue-A100, 'dark': $mdc-blue-A700), );
+
+$music-colours: map-merge($default-colours, ( 
+    'primary': ('base': $mdc-teal-500, 'light': $mdc-teal-300, 'dark': $mdc-teal-800),
+    'accent': ('base': $mdc-teal-A400, 'light': $mdc-teal-A100, 'dark': $mdc-teal-A700) )
+);
+
+
+@function theme-colour($name: 'primary', $variant: 'base' ) {
+    $colour: null;
+    $colours: $default-colours;
+    @if $theme == 'default' {
+        $colours: $default-colours;
+    } @else if $theme == 'music' {
+          $colours: $music-colours;
+      }
+    $spectrum: map-get($colours, $name);
+    @if $spectrum {
+        $colour: map-get($spectrum, $variant);
+    }
+    @return $colour;
+}
