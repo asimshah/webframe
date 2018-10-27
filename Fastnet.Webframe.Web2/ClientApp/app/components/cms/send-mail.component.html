@@ -2,14 +2,11 @@
     <inline-dialog>
         <div dialogbody>
             <email-input label="To:" [(ngModel)]="email.destination" [validator]="emailAddressValidator"></email-input>
-            <text-input label="Subject:" [(ngModel)]="email.subject" ></text-input>
+            <text-input label="Subject:" [(ngModel)]="email.subject"></text-input>
             <multiline-input label="Text:" [(ngModel)]="email.body" [rows]="5"></multiline-input>
         </div>
-        <div dialogcommandbar>
-            <div class="right">
-                <button (click)="onSendMailClick()">Send</button>
-                <!--<button class="cancel" (click)="onCancelMailClick()">Cancel</button>-->
-            </div>
+        <div dialogcommands right>
+            <button (click)="onSendMailClick()">Send</button>
         </div>
     </inline-dialog>
     <popup-message [width]="370" caption="Test Email"></popup-message>

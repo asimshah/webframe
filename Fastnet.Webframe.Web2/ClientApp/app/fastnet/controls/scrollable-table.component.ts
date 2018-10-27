@@ -117,6 +117,7 @@ export class ScrollableTableComponent implements OnDestroy, AfterContentInit/*, 
     @ContentChild(ScrollableTableHeaderComponent) header: ScrollableTableHeaderComponent;
     @ContentChild(ScrollableTableBodyComponent) body: ScrollableTableBodyComponent;
     columnWidths: string = "";
+    @Input() showsearch: boolean = true;
     @Input() caption: string;
     @Input() busyText = "Loading data, please wait ...";
     @Output() searchclear = new EventEmitter<void>();

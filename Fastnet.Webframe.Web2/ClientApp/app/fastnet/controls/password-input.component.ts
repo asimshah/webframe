@@ -1,18 +1,15 @@
-﻿//import { TextInputControl } from "./text-input.component";
-import { NG_VALUE_ACCESSOR } from "@angular/forms";
+﻿import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { Component, forwardRef } from "@angular/core";
 import { ControlBase, InputControlBase } from "./controlbase.type";
-//import { ControlBase } from "./controls.component";
-
 
 @Component({
     selector: 'password-input',
     template: `<div class="password-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
-            <label>
+            <label [for]="controlId">
             <span [innerHTML]="label"></span>
             <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
-            <input #focushere type="password" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()"/>
             </label>
+            <input [id]="controlId" #focushere type="password" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()"/>
             <div class="validation-text">
                 <span *ngIf="isInError()" class="text-error">{{vr.message}}</span>
             </div>

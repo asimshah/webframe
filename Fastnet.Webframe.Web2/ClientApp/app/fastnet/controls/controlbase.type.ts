@@ -43,6 +43,8 @@ export function toEnumValues(val: any): EnumValue[] {
 }
 const noop = () => { };
 
+
+
 /**
  * base class for all custom html components used in fastnet forms
  * adds the following @Input() attributes:
@@ -55,6 +57,8 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit  {
     private static counter = 0;
     private static _trace: boolean = false;
     private reference: string = "";
+    protected readonly controlNumber: number;
+    protected readonly controlId: string;
     @ViewChild('focushere') focusableElement: ElementRef;
     @Input() label?: string;
     @Input() placeHolderText: string = "";
@@ -79,13 +83,21 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit  {
     vr: ValidationResult;
 
     constructor() {
-        
+        this.controlNumber = ControlBase.counter++;
+        this.controlId = `fc_${this.controlNumber}`;
     }
     ngAfterViewInit() {
         //console.log(`ngAfterViewInit()`);
         if (this.isFocused) {
             this.focus();
         }
+    }
+    hasLabel(): boolean {
+        let r = true;
+        if (!this.label || this.label.trim().length === 0) {
+            r = false;
+        }
+        return r;
     }
     get value(): any {
         return this.innerValue;
@@ -165,7 +177,7 @@ export class ControlBase implements ControlValueAccessor, AfterViewInit  {
         return this.reference;
     }
     protected setReference(prefix: string) {
-        this.reference = `${prefix}-${ControlBase.counter++}`;
+        this.reference = `${prefix}-${this.controlNumber}`;
     }
     private onValueChanged() {
         this.localChangeCallBack(this.innerValue);

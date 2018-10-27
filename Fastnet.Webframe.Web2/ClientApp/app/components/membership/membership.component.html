@@ -42,7 +42,7 @@
                             <text-input label="Last Name" [(ngModel)]="member.lastName" [validator]="lastNameValidatorAsync"></text-input>
                             <password-input *ngIf="memberIsNew" label="Password" name="password" [(ngModel)]="member.password" [validator]="passwordValidator2Async"></password-input>
                             <!--<text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
-                            <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>-->
+            <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>-->
                         </ng-container>
                         <div>
                             <div *ngIf="member.isAdministrator === false && (member.pastBookingCount + member.futureBookingCount) > 0" class="annotation">
@@ -62,17 +62,13 @@
                             <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendPasswordResetClick()">Send Password Reset</button>
                         </div>
                     </ng-container>
-                    <div dialogcommandbar>
-
-                        <div class="left">
-                            <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning" (click)="onDeleteMemberClick()">Delete Member</button>
-                            <button class="warning" *ngIf="canShowCommand(CommandButtons.ActivateMember)" (click)="onActivateMemberClick()">Activate Member</button>
-                        </div>
-
-                        <div class="right">
-                            <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" (click)="onSaveMemberClick()">Save</button>
-                            <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelMemberClick()">Cancel</button>
-                        </div>
+                    <div dialogcommands left>
+                        <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning" (click)="onDeleteMemberClick()">Delete Member</button>
+                        <button class="warning" *ngIf="canShowCommand(CommandButtons.ActivateMember)" (click)="onActivateMemberClick()">Activate Member</button>
+                    </div>
+                    <div dialogcommands left>
+                        <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" (click)="onSaveMemberClick()">Save</button>
+                        <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelMemberClick()">Cancel</button>
                     </div>
                 </inline-dialog>
             </div>
@@ -98,15 +94,13 @@
                             <text-input label="Name" [(ngModel)]="selectedGroup.name" [validator]="groupNameValidatorAsync"></text-input>
                             <text-input label="Description" [(ngModel)]="selectedGroup.description" [validator]="groupDescriptionValidatorAsync"></text-input>
                         </ng-container>
-                        <div dialogcommandbar>
-                            <div class="right">
-                                <button class="default" (click)="onSaveGroupClick()">Save</button>
-                                <button class="cancel" (click)="onCancelGroupClick()">Cancel</button>
-                            </div>
-                            <div class="left">
-                                <button *ngIf="!groupIsNew" class="warning" (click)="onDeleteGroupClick()">Delete</button>
-                                <div class="annotation" *ngIf="groupHasChanges()">There are changes</div>
-                            </div>
+                        <div dialogcommands right>
+                            <button class="default" (click)="onSaveGroupClick()">Save</button>
+                            <button class="cancel" (click)="onCancelGroupClick()">Cancel</button>
+                        </div>
+                        <div dialogcommands left>
+                            <button *ngIf="!groupIsNew" class="warning" (click)="onDeleteGroupClick()">Delete</button>
+                            <div class="annotation" *ngIf="groupHasChanges()">There are changes</div>
                         </div>
                     </inline-dialog>
                 </div>
@@ -135,11 +129,9 @@
                             </div>
                         </div>
                     </ng-container>
-                    <div dialogcommandbar>
-                        <div *ngIf="canAddMembers()" class="right">
-                            <button class="default" (click)="onRequestAddMemberToGroup()">Add Member</button>
-                            <button class="default" [disabled]="countSelectedMembers(groupMembers) === 0" (click)="onRemoveMembersFromGroup()">Remove Member(s)</button>
-                        </div>
+                    <div *ngIf="canAddMembers()" dialogcommands right>
+                        <button class="default" (click)="onRequestAddMemberToGroup()">Add Member</button>
+                        <button class="default" [disabled]="countSelectedMembers(groupMembers) === 0" (click)="onRemoveMembersFromGroup()">Remove Member(s)</button>
                     </div>
                 </inline-dialog>
                 <!--<pre>{{selectedGroup | json}}</pre>
@@ -152,7 +144,7 @@
 </div>
 
 <popup-dialog #candidateMembersDialog [width]="500">
-    <div dialogheader>
+    <div windowcaption>
         <div>Select Member(s)</div>
     </div>
     <div dialogbody>
@@ -163,11 +155,9 @@
             </div>
         </div>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button [ngClass]="{disabled: countSelectedMembers(candidateMembers) === 0}" (click)="onAddMembersClick()">OK</button>
-            <button class="cancel" (click)="onCancelAddMembersClick()">Cancel</button>
-        </div>
+    <div dialogcommands>
+        <button [ngClass]="{disabled: countSelectedMembers(candidateMembers) === 0}" (click)="onAddMembersClick()">OK</button>
+        <button class="cancel" (click)="onCancelAddMembersClick()">Cancel</button>
     </div>
 </popup-dialog>
 

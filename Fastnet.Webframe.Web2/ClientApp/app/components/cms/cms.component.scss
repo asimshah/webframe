@@ -1,4 +1,9 @@
-﻿.SitePanel {
+﻿@import "../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-menu-bar('.menu-bar');
+@include theme-page();
+
+.SitePanel {
     width: 80%;
     max-width: none;
 }
@@ -7,63 +12,22 @@
     padding-right: 1em;
 }
 
-.command-bar {
-    background-color: darkblue;
-    padding: 0.5em;
-    display: grid;
-    grid-gap: 0.25em;
-    grid-template-columns: auto auto auto 1fr;
-
-    button {
-        width: auto;
-        border: none;
-        background-color: cornflowerblue;
-        color: white;
-        padding-top: 3px;
-        padding-bottom: 4px;
-        padding-left: 5px;
-        padding-right: 5px;
-        font-size: 12px;
-        line-height: 1.5;
-
-        &:hover {
-            background-color: darkorange;
-        }
-    }
-}
 
 .toc {
     .title {
+        font-size: x-large;
         margin-top: 1em;
         margin-bottom: .5em;
     }
 
     .toc-item {
-        border-top: 1px solid #eee;
+        border-top: 1px solid  lighten(theme-colour('surface', 'light'), 25%);
+        padding-top: $theme-gutter-narrow;
+        padding-bottom: $theme-gutter-narrow;
         display: grid;
         grid-template-columns: 200px 1fr;
         grid-column-gap: 0.25em;
         justify-items: left;
         align-items: center;
-
-        button {
-            width: auto;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-            padding-top: 3px;
-            padding-bottom: 4px;
-            padding-left: 5px;
-            padding-right: 5px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: white;
-            background-color: #337ab7;
-            border: none;
-            border-radius: 0.25em;
-
-            &:hover {
-                background-color: darkorange;
-            }
-        }
     }
 }

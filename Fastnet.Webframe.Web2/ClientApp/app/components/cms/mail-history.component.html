@@ -30,16 +30,14 @@
         </ng-container>
     </div>
     <popup-dialog #mailbody [width]="600">
-        <div dialogheader>
+        <div windowcaption>
             <div>{{mailBodyCaption}}</div>
         </div>
         <div dialogbody>
             <div class="mail-body" [innerHTML]="mailBody"></div>
         </div>
-        <div dialogcommandbar>
-            <div class="centre">
-                <button (click)="onCloseMailBody()" >Close</button>
-            </div>
+        <div dialogcommands>
+            <button (click)="onCloseMailBody()">Close</button>
         </div>
     </popup-dialog>
 </div>

@@ -1,4 +1,5 @@
 ﻿@import "shared.component.scss";
+@import "../themes/_themes.scss";
 
 $popup-overlay-background-colour: rgba(white, 0.77);
 $popup-background-colour: white;
@@ -14,41 +15,15 @@ $popup-error-caption-colour: red;
 
 
 .popup-dialog {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: $popup-overlay-background-colour;
+    @extend %theme-overlay-ext;
 
-    .popup-overlay {
-        background-color: $popup-background-colour;
-        color: $popup-colour;
-        padding: $popup-padding;
-        border: $popup-border;
-        border-radius: $popup-border-radius;
-        max-width: 90%;
-        margin: auto;
-        margin-top: 5%;
-        box-shadow: 0 0 20px $popup-border-colour;
-
-        .dialog-header {
-            font-weight: bold;
-            background-color: $popup-caption-colour;
-            color: white;
-            padding: 0.25em;
-            min-height: 2em;
-
-            &.warning {
-                background-color: $popup-warning-caption-colour;
-            }
-
-            &.error {
-                background-color: $popup-error-caption-colour;
-            }
+    .popup-window {
+        @extend %theme-window-ext;
+        @include theme-dialog-commands;
+        .dialog-commands {
+            border-radius: 0;
         }
-
-        .dialog-body {
+        /*.dialog-body {
             @extend %std-dialog-buttons;
             padding: 0.25em;
             display: grid;
@@ -59,6 +34,6 @@ $popup-error-caption-colour: red;
         .dialog-commands {
             @extend %std-dialog-commands;
             min-height: 2em;
-        }
+        }*/
     }
 }

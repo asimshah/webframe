@@ -2,9 +2,6 @@
 import { MembershipService } from './membership.service';
 import { Group } from '../shared/common.types';
 import { ITreeNode, TreeViewComponent } from '../../fastnet/controls/tree-view.component';
-////import { TreeComponent } from 'angular-tree-component';
-//import { findNode } from '@angular/compiler';
-//import { ITreeNode, TreeViewComponent } from '../controls/tree-view.component';
 
 class treeNode implements ITreeNode {
     htmlText: string;

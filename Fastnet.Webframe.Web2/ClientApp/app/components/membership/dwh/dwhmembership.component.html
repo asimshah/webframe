@@ -2,148 +2,152 @@
     <div class="BannerPanel">
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
-    <div class="command-bar">
-        <button (click)="goBack()">Back</button>
-        <button (click)="setMode(Modes.Member)">Members</button>
-        <button (click)="setMode(Modes.Group)">Groups</button>
-        <div></div>
-        <button *ngIf="mode === Modes.Member" (click)="onAddNewMemberClick()">Add New Member</button>
-        <button *ngIf="mode === Modes.Group && selectedGroup && canAddSubGroups()" (click)="onAddSubGroup()">Add Sub Group</button>
-    </div>
-    <div class="membership-app-panel" [ngClass]="{hidden: mode === Modes.Group}">
-        <div class="left-panel">
-            <div class="member-index">
-                <search-input placeHolderText="Search ..." name="searchMembers" [(ngModel)]="searchText" (clearClick)="onClearSearchClick()" (searchClick)="onSearchClick()"></search-input>
-                <div class="address-book">
-                    <div class="address-book-tabs">
-                        <button *ngFor="let item of tabs" [ngClass]="{selected: item.selected}" (click)="selectTab(item)">{{item.name}}</button>
-                    </div>
-                    <div class="address-book-list">
-                        <div class="member-entry" *ngFor="let m of memberList" (click)="onMemberClick(m)">
-                            <span>{{m.firstName}} {{m.lastName}}</span>
-                            <span *ngIf="m.disabled" title="Member is disabled" class="fa fa-ban"></span>
-                            <span *ngIf="!m.emailAddressConfirmed" title="Waiting for email confirmation" class="fa fa-clock-o"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="menu-bar">
+        <div>
+            <button (click)="goBack()">Back</button>
+            <button (click)="setMode(Modes.Member)">Members</button>
+            <button (click)="setMode(Modes.Group)">Groups</button>
         </div>
-        <div class="right-panel">
-            <div *ngIf="member" class="webframe-form">
-                <div class="caption">
-                    <div>{{getMemberFullName(member)}}</div>
-                </div>
-                <inline-dialog #memberDialog [columns]="2">
-                    <ng-container dialogbody>
-                        <email-input label="Email Address" [(ngModel)]="member.emailAddress" [validator]="emailAddressValidator"></email-input>
-                        <bool-input *ngIf="member.isAdministrator === false" label="Disabled" [(ngModel)]="member.disabled"></bool-input>
-                        <ng-container *ngIf="member.isAdministrator === false">
-                            <text-input label="First Name" [(ngModel)]="member.firstName" [validator]="firstNameValidatorAsync"></text-input>
-                            <text-input label="Last Name" [(ngModel)]="member.lastName" [validator]="lastNameValidatorAsync"></text-input>
-                            <password-input *ngIf="memberIsNew" label="Password" name="password" [(ngModel)]="member.password" [validator]="passwordValidator2Async"></password-input>
-                            <text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
-                            <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>
-                        </ng-container>
-                        <div>
-                            <div *ngIf="member.isAdministrator === false && (member.pastBookingCount + member.futureBookingCount) > 0" class="annotation">
-                                <span>{{getBookingInformation()}}</span>
-                            </div>
-                            <div *ngIf="!memberIsNew" class="annotation">
-                                <span>Created on {{member.creationDateFormatted}}.</span>
-                                <span *ngIf="member.lastLoginDate !== null">Last logged in on {{member.lastLoginDateFormatted}}.</span>
-                                <span *ngIf="member.lastLoginDate === null">This member has not logged in.</span>
-                            </div>
-                            <div class="annotation warning" *ngIf="!memberisNew && member.emailAddressConfirmed === false">
-                                <span>This email address is not confirmed. The member needs to respond to the activation email.</span>
-                            </div>
-                        </div>
-                        <div>
-                            <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendActivationEmailClick()">Send Activation Email</button>
-                            <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendPasswordResetClick()">Send Password Reset</button>
-                        </div>
-                    </ng-container>
-                    <div dialogcommandbar>
-
-                        <div class="left">
-                            <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="warning" (click)="onDeleteMemberClick()">Delete Member</button>
-                            <button class="warning" *ngIf="canShowCommand(CommandButtons.ActivateMember)" (click)="onActivateMemberClick()">Activate Member</button>
-                        </div>
-
-                        <div class="right">
-                            <button *ngIf="canShowCommand(CommandButtons.Save)" class="default" (click)="onSaveMemberClick()">Save</button>
-                            <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelMemberClick()">Cancel</button>
-                        </div>
-                    </div>
-                </inline-dialog>
-            </div>
+        <div class="align-right">
+            <button *ngIf="mode === Modes.Member" (click)="onAddNewMemberClick()">Add New Member</button>
+            <button *ngIf="mode === Modes.Group && selectedGroup && canAddSubGroups()" (click)="onAddSubGroup()">Add Sub Group</button>
         </div>
     </div>
-    <div class="group-app-panel hidden" [ngClass]="{hidden: mode === Modes.Member}">
-        <div class="left-panel">
-            <div class="tree-panel">
-                <group-tree (selectedGroup)="onSelectedGroup($event)"></group-tree>
-            </div>
-        </div>
-        <div class="right-panel">
-            <div *ngIf="selectedGroup" class="webframe-form">
-                <div class="caption group-name">{{selectedGroup.name}}</div>
-                <div *ngIf="isSystemGroup()" class="group-description annotation">{{selectedGroup.description}}</div>
-                <div *ngIf="isSystemGroup()">
-                    <div class="annotation">This is a system group</div>
-                    <div *ngIf="membersSystemGenerated()" class="annotation">Members are automatically generated by the system</div>
+    <div class="component-container">
+        <div class="membership-app-panel" [ngClass]="{hidden: mode === Modes.Group}">
+            <div class="left-panel">
+                <div class="member-index">
+                    <search-input placeHolderText="Search ..." name="searchMembers" [(ngModel)]="searchText" (clearClick)="onClearSearchClick()" (searchClick)="onSearchClick()"></search-input>
+                    <div class="address-book">
+                        <div class="address-book-tabs">
+                            <button *ngFor="let item of tabs" [ngClass]="{selected: item.selected}" (click)="selectTab(item)">{{item.name}}</button>
+                        </div>
+                        <div class="address-book-list">
+                            <div class="member-entry" *ngFor="let m of memberList" (click)="onMemberClick(m)">
+                                <span>{{m.firstName}} {{m.lastName}}</span>
+                                <span *ngIf="m.disabled" title="Member is disabled" class="fa fa-ban"></span>
+                                <span *ngIf="!m.emailAddressConfirmed" title="Waiting for email confirmation" class="fa fa-clock-o"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div *ngIf="!isSystemGroup()" class="group-form">
-                    <inline-dialog #groupDialog>
+            </div>
+            <div class="right-panel">
+                <div *ngIf="member">
+                    <div class="page-caption">
+                        <div>{{getMemberFullName(member)}}</div>
+                    </div>
+                    <inline-dialog #memberDialog>
                         <ng-container dialogbody>
-                            <text-input label="Name" [(ngModel)]="selectedGroup.name" [validator]="groupNameValidatorAsync"></text-input>
-                            <text-input label="Description" [(ngModel)]="selectedGroup.description" [validator]="groupDescriptionValidatorAsync"></text-input>
-                        </ng-container>
-                        <div dialogcommandbar>
-                            <div class="right">
-                                <button class="default" (click)="onSaveGroupClick()">Save</button>
-                                <button class="cancel" (click)="onCancelGroupClick()">Cancel</button>
-                            </div>
-                            <div class="left">
-                                <button *ngIf="!groupIsNew" class="warning" (click)="onDeleteGroupClick()">Delete</button>
-                                <div class="annotation" *ngIf="groupHasChanges()">There are changes</div>
-                            </div>
-                        </div>
-                    </inline-dialog>
-                </div>
-                <inline-dialog *ngIf="canShowMembers()">
-                    <ng-container dialogbody>
-                        <div class="group-member-panel">
-                            <div *ngIf="groupMembers.length > 0" class="group-members">
-                                <div class="caption-row">
-                                    <div class="label">Members:</div>
+                            <div class="main-dialog">
+                                <div class="controls-column">
+                                    <email-input label="Email Address" [(ngModel)]="member.emailAddress" [validator]="emailAddressValidator"></email-input>
+                                    <bool-input *ngIf="member.isAdministrator === false" label="Disabled" [(ngModel)]="member.disabled"></bool-input>
+                                    <ng-container *ngIf="member.isAdministrator === false">
+                                        <text-input label="First Name" [(ngModel)]="member.firstName" [validator]="firstNameValidatorAsync"></text-input>
+                                        <text-input label="Last Name" [(ngModel)]="member.lastName" [validator]="lastNameValidatorAsync"></text-input>
+                                        <password-input *ngIf="memberIsNew" label="Password" name="password" [(ngModel)]="member.password" [validator]="passwordValidator2Async"></password-input>
+                                        <text-input label="Club/Organisation" name="club" [(ngModel)]="member.organisation"></text-input>
+                                        <text-input label="BMC Membership" name="bmcMembership" [(ngModel)]="member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>
+                                    </ng-container>
                                     <div>
-                                        <button class="secondary" (click)="onSelectGroupMembers(true)">Select All</button>
-                                        <button class="secondary" (click)="onSelectGroupMembers(false)">Deselect All</button>
-                                    </div>
-                                </div>
-                                <div class="bordered-container">
-                                    <div *ngIf="groupMembers.length > 0" class="member-list">
-                                        <div *ngFor="let m of groupMembers; let i = index" class="member-item">
-                                            <bool-input [name]="'m-'+i.toString()" [(ngModel)]="m.selected"></bool-input>
-                                            <div>{{m.name}})</div>
+                                        <div *ngIf="member.isAdministrator === false && (member.pastBookingCount + member.futureBookingCount) > 0" class="annotation">
+                                            <span>{{getBookingInformation()}}</span>
+                                        </div>
+                                        <div *ngIf="!memberIsNew" class="annotation">
+                                            <span>Created on {{member.creationDateFormatted}}.</span>
+                                            <span *ngIf="member.lastLoginDate !== null">Last logged in on {{member.lastLoginDateFormatted}}.</span>
+                                            <span *ngIf="member.lastLoginDate === null">This member has not logged in.</span>
+                                        </div>
+                                        <div class="annotation warning" *ngIf="!memberisNew && member.emailAddressConfirmed === false">
+                                            <span>This email address is not confirmed. The member needs to respond to the activation email.</span>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="button-column">
+                                    <button *ngIf="canShowCommand(CommandButtons.SendActivationEmail)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendActivationEmailClick()">Send Activation Email</button>
+                                    <button *ngIf="canShowCommand(CommandButtons.SendPasswordReset)" class="secondary" [ngClass]="{disabled: member.disabled}" (click)="onSendPasswordResetClick()">Send Password Reset</button>
+                                </div>
                             </div>
-                            <div *ngIf="groupMembers.length === 0">
-                                <div>There are no members</div>
-                            </div>
+                        </ng-container>
+
+                        <div dialogcommands left>
+                            <button *ngIf="canShowCommand(CommandButtons.DeleteMember)" class="danger" (click)="onDeleteMemberClick()">Delete Member</button>
+                            <button class="warning" *ngIf="canShowCommand(CommandButtons.ActivateMember)" (click)="onActivateMemberClick()">Activate Member</button>
                         </div>
-                    </ng-container>
-                    <div dialogcommandbar>
-                        <div *ngIf="canAddMembers()" class="right">
+                        <div dialogcommands right>
+                            <button *ngIf="canShowCommand(CommandButtons.Save)" (click)="onSaveMemberClick()">Save</button>
+                            <button *ngIf="canShowCommand(CommandButtons.Cancel)" class="cancel" (click)="onCancelMemberClick()">Cancel</button>
+                        </div>
+                    </inline-dialog>
+                </div>
+            </div>
+        </div>
+
+        <div class="group-app-panel hidden" [ngClass]="{hidden: mode === Modes.Member}">
+            <div class="left-panel">
+                <div class="tree-panel">
+                    <group-tree (selectedGroup)="onSelectedGroup($event)"></group-tree>
+                </div>
+            </div>
+            <div class="right-panel">
+                <div *ngIf="selectedGroup">
+                    <div class="page-caption group-name">{{selectedGroup.name}}</div>
+                    <div *ngIf="isSystemGroup()" class="group-description annotation">{{selectedGroup.description}}</div>
+                    <div *ngIf="isSystemGroup()">
+                        <div class="annotation">This is a system group</div>
+                        <div *ngIf="membersSystemGenerated()" class="annotation">Members are automatically generated by the system</div>
+                    </div>
+                    <div *ngIf="!isSystemGroup()" class="group-form">
+                        <inline-dialog #groupDialog>
+                            <ng-container dialogbody>
+                                <text-input label="Name" [(ngModel)]="selectedGroup.name" [validator]="groupNameValidatorAsync"></text-input>
+                                <text-input label="Description" [(ngModel)]="selectedGroup.description" [validator]="groupDescriptionValidatorAsync"></text-input>
+                            </ng-container>
+                            <div dialogcommands right>
+                                <button class="default" (click)="onSaveGroupClick()">Save</button>
+                                <button class="cancel" (click)="onCancelGroupClick()">Cancel</button>
+                            </div>
+                            <div dialogcommands left>
+                                <button *ngIf="!groupIsNew" class="warning" (click)="onDeleteGroupClick()">Delete</button>
+                                <div class="annotation" *ngIf="groupHasChanges()">There are changes</div>
+                            </div>
+                        </inline-dialog>
+                    </div>
+                    <inline-dialog *ngIf="canShowMembers()">
+                        <ng-container dialogbody>
+                            <div class="group-member-panel">
+                                <div *ngIf="groupMembers.length > 0" class="group-members">
+                                    <div class="caption-row">
+                                        <div class="label">Members:</div>
+                                        <div>
+                                            <button class="secondary" (click)="onSelectGroupMembers(true)">Select All</button>
+                                            <button class="secondary" (click)="onSelectGroupMembers(false)">Deselect All</button>
+                                        </div>
+                                    </div>
+                                    <div class="bordered-container">
+                                        <div *ngIf="groupMembers.length > 0" class="member-list">
+                                            <div *ngFor="let m of groupMembers; let i = index" class="member-item">
+                                                <bool-input [name]="'m-'+i.toString()" [(ngModel)]="m.selected"></bool-input>
+                                                <div>{{m.name}})</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="groupMembers.length === 0">
+                                    <div>There are no members</div>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="canAddMembers()" dialogcommands right>
                             <button class="default" (click)="onRequestAddMemberToGroup()">Add Member</button>
                             <button class="default" [disabled]="countSelectedMembers(groupMembers) === 0" (click)="onRemoveMembersFromGroup()">Remove Member(s)</button>
                         </div>
-                    </div>
-                </inline-dialog>
+                    </inline-dialog>
+
                 <!--<pre>{{selectedGroup | json}}</pre>
                 <pre>{{selectedGroupJson}}</pre>-->
+                </div>
             </div>
         </div>
     </div>
@@ -152,7 +156,7 @@
 </div>
 
 <popup-dialog #candidateMembersDialog [width]="500">
-    <div dialogheader>
+    <div windowcaption>
         <div>Select Member(s)</div>
     </div>
     <div dialogbody>
@@ -163,11 +167,9 @@
             </div>
         </div>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button [ngClass]="{disabled: countSelectedMembers(candidateMembers) === 0}" (click)="onAddMembersClick()">OK</button>
-            <button class="cancel" (click)="onCancelAddMembersClick()">Cancel</button>
-        </div>
+    <div dialogcommands>
+        <button [ngClass]="{disabled: countSelectedMembers(candidateMembers) === 0}" (click)="onAddMembersClick()">OK</button>
+        <button class="cancel" (click)="onCancelAddMembersClick()">Cancel</button>
     </div>
 </popup-dialog>
 

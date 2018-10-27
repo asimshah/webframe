@@ -51,3 +51,7 @@ export function addMonths(date: Date, months: number) {
     }
     return td;
 }
+export function daysInMonth(date: Date): number {
+    let d = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    return d.getDate();
+}

@@ -11,10 +11,7 @@ import { PopupDialogComponent } from '../../fastnet/controls/popup-dialog.compon
 import { InlineDialogComponent } from '../../fastnet/controls/inline-dialog.component';
 import { ValidationMethod, isNullorUndefined, isWhitespaceOrEmpty } from '../../fastnet/controls/controlbase.type';
 import { ValidationContext, ValidationResult } from '../../fastnet/controls/controls.types';
-//import { PopupDialogComponent } from '../controls/popup-dialog.component';
-//import { isNullorUndefined, isWhitespaceOrEmpty, ValidationMethod } from '../controls/controlbase2.type';
-//import { ValidationContext, ValidationResult } from '../controls/controls.types';
-//import { InlineDialogComponent } from '../controls/inline-dialog.component';
+
 
 class registrationModel {
     member: Member;

@@ -1,28 +1,20 @@
-﻿@import "shared.component.scss";
+﻿@import "_theme.components.scss";
 .bool-input {
     label {
         display: grid;
-        grid-template-columns: 12px fit-content(24px) auto;
+        grid-template-columns: 16px fit-content(24px) auto;
         align-items: flex-start;
         span {
             white-space: nowrap;
         }
-        /*span {
-            @extend %label-after;
-            margin-left: 0;
-        }*/
+
     }
     input {
         margin-top: 5px;
     }
-    /*input {
-        @extend %input-box;
-        vertical-align: bottom;
-        margin-bottom: 0.25em;
-        margin-left: 0;
-    }*/
+
 
     &.disabled {
-        @extend %set-disabled;
+        @extend %theme-disabled;
     }
 }

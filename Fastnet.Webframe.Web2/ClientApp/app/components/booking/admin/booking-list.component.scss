@@ -1,13 +1,19 @@
-﻿.booking-list {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+﻿@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+
+@include theme-page('.booking-list');
+
+.booking-list {
+    margin-top: $theme-gutter;
+    padding-left: $theme-gutter;
+    padding-right: $theme-gutter;
 
     .booking-list-table {
         font-size: 11px;
 
         table-header {
-            background-color: darkblue;
-            color: white;
+            background-color: theme-colour('primary'); // darkblue;
+            color: theme-colour('background');
             font-weight: bold;
 
             table-column {
@@ -22,14 +28,14 @@
         }
 
         table-body {
-            height: 300px;
+            height: 60vh;
             overflow-y: scroll;
             overflow-x: hidden;
 
             table-row {
                 padding-top: 0.1em;
                 padding-bottom: 0.1em;
-                border-top: 1px solid #eeeeee;
+                border-top: 1px solid theme-colour('surface');
             }
 
             table-cell {
@@ -41,7 +47,7 @@
                     text-align: right;
                 }
 
-                button.small {
+                /*button.small {
                     width: auto;
                     border: none;
                     background-color: cornflowerblue;
@@ -57,7 +63,7 @@
                     &:hover {
                         background-color: darkorange;
                     }
-                }
+                }*/
             }
         }
     }

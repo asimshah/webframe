@@ -1,14 +1,14 @@
 ﻿<div class="booking-parameters">
     <h2>Booking System Parameters</h2>
     <inline-dialog columns="3">
-        <ng-container *ngIf="parameters" dialogbody>
-            <div >
+        <div *ngIf="parameters" dialogbody class="parameters-form">
+            <div>
                 <div>
                     <number-input label="Payment Interval" [(ngModel)]="parameters.paymentInterval"></number-input>
                     <div class="annotation">Enter a number of days. Payment is due within this many days of the booking start date.</div>
                 </div>
                 <div>
-                    <number-input label="Cancellation Interval" [(ngModel)]="parameters.cancellationInterval"></number-input>
+                    <number-input label="Cancellation Interval" disabled [(ngModel)]="parameters.cancellationInterval"></number-input>
                     <div class="annotation">Enter a number of days. Unpaid bookings are automatically cancelled after this many days from the booking start date.</div>
                 </div>
                 <div>
@@ -17,7 +17,7 @@
                 </div>
                 <div>
                     <div class="two-columns">
-                        <dropdown-input label="Privileged Members Group"  [(ngModel)]="parameters.privilegedMembers" [items]="parameters.availableGroups" ></dropdown-input>
+                        <dropdown-input label="Privileged Members Group" [(ngModel)]="parameters.privilegedMembers" [items]="parameters.availableGroups"></dropdown-input>
                         <button (click)="clearPrivilegedGroup()">Clear</button>
                     </div>
                     <div class="annotation">Bookings for members of this group are confirmed whether paid or not.</div>
@@ -47,12 +47,10 @@
                     <div class="annotation">Enter a number of days. Both current and previous entry codes are sent for this number of days after a code changes.</div>
                 </div>
             </div>
-        </ng-container>
-        <div dialogcommandbar>
-            <div class="right">
-                <button (click)="onSave()">Save</button>
-                <button class="cancel" (click)="onCancel()">Cancel</button>
-            </div>
+        </div>
+        <div dialogcommands right>
+            <button (click)="onSave()">Save</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
         </div>
     </inline-dialog>
     <popup-message [width]="370" caption="Booking Admin"></popup-message>

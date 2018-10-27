@@ -1,5 +1,5 @@
 ﻿<popup-dialog [width]="470">
-    <div dialogheader>
+    <div windowcaption>
         <div>Insert Link</div>
     </div>
     <div dialogbody>
@@ -9,14 +9,12 @@
         <div class="help-text">the text in the page that the user will see</div>
         <div class="help-text">leave blank to use the url as the link text</div>
     </div>
-    <div dialogcommandbar>
-        <div class="left">
-            <button (click)="onContentBrowser()" >Browse for  link...</button>
-        </div>
-        <div class="right">
-            <button [ngClass]="{disabled: !linkUrl || linkUrl.length == 0}" (click)="onInsert()">Insert</button>
-            <button class="cancel" (click)="onCancel()">Close</button>
-        </div>
-        <content-browser [selectmode]="true"></content-browser>
+    <div dialogcommands left>
+        <button (click)="onContentBrowser()">Browse for  link...</button>
     </div>
+    <div dialogcommands right>
+        <button [ngClass]="{disabled: !linkUrl || linkUrl.length == 0}" (click)="onInsert()">Insert</button>
+        <button class="cancel" (click)="onCancel()">Close</button>
+    </div>
+    <content-browser [selectmode]="true"></content-browser>
 </popup-dialog>

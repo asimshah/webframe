@@ -26,6 +26,9 @@ span.label {
         border: 1px solid #808080;
         border-radius: 0.25em;
 
+        &.hidden {
+            display: none;
+        }
         &.not-valid {
             border: 1px solid $error-colour;
         }
@@ -75,9 +78,14 @@ span.label {
         border: 1px solid #808080;
         border-radius: 0.25em;
         margin-top: 0.1em;
-        position: absolute;
+        //position: absolute;
         background-color: white;
-        z-index: 999;
+        //z-index: 999;
+
+        &.as-popup {
+            position: absolute;
+            z-index: 999;
+        }
 
         .calendar-list {
             display: flex;

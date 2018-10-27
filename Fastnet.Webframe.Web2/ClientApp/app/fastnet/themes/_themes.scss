@@ -1,0 +1,227 @@
+﻿@import "_selected-theme";
+@import "_palette.scss";
+
+$theme-gutter: 8px;
+$theme-gutter-narrow: $theme-gutter / 2;
+$theme-gutter-fine: $theme-gutter-narrow / 2;
+
+@mixin theme-page($selector: ".component-container") {
+    #{$selector} {
+        background-color: theme-colour('background');
+        color: theme-colour('surface');
+    }
+
+    .page-caption {
+        margin-top: 0;
+        font-size: 1.5em;
+
+        .sub-heading {
+            font-size: 0.8em;
+        }
+    }
+
+    .annotation, .help-text {
+        font-style: italic;
+        font-size: x-small;
+    }
+}
+
+@mixin theme-buttons {
+    button {
+        font-size: 13px;
+        border: 1px solid theme-colour('primary', 'dark');
+        border-radius: 0.25em;
+        margin: 0.125em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        padding-bottom: 0.25em;
+        height: 1.8em;
+        background-color: theme-colour('primary');
+        color: theme-colour('background');
+        white-space: nowrap;
+
+        &.small {
+            font-size: 10px;
+            padding-left: 0.3em;
+            padding-right: 0.3em;
+            padding-bottom: 0.2em;
+            padding-top: 0.1em;
+            line-height: 0.8;
+        }
+
+        &:hover {
+            background-color: theme-colour('background');
+            color: theme-colour('primary');
+        }
+
+        &.secondary {
+            border: 1px solid theme-colour('accent', 'dark');
+            background-color: theme-colour('accent');
+
+            &:hover {
+                background-color: theme-colour('background');
+                color: theme-colour('accent');
+            }
+        }
+
+        &[disabled], &.disabled {
+            cursor: none;
+            pointer-events: none;
+            background-color: theme-colour('disabled');
+            border-color: theme-colour('disabled', 'dark');
+            color: theme-colour('background');
+        }
+
+        &.danger {
+            background-color: theme-colour('error');
+            border: 1px solid theme-colour('error', 'dark');
+
+            &:hover {
+                background-color: theme-colour('background');
+                color: theme-colour('error');
+            }
+        }
+
+        &.cancel {
+            background-color: theme-colour('background');
+            color: theme-colour('primary');
+
+            &:hover {
+                background-color: theme-colour('primary');
+                color: theme-colour('background');
+            }
+        }
+
+        &.link {
+            background: none;
+            border: none;
+            color: theme-colour('primary');
+            text-align: left;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+@mixin theme-menu-bar($selector: ".menu-bar") {
+    #{$selector} {
+        background-color: lighten( theme-colour('primary', 'light'), 20%);
+        padding: $theme-gutter-fine $theme-gutter-narrow;
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-template-rows: auto;
+
+        > * {
+            grid-column: 1;
+            grid-row: 1;
+            justify-self: left;
+            display: grid;
+
+            > * {
+                grid-row: 1;
+                white-space: nowrap;
+            }
+        }
+
+        .align-right {
+            width: 100%;
+            grid-column: 2;
+            grid-row: 1;
+            justify-content: flex-end;
+        }
+    }
+}
+
+@mixin theme-dialog-commands {
+    /* note: called by inlilne-dialog, popup-dialog, and popup-message,not required elsewhere? */
+    %command-grid {
+        width: 100%;
+        grid-row: 1;
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: auto;
+        grid-column-gap: 0.2em;
+    }
+
+    %command-items {
+        > * {
+            margin-top: $theme-gutter-narrow;
+            margin-bottom: $theme-gutter-narrow;
+            width: 100%;
+            grid-row: 1;
+            white-space: nowrap;
+        }
+    }
+
+    .dialog-commands {
+        background-color: lighten( theme-colour('surface', 'light'), 40%);
+        border-radius: 0.25em;
+        padding-left: $theme-gutter-narrow;
+        padding-right: $theme-gutter-narrow;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: auto;
+
+        /deep/ [dialogcommands] {
+            @extend %command-grid;
+            padding-left: $theme-gutter-narrow;
+            padding-right: $theme-gutter-narrow;
+            justify-content: center;
+            grid-column: 2;
+
+            @extend %command-items;
+
+            &[left] {
+                @extend %command-grid;
+                justify-content: flex-start;
+                grid-column: 1;
+                @extend %command-items;
+            }
+
+            &[right] {
+                @extend %command-grid;
+                justify-content: flex-end;
+                grid-column: 3;
+                @extend %command-items;
+            }
+        }
+    }
+}
+
+%theme-overlay-ext {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(theme-colour('primary', 'light'), 0.60);
+}
+%theme-window-ext {
+    box-shadow: 10px 10px 50px theme-colour('surface');
+    border: 3px solid theme-colour('primary');
+    border-radius: 0.25em;
+    max-width: 90%;
+    margin: auto;
+    margin-top: 5%;
+    padding: $theme-gutter-narrow;
+    background-color: theme-colour('background');
+    color: theme-colour('surface');
+
+    .window-caption {
+        font-weight: bold;
+        background-color: theme-colour('primary');
+        color: theme-colour('background');
+        padding: $theme-gutter-narrow;
+        min-height: 2em;
+
+        &.warning {
+            background-color: theme-colour('warning');
+        }
+
+        &.error {
+            background-color: theme-colour('error');
+        }
+    }
+}

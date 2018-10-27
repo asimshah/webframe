@@ -9,11 +9,11 @@ import { ValidationContext } from "./controls.types";
 @Component({
     selector: 'text-input',
     template: `<div class="text-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
-            <label >
+            <label [for]="controlId" >
                 <span [innerHTML]="label"></span>
                 <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
-            <input #focushere type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             </label>
+            <input [id]="controlId" #focushere type="text" [placeholder]=placeHolderText [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             <div *ngIf="isInError()" class="validation-text">
                 <span  class="text-error">{{vr.message}}</span>
             </div>

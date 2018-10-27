@@ -1,25 +1,9 @@
-﻿@import "shared.component.scss";
+﻿@import "../themes/_themes.scss";
+@include theme-dialog-commands;
 :host {
     display: block;
 }
-inline-dialog {
-    display: block;
-}
-.inline-dialog {
-    height: 100%;
-    padding: 0.25em;
-
-    /*display: flex;
-    flex-direction: column;
-    justify-content: space-between;*/
-}
 .dialog-body {
-    @extend %std-dialog-buttons;
-    display: grid;
-    grid-gap: 10px;
-    //align-items: flex-end;
-}
-.dialog-commands {
-    @extend %std-dialog-commands;
-
+    padding-top: $theme-gutter;
+    padding-bottom: $theme-gutter;
 }

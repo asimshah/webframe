@@ -1,0 +1,107 @@
+﻿@import "../themes/_themes.scss";
+
+%label-above {
+    margin-top: 0; //0.5em;
+    //margin-bottom: 0.125em;
+}
+
+%label-after {
+    margin-top: 0.5em;
+    margin-left: 0.25em;
+    margin-right: 0;
+}
+
+/*%set-disabled {
+    pointer-events: none;
+
+
+    label {
+        color: theme-colour('disabled');
+
+        &.selected {
+            span:first-child {
+                border: 0.0625em solid theme-colour('disabled') !important;
+            }
+
+            span:nth-child(2) {
+                border: 0.0625em solid theme-colour('disabled') !important;
+                background-color: theme-colour('disabled') !important;
+            }
+
+            span:last-child {
+                color: theme-colour('disabled') !important;
+            }
+        }
+    }
+}*/
+
+%theme-disabled {
+    pointer-events: none;
+
+
+    label {
+        color: theme-colour('disabled');
+
+        &.selected {
+            span:first-child {
+                border: 0.0625em solid theme-colour('disabled') !important;
+            }
+
+            span:nth-child(2) {
+                border: 0.0625em solid theme-colour('disabled') !important;
+                background-color: theme-colour('disabled') !important;
+            }
+
+            span:last-child {
+                color: theme-colour('disabled') !important;
+            }
+        }
+    }
+}
+
+
+%input-box {
+    font-weight: normal;
+    border-radius: 0.25em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border: 1px solid theme-colour('surface', 'light');
+
+    &:focus {
+        outline: none;
+        border: 1px solid theme-colour('primary', 'light');
+    }
+}
+
+%theme-text-input {
+
+    label {
+        color: theme-colour('surface');
+
+        span {
+            @extend %label-above;
+        }
+    }
+
+    input {
+        @extend %input-box;
+        color: theme-colour('surface');
+        width: 100%;
+    }
+
+    &.not-valid {
+        input {
+            border: 1px solid theme-colour('error');
+        }
+    }
+
+    &.disabled {
+        @extend %theme-disabled;
+
+        input {
+            border: 1px solid theme-colour('disabled');
+        }
+    }
+}

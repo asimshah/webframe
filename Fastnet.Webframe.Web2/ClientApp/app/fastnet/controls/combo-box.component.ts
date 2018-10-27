@@ -54,7 +54,7 @@ export class ComboBoxComponent extends InputControlBase implements AfterViewInit
         if (index >= 0) {
             ComboBoxComponent.allComboBoxes.splice(index, 1);
         }
-        console.log(`ngOnDestroy(): ComboBoxComponent.allComboBoxes length now ${ComboBoxComponent.allComboBoxes.length}`);
+        //console.log(`ngOnDestroy(): ComboBoxComponent.allComboBoxes length now ${ComboBoxComponent.allComboBoxes.length}`);
     }
     @HostListener('window:resize', ['$event.target'])
     onResize() {

@@ -1,5 +1,5 @@
 ﻿
-import { Component, forwardRef, Input, EventEmitter, Output, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, forwardRef, Input, EventEmitter, Output, ViewEncapsulation, OnDestroy, AfterViewInit, OnInit } from '@angular/core';
 import { ListItem } from './controls.types';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -56,7 +56,7 @@ export class CalendarDay {
     ],
     encapsulation: ViewEncapsulation.None
 })
-export class DateInputControl extends InputControlBase implements OnDestroy {
+export class DateInputControl extends InputControlBase implements OnInit, AfterViewInit, OnDestroy {
     private static bodyEventAdded = false;
     private static allDateControls: DateInputControl[] = [];
     showCalendar: boolean = false;
@@ -64,10 +64,13 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
     @Input() maxDate: Date = new Date(2299, 12, 31);
     @Input() showmonthcount: number = 1;
     @Input() startweekon: DaysOfTheWeek = DaysOfTheWeek.Monday;
+    @Input() showDaySelection: boolean = true;
+    @Input() showInputBox: boolean = true;
     @Output() beforeshowingdate = new EventEmitter<CalendarDay>();
     monthList: calendarMonth[];
     selectedDate: Date | null = null;
     readonly startDay = startDayofWeek;
+    private isInitialised = false;
     private baseDate: Date;
     private readonly dateControlIndex: number;
     private yearRange: ListItem<any>[];
@@ -81,28 +84,38 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
     constructor() {
         super();
         this.setReference("date");
-        //console.log("constructor()");
         this.dateControlIndex = DateInputControl.allDateControls.length;// DateInput2Control.counter;
         DateInputControl.allDateControls.push(this);
-        if (!DateInputControl.bodyEventAdded) {
-            document.body.addEventListener("mouseup", () => {
-                //console.log(`DateInput2Control: mouse up on body`)
-                this.closeAll();
-            });
-            DateInputControl.bodyEventAdded = true;
-            //console.log(`body mouseup handler added`);
-        }
-        this.localChangeCallBack = (v) => { this.isTouched = true; };
+        this.localChangeCallBack = (v) => {
+            this.isTouched = true;
+            this.onDateChanged(v);
+        };
         this.afterValidationCallBack = () => { this.isTouched = false; };
-        //this.debugControlArray();
+
+    }
+    ngOnInit() {
+        this.showCalendar = this.showInputBox === false ? true : false;
+        //console.log(`value = ${this.value}, basedate = ${this.baseDate}`);
+
+        if (this.showInputBox === true) {
+            if (!DateInputControl.bodyEventAdded) {
+                document.body.addEventListener("mouseup", () => {
+                    this.closeAll();
+                });
+                DateInputControl.bodyEventAdded = true;
+            }
+        }
+    }
+    ngAfterViewInit() {
+        if (this.showCalendar) {
+            setTimeout(() => this.initialise(), 0);
+        }
     }
     ngOnDestroy() {
-        //console.log("ngOnDestroy()");
-        //this.debugControlArray();
         let index = DateInputControl.allDateControls.findIndex((d) => d === this);
         if (index >= 0) {
             DateInputControl.allDateControls.splice(index, 1);
-        } 
+        }
     }
     standardDate(d: Date): string {
         if (d) {
@@ -115,7 +128,15 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
         this.value = null;
         this.onCloseCalendar();
     }
-
+    onDateChanged(d: Date) {
+        if ( this.isInitialised && this.showDaySelection === false) {
+            //console.log(`date changed to ${d}, base is ${this.baseDate}`);
+            if (!this.baseDate || d.valueOf() !== this.baseDate.valueOf()) {
+                this.baseDate = d;
+                this.buildCalendar();
+            }
+        }
+    } 
     onMouseUp(e: MouseEvent) {
         if (this.showCalendar === true) {
             this.onCloseCalendar();
@@ -128,14 +149,16 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
     }
     onCloseCalendar() {
         //console.log(`closing date control number ${this.dateControlIndex}`);
-        this.showCalendar = false;
+        if (this.showInputBox === true) {
+            this.showCalendar = false;
+        }
     }
     get debug() { return JSON.stringify(this.value, null, 2); }
     stopEvent(e: Event) {
         e.preventDefault();
         e.stopPropagation();
     }
-    onDayClick( cm: calendarMonth, cd: CalendarDay) {
+    onDayClick(cd: CalendarDay) {
         if (!cd.status.block) {
             this.value = cd.date;
             this.selectedDate = cd.date;
@@ -145,20 +168,28 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
     }
     onBackOneMonth() {
         this.baseDate = addMonths(this.baseDate, -1);
+        if (this.showDaySelection === false) {
+            this.value = this.baseDate;
+            this.selectedDate = this.baseDate;
+        }
         this.buildCalendar();
     }
     onForwardOneMonth() {
         this.baseDate = addMonths(this.baseDate, 1);
+        if (this.showDaySelection === false) {
+            this.value = this.baseDate;
+            this.selectedDate = this.baseDate;
+        }
         this.buildCalendar();
     }
     onYearChange(val: ListItem<any>, cm: calendarMonth, index: number) {
         try {
-            console.log(`year change ${cm.name} ${JSON.stringify(val)}`);
+            //console.log(`year change ${cm.name} ${JSON.stringify(val)}`);
             this.baseDate = new Date(val.value, cm.month, 1);
             if (index > 0) {
                 this.baseDate = addMonths(this.baseDate, -index);
             }
-            console.log(`new base date  ${this.baseDate.toLocaleString()}`);
+            //console.log(`new base date  ${this.baseDate.toLocaleString()}`);
             this.buildCalendar();
         } catch (e) {
             debugger;
@@ -177,7 +208,7 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
             if (this.isSelectedDate(cd.date)) {
                 names.push('selected');
             }
-            
+
             if (cd.status.disabled === true) {
                 names.push('disabled');
                 return names;
@@ -196,13 +227,15 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
         this.baseDate = today;
         if (this.value) {
             let d = <Date>this.value;
-            this.baseDate = new Date(d.getFullYear(), d.getMonth(), d.getDay());
+            this.baseDate = new Date(d.getFullYear(), d.getMonth(), this.showDaySelection ? d.getDay() : 1);
         }
+        //console.log(`value = ${this.value}, basedate = ${this.baseDate}`);
         this.buildWeekDays();
         let minY = this.minDate.getFullYear();
         let maxY = this.maxDate.getFullYear();
         this.buildYearRange(minY, maxY);
         this.buildCalendar();
+        this.isInitialised = true;
     }
     private buildCalendar() {
         //console.log(`min date ${this.minDate}, max date ${this.maxDate}`);
@@ -234,50 +267,6 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
                 yearNumber++;
             }
         }
-        //for (let cm of this.monthList) {
-        //    let year = cm.year.value as number;
-        //    let fd = new Date(Date.UTC(year, cm.month, 1));
-        //    cm.availableYears = [];
-        //    for (let y = year - this.offsetYearFrom; y < year + this.offsetYearTo + 1; ++y) {
-        //        let li = new ListItem<any>();
-        //        li.value = y;
-        //        li.name = y.toString();
-        //        cm.availableYears.push(li);
-        //    }
-        //    let fd_dayofWeek = fd.getDay();
-        //    let startOffset = fd_dayofWeek - startDayofWeek; // offset = 0 if the first day of the month is a Sunday (if startDayofWeek is 0)
-        //    let dw = startDayofWeek;
-        //    for (let i = 0; i < startOffset; ++i) {
-        //        cm.days.push({ date: null, dayNumber: 0, dayOfWeek: dw, disabled: false, status: new DayStatus() })
-        //        dw++;
-        //        if (dw > 6) {
-        //            dw = 0;
-        //        }
-        //    }
-        //    let finished = false;
-        //    let d = fd;
-        //    do {
-        //        let disabled = false;
-        //        if (this.minDate) {
-        //            disabled = d.getTime() < this.minDate.getTime();
-        //        }
-        //        if (disabled === false && this.maxDate) {
-        //            disabled = d.getTime() > this.maxDate.getTime();
-        //        }
-        //        let selected = this.value && this.value.getTime() === d.getTime();
-        //        if (selected === true) {
-        //            this.selectedDate = d;
-        //        }
-        //        let status: DayStatus = this.beforeDateLoaded ? this.beforeDateLoaded(d) : new DayStatus();
-        //        //console.log(`${d.toDateString()} ${JSON.stringify(status)}`);
-        //        cm.days.push({ date: d, dayNumber: d.getDate(), dayOfWeek: d.getDay(), disabled: disabled, status: status });
-        //        d = this.addDay(d);
-        //        if (fd.getMonth() !== d.getMonth()) {
-        //            finished = true;
-        //        }
-        //    } while (finished === false);
-        //    //console.log(`${JSON.stringify(cm, null, 2)}`);
-        //}
     }
     private ensureDate(d: string | Date): Date {
         if (typeof d === "string") {
@@ -285,7 +274,7 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
         }
         return d;
     }
-    private buildYearRange(miny: number, maxy:number) {
+    private buildYearRange(miny: number, maxy: number) {
         this.yearRange = [];
         let year = this.baseDate.getFullYear();
         for (let y = miny; y <= maxy; ++y) {
@@ -296,7 +285,6 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
         }
     }
     private openCalendar() {
-
         for (let c of DateInputControl.allDateControls) {
             if (c !== this) {
                 c.onCloseCalendar();
@@ -306,13 +294,6 @@ export class DateInputControl extends InputControlBase implements OnDestroy {
         //console.log(`opening date control number ${this.dateControlIndex}`);
     }
     private closeAll() {
-        //let arr = ControlBase.allControls.values();
-        //for (let c of arr) {
-        //    if (c instanceof DateInput2Control) {
-        //        let x = c as DateInput2Control;
-        //        x.onCloseCalendar();
-        //    }
-        //}
         for (let c of DateInputControl.allDateControls) {
             c.onCloseCalendar();
         }
@@ -388,6 +369,6 @@ class calendarMonth {
                 finished = true;
             }
         } while (finished === false);
-            //console.log(`${JSON.stringify(cm, null, 2)}`);
+        //console.log(`${JSON.stringify(cm, null, 2)}`);
     }
 }

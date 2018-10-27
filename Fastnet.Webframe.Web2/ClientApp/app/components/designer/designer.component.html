@@ -2,14 +2,16 @@
     <div class="BannerPanel">
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
-    <div class="command-bar">
-        <button (click)="goBack()">Back</button>
-        <button (click)="goToMenuEditor()">Menu Editor</button>
-        <button (click)="goToStyleEditor()">Style Editor</button>
+    <div class="menu-bar">
+        <div>
+            <button (click)="goBack()">Back</button>
+            <button (click)="goToMenuEditor()">Menu Editor</button>
+            <button (click)="goToStyleEditor()">Style Editor</button>
+        </div>
     </div>
     <div class="designer-panel">
         <div *ngIf="currentMode === Modes.MenuEditor">
-            <h2>Menu Editor</h2>
+            <div class="page-caption">Menu Editor</div>
             <inline-dialog>
                 <div dialogbody>
                     <ng-container *ngIf="menus && menus.length > 0">
@@ -26,20 +28,18 @@
                         </div>
                     </ng-container>
                 </div>
-                <div dialogcommandbar>
-                    <div class="left">
-                        <button tabindex="0" (click)="addMenuItem()">Add Menu Item</button>
-                    </div>
-                    <div class="right">
-                        <button tabindex="3" [disabled]="!changesExist()" (click)="saveChanges()">Save Changes</button>
-                        <button tabindex="4" class="cancel" (click)="cancelChanges()">Cancel</button>
-                    </div>
+                <div dialogcommands left>
+                    <button tabindex="0" (click)="addMenuItem()">Add Menu Item</button>
+                </div>
+                <div dialogcommands right>
+                    <button tabindex="3" [disabled]="!changesExist()" (click)="saveChanges()">Save Changes</button>
+                    <button tabindex="4" class="cancel" (click)="cancelChanges()">Cancel</button>
                 </div>
             </inline-dialog>
             <content-browser [selectmode]="true"></content-browser>
         </div>
         <div *ngIf="currentMode === Modes.StyleEditor">
-            <h2>Style Editor</h2>
+            <div class="page-caption">Style Editor</div>
             <inline-dialog>
                 <div dialogbody>
                     <ng-container *ngIf="styleTexts && styleTexts.less">
@@ -49,11 +49,9 @@
                              [mode]="'less'"></div>
                     </ng-container>
                 </div>
-                <div dialogcommandbar>
-                    <div class="right">
-                        <button tabindex="3" [disabled]="!changesExist()" (click)="saveChanges()">Save Changes</button>
-                        <button tabindex="4" class="cancel" (click)="cancelChanges()">Cancel</button>
-                    </div>
+                <div dialogcommands right>
+                    <button tabindex="3" [disabled]="!changesExist()" (click)="saveChanges()">Save Changes</button>
+                    <button tabindex="4" class="cancel" (click)="cancelChanges()">Cancel</button>
                 </div>
             </inline-dialog>
         </div>

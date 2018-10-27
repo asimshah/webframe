@@ -12,18 +12,16 @@
             <text-input label="Club/Organisation" [(ngModel)]="model.member.organisation"></text-input>
             <text-input label="BMC Membership" [(ngModel)]="model.member.bmcMembership" [validator]="bmcNumberValidatorAsync"></text-input>
         </div>
-        <div dialogcommandbar>
-            <div class="right">
-                <button (click)="onRegister()">Register</button>
-                <button class="cancel" (click)="onCancel()">Cancel</button>
-            </div>
+        <div dialogcommands right>
+            <button (click)="onRegister()">Register</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
         </div>
     </inline-dialog>
     <custom-css></custom-css>
     <!--<pre>{{model | json}}</pre>-->
 </div>
 <popup-dialog>
-    <div dialogheader>
+    <div windowcaption>
         <div>Registration</div>
     </div>
     <div dialogbody>
@@ -40,9 +38,7 @@
             </i>
         </p>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button (click)="onPopupClose()">OK</button>
-        </div>
+    <div dialogcommands>
+        <button (click)="onPopupClose()">OK</button>
     </div>
 </popup-dialog>

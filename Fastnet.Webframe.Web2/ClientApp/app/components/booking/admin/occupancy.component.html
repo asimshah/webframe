@@ -1,0 +1,8 @@
+﻿<div class="occupancy-report">
+    <div class="page-caption">Occupancy Report</div>
+    <div class="date-range-panel">
+        <date-input class="from-date" label="From" [showInputBox]="false" [showDaySelection]="false" [(ngModel)]="from" ></date-input>
+        <date-input class="to-date" label="To" [showInputBox]="false" [showDaySelection]="false" [(ngModel)]="to" ></date-input>
+        <button (click)="onStart()">Start</button>
+    </div>
+</div>

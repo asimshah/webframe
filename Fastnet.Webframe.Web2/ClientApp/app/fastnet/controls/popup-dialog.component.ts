@@ -39,13 +39,7 @@ export class PopupDialogComponent extends DialogBase implements OnInit {
             this.isInitialised = true;
         }
     }
-    //ngAfterContentInit(): void {
-    //    console.log(`${this.reference}, controls now ${this.controls.length}`);
-    //}
-    //ngOnDestroy(): void {
-    //    console.log(`ngOnDestroy(): ${this.reference}`);
-    //}
-    getHeaderClass(): string {
+    getCaptionClass(): string {
         if (this.error) {
             return 'error';
         } else if (this.warning) {

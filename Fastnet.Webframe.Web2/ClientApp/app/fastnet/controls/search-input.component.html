@@ -1,5 +1,5 @@
 ﻿<div class="search-input">
-    <label [for]="controlId">
+    <label [for]="controlId" [ngStyle]="{display: hasLabel() ? 'block' : 'none'}">
         <span>{{label}}</span>
     </label>
     <div class="control-container">

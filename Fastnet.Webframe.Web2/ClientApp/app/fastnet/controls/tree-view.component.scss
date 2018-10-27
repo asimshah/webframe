@@ -1,10 +1,15 @@
-﻿:host {
+﻿
+@import "_theme.components.scss";
+
+:host {
+    color: theme-colour('surface');
     font-family: inherit;
 
-
+    ul {
+        padding-left: 0;
+    }
 }
 
-$selectedColor: cornflowerblue;// #549254;
 
 .tree-view {
     ul {
@@ -26,20 +31,20 @@ $selectedColor: cornflowerblue;// #549254;
 .tree-icon {
     margin-right: 0.25em;
 }
-.item-text {    
+.item-text {
     padding-bottom: 0.20em;
     padding-left: 0.25em;
     padding-right: 0.25em;
     border-radius: 0.25em;
+    margin-left: 0.25em;
     border: 1px solid transparent;
 
     &.selected {
-        border: 1px solid $selectedColor;
-        //background-color: $selectedColor;
-        //color: white;
+        font-weight: bold;
+        //border: 1px solid theme-colour('primary');
     }
 
     &:hover {
-        border: 1px solid #808080;
+        border: 1px solid theme-colour('surface');
     }
 }

@@ -1,4 +1,3 @@
-﻿@import "../_booking.app.scss";
-
-
-
+﻿@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-page('.entry-codes');

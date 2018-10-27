@@ -1,66 +1,25 @@
 ﻿/*@import "../../styles/webframe.forms.scss";*/
 
-$annotation-colour: #152eea;
+@import "../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-menu-bar('.menu-bar');
+@include theme-page();
 
 .SitePanel {
     height: 100%;
 }
 
-.two-columns {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 0.25em;
-    align-items: self-end;
-}
-.caption {
-    font-size: 14px;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    color: cornflowerblue;
-    border-bottom: 2px solid cornflowerblue;
-}
-.annotation {
-    font-size: 12px;
-    color: $annotation-colour;
-
-    &.no-space {
-        display: flex;
-    }
-
-    &.warning {
-        color: red;
-    }
-}
-
 .bordered-container {
     padding: 0.25em;
-    border: 1px solid black;
+    border: 1px solid theme-colour('surface');
     border-radius: 0.25em;
 }
-.command-bar {
-    background-color: darkblue;
-    padding: 0.5em;
-    display: grid;
-    grid-gap: 0.25em;
-    grid-template-columns: auto auto auto 1fr auto;
 
-    button {
-        width: auto;
-        border: none;
-        background-color: cornflowerblue;
-        color: white;
-    }
-}
-
-.command-buttons {
-    font-size: 0.8em;
-}
 
 .membership-app-panel, .group-app-panel {
-    display: flex;
-    align-items: stretch;
-    height: 100%;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-row-gap: 0.5em;
 
     &.hidden {
         display: none;
@@ -75,19 +34,41 @@ $annotation-colour: #152eea;
     .right-panel {
         //background-color: lightcyan;
         width: 100%;
-        flex: 2;
+
+        .page-caption {
+            font-size: 3em;
+            border-bottom: 2px solid;
+            margin-bottom: 0.25em;
+        }
+    }
+
+    .main-dialog {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-column-gap: 0.5em;
+    }
+
+    .controls-column {
+        display: grid;
+        grid-template-columns: auto;
+        //grid-template-rows: 24px;
+        grid-row-gap: 0.5em;
+    }
+
+    .button-column {
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 24px;
+        grid-row-gap: 0.5em;
     }
 }
 
 .membership-app-panel {
-    search-input {
+    /*search-input {
         border: 1px solid black;
         border-radius: 0.25em;
-    }
-
+    }*/
     .member-index {
-        $backcolor: white;
-        $forecolor: cornflowerblue;
         margin: 0.5em;
 
         .address-book {
@@ -99,26 +80,24 @@ $annotation-colour: #152eea;
                 flex-direction: column;
 
                 button {
-                    border: 1px solid black;
+                    border: 1px solid theme-colour('primary', 'dark');
                     border-radius: 6px 0 0 6px;
-                    background-color: $forecolor;
-                    color: $backcolor;
+                    /*background-color: $forecolor;
+                    color: $backcolor;*/
                     height: 24px;
                     width: 24px;
 
                     &.selected {
-                        background-color: darkorange;
+                        background-color: theme-colour('accent'); // darkorange;
                     }
 
                     &:not(:first-child) {
                         margin-top: -4px;
                     }
-
-                    &:hover {
+                    /*&:hover {
                         background-color: $backcolor;
                         color: $forecolor;
-                    }
-
+                    }*/
                     &:focus {
                         outline: none;
                     }
@@ -126,24 +105,25 @@ $annotation-colour: #152eea;
             }
 
             .address-book-list {
-                border: 1px solid black;
+                border: 1px solid theme-colour('surface');
                 border-radius: 0 3px 3px 0;
                 padding: 4px;
                 width: 100%;
-                height: 544px;
+                /*height: 544px;*/
                 overflow-y: auto;
 
                 .member-entry {
                     .fa-ban {
-                        color: red;
+                        color: theme-colour('error');
                     }
 
                     .fa-clock-o {
-                        color: orange;
+                        color: theme-colour('warning');
                     }
 
                     &:hover {
-                        color: cornflowerblue;
+                        font-weight: bold;
+                        //color: theme-colour('accent', 'dark');
                         cursor: pointer;
                     }
                 }
@@ -160,7 +140,7 @@ $annotation-colour: #152eea;
         height: 100%;
         padding: 0.5em;
         max-width: 256px;
-        border: 1px solid black;
+        border: 1px solid theme-colour('surface');
         border-radius: 4px;
     }
 
@@ -187,7 +167,8 @@ $annotation-colour: #152eea;
             }
 
             .label {
-                color: black;
+                color: unset;
+                //color: black;
                 font-size: 16px;
                 font-weight: 600;
                 padding-left: 0;

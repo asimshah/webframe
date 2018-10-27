@@ -12,6 +12,7 @@ export class MCETestComponent implements AfterViewInit {
     @ViewChild('ed1') ed1: TinyMCEComponent;
     @ViewChild(PopupDialogComponent) popup: PopupDialogComponent;
     @ViewChild('ed2') ed2: TinyMCEComponent;
+    @ViewChild(TinyMCEComponent) mce: TinyMCEComponent;
     text: string = "<div>hello world</div>";
     modaltext: string = "<div>modal hello world</div>";
     constructor() {

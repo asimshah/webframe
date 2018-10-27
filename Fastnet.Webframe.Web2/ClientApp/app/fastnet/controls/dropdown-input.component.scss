@@ -1,7 +1,9 @@
-﻿@import "shared.component.scss";
+﻿//@import "shared.component.scss";
+
+@import "_theme.components.scss";
 .dropdown-input {
     .dropdown-border {
-        border: 1px solid $border-colour;
+        border: 1px solid theme-colour('surface');
         border-radius: 0.25em;
         padding: 0.25em;
     }
@@ -12,22 +14,22 @@
         width: 100%;
         padding-left: 0.25em;
         padding-right: 0.25em;
-        padding-bottom: 0.25em;
-        padding-top: 0.25em;
-        border: none; 
+        border: none;
         outline: none;
+
         &:focus {
             outline: none;
         }
     }
 
     &.disabled {
-        @extend %set-disabled;
+        @extend %theme-disabled;
 
         .dropdown-border {
-            border: 1px solid $disabled-colour;
+            border: 1px solid theme-colour('disabled');
+
             select {
-                color: $disabled-colour;
+                color: theme-colour('disabled');
             }
         }
     }

@@ -1,8 +1,11 @@
-﻿$theme: 'music';
-@import "_palette.scss";
-@import "_themes";
+﻿@import "../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-menu-bar(".test-menu-bar");
+@include theme-page(".root-container");
 
-.test-button-table {
+.test-form {
+    padding-top: 2px;// theme-gutter("fine");
+    padding-bottom: 2px; //theme-gutter("fine");
     display: grid;
     grid-template-columns: auto auto auto;
     grid-gap: 0.5em;

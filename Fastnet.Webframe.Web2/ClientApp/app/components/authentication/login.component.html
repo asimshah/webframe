@@ -2,30 +2,28 @@
     <div class="BannerPanel">
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
-    <div class="ContentPanel">
-        <div class="webframe-form">
-            <div class="caption">Enter your email address and password</div>
-            <inline-dialog>
-                <div dialogbody>
-                    <email-input label="Email Address" [(ngModel)]="model.emailAddress" [validator]="emailAddressValidatorAsync"></email-input>
-                    <password-input label="Password" [(ngModel)]="model.password"></password-input>
+    <div class="component-container" >
+        <div class="page-caption">Enter your email address and password</div>
+        <inline-dialog>
+            <div class="main-dialog" dialogbody>
+                <email-input label="Email Address" [(ngModel)]="model.emailAddress" [validator]="emailAddressValidatorAsync"></email-input>
+                <password-input label="Password" [(ngModel)]="model.password"></password-input>
+                <div>
                     <div class="annotation">If you do not have a password, use "Register" to create one.</div>
                     <div class="annotation">If you have forgotten your password, enter your email address above</div>
                     <div class="annotation">and then use "Reset Password" to receive an email with a password creation link.</div>
                 </div>
-                <div dialogcommandbar>
-                    <div class="left">
-                        <button tabindex="0" class="link" [disabled]="!hasEmailAddress()" (click)="onResetPassword()">Reset Password</button>
-                        <button tabindex="0" class="link" (click)="onRegister()">Register</button>
-                    </div>
-                    <div class="right">
-                        <button tabindex="3" [disabled]="!canAttemptLogin()" (click)="onLogin()">Login</button>
-                        <button tabindex="4" class="cancel" (click)="onCancel()">Cancel</button>
-                    </div>
-                </div>
-            </inline-dialog>
-            <popup-message [width]="370" caption="Authentication"></popup-message>
-        </div>
+            </div>
+            <div dialogcommands left>
+                <button tabindex="0" class="link" [disabled]="!hasEmailAddress()" (click)="onResetPassword()">Reset Password</button>
+                <button tabindex="0" class="link" (click)="onRegister()">Register</button>
+            </div>
+            <div dialogcommands right>
+                <button tabindex="3" [disabled]="!canAttemptLogin()" (click)="onLogin()">Login</button>
+                <button tabindex="4" class="cancel" (click)="onCancel()">Cancel</button>
+            </div>
+        </inline-dialog>
+        <popup-message [width]="370" caption="Authentication"></popup-message>
     </div>
     <custom-css></custom-css>
 </div>

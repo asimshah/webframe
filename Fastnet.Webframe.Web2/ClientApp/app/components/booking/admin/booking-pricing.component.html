@@ -1,14 +1,36 @@
-﻿<div class="email-templates">
-    <h2>Pricing</h2>
-    <inline-dialog columns="3">
-        <ng-container  dialogbody>
-
-        </ng-container>
-        <div dialogcommandbar>
-            <div class="right">
-                <button >Save</button>
-                <button class="cancel" >Cancel</button>
+﻿<div class="pricing">
+    <div class="page-caption">Manage Pricing</div>
+    <inline-dialog >
+        <div dialogbody >
+            <scrollable-table class="price-table" [showsearch]="false" caption="Price Table">
+                <table-header>
+                    <table-column width="120px">Starting From</table-column>
+                    <table-column width="120px">Until</table-column>
+                    <table-column class="right-align" width="64px">Price per Bed (£)</table-column>
+                    <table-column width="32px"></table-column>
+                    <table-column width="32px"></table-column>
+                </table-header>
+                <table-body>
+                    <table-row *ngFor="let p of prices">
+                        <table-cell>{{p.fromFormatted}}</table-cell>
+                        <table-cell>{{p.toFormatted}}</table-cell>
+                        <table-cell class="right-align">{{p.amount}}</table-cell>
+                        <table-cell><button class="small" (click)="onEditPrice(p)" [ngClass]="{disabled: isEditing}">Edit</button></table-cell>
+                        <table-cell><button *ngIf="canRemove(p)" class="small" (click)="onRemovePrice(p)" [ngClass]="{disabled: isEditing}">Remove</button></table-cell>
+                    </table-row>
+                </table-body>
+            </scrollable-table>
+            <div class="rule"></div>
+            <div class="new-price-form">
+                <div class="heading">{{getFormCaption()}}</div>
+                <date-input label="Starting from" [(ngModel)]="modelPrice.from"></date-input>
+                <number-input label="Price per bed (£)" [minNumber]="1" [(ngModel)]="modelPrice.amount" [validator]="priceValidatorAsync" ></number-input>
             </div>
+        </div>
+        <div dialogcommands right>
+            <button *ngIf="!isEditing" (click)="addPrice()">Add Price</button>
+            <button *ngIf="isEditing" (click)="saveChanges()">Save Changes</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
         </div>
     </inline-dialog>
 

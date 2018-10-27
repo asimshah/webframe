@@ -15,6 +15,7 @@ import { BookingDaysComponent } from './admin/booking-bookingdays.component';
 import { BookingEntryCodesComponent } from './admin/booking-entrycodes.component';
 import { BookingPricingComponent } from './admin/booking-pricing.component';
 import { TinyMCEModule } from '../../fastnet/tinymce/tinymce.module';
+import { OccupancyComponentComponent } from './admin/occupancy.component';
 
 @NgModule({
     imports: [
@@ -35,7 +36,7 @@ import { TinyMCEModule } from '../../fastnet/tinymce/tinymce.module';
         BookingDaysComponent,
         BookingEntryCodesComponent,
         BookingPricingComponent,
-
+        OccupancyComponentComponent
     ],
     providers: [
         BookingAdminService

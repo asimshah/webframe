@@ -1,7 +1,5 @@
 ﻿import { NG_VALUE_ACCESSOR } from "@angular/forms";
 import { forwardRef, Component, Input } from "@angular/core";
-//import { TextInputControl } from "./text-input.component";
-//import { ControlBase } from "./controls.component";
 import {  ValidationResult, ValidationContext } from "./controls.types";
 import { ControlBase, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty } from "./controlbase.type";
 
@@ -9,11 +7,11 @@ import { ControlBase, InputControlBase, isNullorUndefined, isWhitespaceOrEmpty }
 @Component({
     selector: 'email-input',
     template: `<div class="email-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
-            <label>
+            <label [for]="controlId">
                 <span [innerHTML]="label"></span>
                 <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
-            <input #focushere type="email" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             </label>
+            <input [id]="controlId" #focushere type="email" [(ngModel)]="value" (blur)="onBlur()" (input)="onInput()"  />
             <div *ngIf="isInError()" class="validation-text">
                 <span  class="text-error">{{vr.message}}</span>
             </div>

@@ -1,5 +1,6 @@
-﻿@import "shared.component.scss";
-.text-input {
-    @extend %std-text-input;
+﻿
+@import "_theme.components.scss";
 
+.text-input {
+    @extend %theme-text-input;
 }

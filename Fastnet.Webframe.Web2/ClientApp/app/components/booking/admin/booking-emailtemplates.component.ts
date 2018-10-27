@@ -1,8 +1,9 @@
-﻿import { Component, OnInit, ViewChild, } from '@angular/core';
+﻿import { Component, OnInit, ViewChild, AfterViewInit, ContentChild, AfterContentInit, } from '@angular/core';
 import { BookingAdminService, BookingEmailTemplates, EmailTemplate } from './booking-admin.service';
 import { IfStmt } from '@angular/compiler';
 import { PopupMessageComponent } from '../../../fastnet/controls/popup-message.component';
-import { TinyMCEToolbarButtons, TinyMCEToolbarItem, TinyMCEOptions } from '../../../fastnet/tinymce/tinymce.component';
+import { TinyMCEToolbarButtons, TinyMCEToolbarItem, TinyMCEOptions, TinyMCEComponent } from '../../../fastnet/tinymce/tinymce.component';
+import { PopupDialogComponent } from '../../../fastnet/controls/popup-dialog.component';
 
 
 @Component({
@@ -10,8 +11,10 @@ import { TinyMCEToolbarButtons, TinyMCEToolbarItem, TinyMCEOptions } from '../..
     templateUrl: './booking-emailtemplates.component.html',
     styleUrls: ['./booking-emailtemplates.component.scss']
 })
-export class BookingEmailTemplatesComponent implements OnInit  {
+export class BookingEmailTemplatesComponent implements AfterViewInit {
+    @ViewChild(PopupDialogComponent) keywordsPopup: PopupDialogComponent;
     @ViewChild(PopupMessageComponent) popupMessage: PopupMessageComponent;
+    @ViewChild(TinyMCEComponent) editor: TinyMCEComponent;
     templateList: string[] = [];
     selectedTemplate: string;
     templateType: BookingEmailTemplates;
@@ -21,19 +24,28 @@ export class BookingEmailTemplatesComponent implements OnInit  {
         this.tinymceOptions = new TinyMCEOptions();
         this.tinymceOptions.toolbarButtons = this.getEditorToolbarButtons();
     }
-    async ngOnInit() {
+    async ngAfterViewInit() {
         await this.loadTemplateList();
     }
+
     async onCancel() {
         this.loadTemplate();
     }
     async onSave() {
+        this.currentTemplate.body = this.editor.getContent();
         await this.adminService.saveEmailTemplate(this.currentTemplate);
         this.popupMessage.open("Email template saved", () => { });
     }
     async onTemplateChanged() {
+        console.log("onTemplateChanged");
         this.convertTemplateString();
         await this.loadTemplate();
+    }
+    showKeywordsPopup() {
+        this.keywordsPopup.open(() => { });
+    }
+    onCloseKeywordsPopup() {
+        this.keywordsPopup.close();
     }
     getEditorToolbarButtons(): TinyMCEToolbarItem[][] {
         let line1 = [
@@ -87,5 +99,6 @@ export class BookingEmailTemplatesComponent implements OnInit  {
     }
     private async loadTemplate() {
         this.currentTemplate = await this.adminService.getEmailTemplate(this.templateType);
+        this.editor.setContent(this.currentTemplate.body);
     }
 }

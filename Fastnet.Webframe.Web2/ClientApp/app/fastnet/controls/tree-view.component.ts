@@ -11,8 +11,8 @@ export interface ITreeNode {
 @Component({
     selector: 'tree-view',
     templateUrl: './tree-view.component.html',
-    styleUrls: ['./tree-view.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    styleUrls: ['./tree-view.component.scss']//,
+    //encapsulation: ViewEncapsulation.None
 })
 export class TreeViewComponent  {
     @Input() parent: TreeViewComponent;
@@ -20,9 +20,8 @@ export class TreeViewComponent  {
     @Input() level: number = 0;
     @Input() expandedclass = "fa fa-minus-square-o";
     @Input() closedclass = "fa fa-plus-square-o";
-    @Input() emptynodeclass = "fa fa-square";
+    @Input() emptynodeclass = "fa fa-square-o";
     @Output() selected = new EventEmitter<ITreeNode>();
-    //@ViewChildren(TreeViewComponent) childComponents: QueryList<TreeViewComponent>
     instance: TreeViewComponent;
 
     constructor() {
@@ -71,9 +70,6 @@ export class TreeViewComponent  {
             n.selected = false;
             this.deselectNodes(n.nodes);
         }
-        //this.childComponents.forEach((child) => {
-
-        //});
     }
     private findRoot(): TreeViewComponent {
         let p = this.instance;

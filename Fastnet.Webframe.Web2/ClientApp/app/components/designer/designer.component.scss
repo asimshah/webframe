@@ -1,4 +1,10 @@
-﻿.designer-panel {
+﻿
+@import "../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-menu-bar('.menu-bar');
+@include theme-page('.designer-panel');
+
+.designer-panel {
     padding-left: 1em;
     padding-right: 1em;
 }

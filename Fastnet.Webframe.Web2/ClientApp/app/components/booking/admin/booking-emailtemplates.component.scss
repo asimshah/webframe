@@ -1,4 +1,21 @@
-﻿@import "../_booking.app.scss";
+﻿//@import "../_booking.app.scss";
+@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
 
-
+@include theme-page('.email-templates');
+.editor-panel {
+    display:grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: $theme-gutter-narrow;
+}
+.keyword-table {
+    tr {
+        height: 24px;
+        border-top: 1px solid theme-colour('surface', 'light');
+    }
+    td {
+        padding-right: $theme-gutter-fine;
+        vertical-align:top;
+    }
+}
 

@@ -1,5 +1,5 @@
 ﻿<popup-dialog #pagePropertiesDialog [width]="400">
-    <div dialogheader>
+    <div windowcaption>
         <div>Page Properties</div>
     </div>
     <div dialogbody>
@@ -12,11 +12,9 @@
             </div>
         </ng-container>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button (click)="onSave()">Save</button>
-            <button class="cancel" (click)="onCancel()">Cancel</button>
-        </div>
+    <div dialogcommands>
+        <button (click)="onSave()">Save</button>
+        <button class="cancel" (click)="onCancel()">Cancel</button>
     </div>
 </popup-dialog>
 <popup-message caption="Page Properties" [width]="500"></popup-message>

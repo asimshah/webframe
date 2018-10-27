@@ -1,5 +1,5 @@
-﻿@import "shared.component.scss";
+﻿//@import "shared.component.scss";
+@import "_theme.components.scss";
 .email-input {
-    @extend %std-text-input;
-
+    @extend %theme-text-input;
 }

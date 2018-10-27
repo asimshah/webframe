@@ -7,12 +7,12 @@ import { InputControlBase } from "./controlbase.type";
 @Component({
     selector: 'dropdown-input',
     template: `<div class="dropdown-input"  [ngClass]="{'disabled' : disabled}">
-            <label *ngIf="label">
+            <label [for]="controlId" *ngIf="label">
                 <span [innerHTML]="label"></span>
                 <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             </label>
             <div class="dropdown-border">
-                <select #focushere [(ngModel)]="value" (ngModelChange)="modelChange($event)" [size]="getSize()" (focus)="onSelectFocus()" (blur)="onSelectBlur()"  >
+                <select [id]="controlId" #focushere [(ngModel)]="value" (ngModelChange)="modelChange($event)" [size]="getSize()" (focus)="onSelectFocus()" (blur)="onSelectBlur()"  >
                     <option *ngFor="let item of items" [label]="getDisplayProperty(item)" [ngValue]="item" [attr.selected]="selectedItem(item)"></option>
                 </select>
             </div>

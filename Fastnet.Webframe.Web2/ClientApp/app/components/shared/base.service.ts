@@ -12,7 +12,7 @@ export class ServiceResult {
     errors: string[];
     data?: any;
 }
-class DataResult {
+export class DataResult {
     data: any;
     exceptionMessage: string;
     message: string;
@@ -58,7 +58,7 @@ export abstract class BaseService {
             .catch(this.handleError)
             .toPromise();
     }
-    protected post(url: string, data: any): Promise<DataResult> {
+    protected post(url: string, data?: any): Promise<DataResult> {
         return this.http.post(url, data)
             .map(r => {
                 let dr = r.json() as DataResult;
@@ -68,10 +68,6 @@ export abstract class BaseService {
                         dr.message = dr.exceptionMessage;
                     }
                 }
-                //if (!dr.success && dr.exceptionMessage !== null) {                    
-                //    console.log(`Exception: ${JSON.stringify(dr)}`);
-                //    //alert(`${dr.message}\n${dr.exceptionMessage}`);
-                //}
                 return dr;
             })
             .catch(this.handleError)

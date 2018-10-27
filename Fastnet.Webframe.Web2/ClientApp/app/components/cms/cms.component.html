@@ -2,12 +2,13 @@
     <div class="BannerPanel">
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
-    <div class="command-bar">
+    <div class="menu-bar">
         <button (click)="goBack()">Back</button>
     </div>
-    <div *ngIf="currentMode === cmsModes.Index" class="cms-index-panel">
-        <!--<h2>Site Content and History</h2>-->
-        <!--<div class="toc">
+    <div class="component-container">
+        <div *ngIf="currentMode === cmsModes.Index" class="cms-index-panel">
+            <!--<h2>Site Content and History</h2>-->
+            <!--<div class="toc">
             <div class="title">Contents</div>
             <div class="toc-item">
                 <button>Site Content</button>
@@ -22,43 +23,44 @@
                 <div class="description">A list of all registered members</div>
             </div>
         </div>-->
-        <div class="toc">
-            <div class="title">History</div>
-            <!--<div class="toc-item">
+            <div class="toc">
+                <div class="title">History</div>
+                <!--<div class="toc-item">
                 <button>Content Changes</button>
                 <div class="description">A history of all changes to content, e.g. new pages, deletions and modifications</div>
             </div>-->
-            <div class="toc-item">
-                <button (click)="goToMailHistory()">Mail History</button>
-                <div class="description">A history of all email sent by the site</div>
-            </div>
-            <!--<div class="toc-item">
+                <div class="toc-item">
+                    <button (click)="goToMailHistory()">Mail History</button>
+                    <div class="description">A history of all email sent by the site</div>
+                </div>
+                <!--<div class="toc-item">
                 <button>Group History</button>
                 <div class="description">A history of all changes to groups</div>
             </div>-->
-            <div class="toc-item">
-                <button (click)="goToMembershipHistory()">Membership History</button>
-                <div class="description">A history of all registrations and changes to members records</div>
+                <div class="toc-item">
+                    <button (click)="goToMembershipHistory()">Membership History</button>
+                    <div class="description">A history of all registrations and changes to members records</div>
+                </div>
+            </div>
+            <div class="toc">
+                <div class="title">Tools</div>
+                <div class="toc-item">
+                    <button (click)="goToSendMail()">Test Mail</button>
+                    <div class="description">Mail testing form</div>
+                </div>
             </div>
         </div>
-        <div class="toc">
-            <div class="title">Tools</div>
-            <div class="toc-item">
-                <button (click)="goToSendMail()">Test Mail</button>
-                <div class="description">Mail testing form</div>
-            </div>
+        <div class="cms-component-panel">
+            <ng-container *ngIf="currentMode === cmsModes.MailHistory">
+                <mail-history></mail-history>
+            </ng-container>
+            <ng-container *ngIf="currentMode === cmsModes.MembershipHistory">
+                <membership-history></membership-history>
+            </ng-container>
+            <ng-container *ngIf="currentMode === cmsModes.SendMail">
+                <send-mail></send-mail>
+            </ng-container>
         </div>
-    </div>
-    <div class="cms-component-panel">
-        <ng-container *ngIf="currentMode === cmsModes.MailHistory">
-            <mail-history></mail-history>
-        </ng-container>
-        <ng-container *ngIf="currentMode === cmsModes.MembershipHistory">
-            <membership-history></membership-history>
-        </ng-container>
-        <ng-container *ngIf="currentMode === cmsModes.SendMail">
-            <send-mail></send-mail>
-        </ng-container>
     </div>
     <custom-css></custom-css>
 </div>

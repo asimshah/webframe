@@ -1,13 +1,13 @@
-﻿@import "shared.component.scss";
+﻿//@import "shared.component.scss";
+@import "_theme.components.scss";
 :host {
     display: block;
 }
 .number-input {
-    @extend %std-text-input;
+    @extend %theme-text-input;
 
     input[type=number] {
         text-align: right;
         line-height: 22px;
     }
-
 }

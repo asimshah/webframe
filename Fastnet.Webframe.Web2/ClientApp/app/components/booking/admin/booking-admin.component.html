@@ -2,85 +2,88 @@
     <div class="BannerPanel">
         <webframe-page class="page-component" [pageId]="this.getPageId()"></webframe-page>
     </div>
-    <div class="command-bar">
+    <div class="menu-bar">
         <button (click)="goBack()">Back</button>
     </div>
-    <ng-container [ngSwitch]="currentOption">
-        <div *ngSwitchCase="adminOptions.Index" class="index-panel">
-            <h2>Booking Administration</h2>
-            <h4>Booking</h4>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.UnpaidBookings)">View Unpaid Bookings</button>
-                <div class="description">Use this to view unpaid bookings on the system</div>
+    <div class="component-container">
+        <ng-container [ngSwitch]="currentOption">
+            <div *ngSwitchCase="adminOptions.Index" class="index-panel">
+                <div class="page-caption">Booking Administration</div>
+                <h4>Booking</h4>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.UnpaidBookings)">View Unpaid Bookings</button>
+                    <div class="description">Use this to view unpaid bookings on the system</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.Bookings)">View Bookings</button>
+                    <div class="description">Use this to view all bookings on the system</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.CancelledBookings)">View Cancelled Bookings</button>
+                    <div class="description">Use this to view all cancelled bookings on the system</div>
+                    <!--<a href="booking-admin.component.html">booking-admin.component.html</a>-->
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.ArchivedBookings)">View Archived Bookings</button>
+                    <div class="description">Use this to view allpast bookings on the system</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.Occupancy)">View Occupancy</button>
+                    <div class="description">Use this to view occupancy by month</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.BookingDays)">Manage Booking Days</button>
+                    <div class="description">Use this to block/unblock periods, or to open or close online booking</div>
+                </div>
+                <h4>Other Options</h4>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.EntryCodes)">Entry Codes</button>
+                    <div class="description">Manage Entry Codes</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.Pricing)">Pricing</button>
+                    <div class="description">Manage accomodation pricing</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.EmailTemplates)">Email Templates</button>
+                    <div class="description">Email templates</div>
+                </div>
+                <div class="index-item">
+                    <button (click)="goToOption(adminOptions.Parameters)">Parameters</button>
+                    <div class="description">Set booking system parameters</div>
+                </div>
             </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.Bookings)">View Bookings</button>
-                <div class="description">Use this to view all bookings on the system</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.CancelledBookings)">View Cancelled Bookings</button>
-                <div class="description">Use this to view all cancelled bookings on the system</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.ArchivedBookings)">View Archived Bookings</button>
-                <div class="description">Use this to view allpast bookings on the system</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.Occupancy)">View Occupancy</button>
-                <div class="description">Use this to view occupancy by month</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.BookingDays)">Manage Booking Days</button>
-                <div class="description">Use this to block/unblock periods, or to open or close online booking</div>
-            </div>
-            <h4>Other Options</h4>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.EntryCodes)">Entry Codes</button>
-                <div class="description">Manage Entry Codes</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.Pricing)">Pricing</button>
-                <div class="description">Manage accomodation pricing</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.EmailTemplates)">Email Templates</button>
-                <div class="description">Email templates</div>
-            </div>
-            <div class="index-item">
-                <button (click)="goToOption(adminOptions.Parameters)">Parameters</button>
-                <div class="description">Set booking system parameters</div>
-            </div>
-        </div>
-        <ng-container *ngSwitchCase="adminOptions.UnpaidBookings">
-            <booking-list [filter]="BookingsFilter.UnpaidOnly"></booking-list>
+            <ng-container *ngSwitchCase="adminOptions.UnpaidBookings">
+                <booking-list [filter]="BookingsFilter.UnpaidOnly"></booking-list>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.Bookings">
+                <booking-list [filter]="BookingsFilter.Current"></booking-list>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.CancelledBookings">
+                <booking-list [filter]="BookingsFilter.Cancelled"></booking-list>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.ArchivedBookings">
+                <booking-list [filter]="BookingsFilter.Historic"></booking-list>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.Occupancy">
+                <occupancy></occupancy>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.BookingDays">
+                <booking-bookingdays></booking-bookingdays>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.EntryCodes">
+                <booking-entrycodes></booking-entrycodes>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.Pricing">
+                <booking-pricing></booking-pricing>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.EmailTemplates">
+                <booking-emailtemplates></booking-emailtemplates>
+            </ng-container>
+            <ng-container *ngSwitchCase="adminOptions.Parameters">
+                <booking-parameters></booking-parameters>
+            </ng-container>
         </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.Bookings">
-            <booking-list [filter]="BookingsFilter.Current"></booking-list>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.CancelledBookings">
-            <booking-list [filter]="BookingsFilter.Cancelled"></booking-list>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.ArchivedBookings">
-            <booking-list [filter]="BookingsFilter.Historic"></booking-list>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.Occupancy">
-
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.BookingDays">
-            <booking-bookingdays></booking-bookingdays>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.EntryCodes">
-            <booking-entrycodes></booking-entrycodes>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.Pricing">
-            <booking-pricing></booking-pricing>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.EmailTemplates">
-            <booking-emailtemplates></booking-emailtemplates>
-        </ng-container>
-        <ng-container *ngSwitchCase="adminOptions.Parameters">
-            <booking-parameters></booking-parameters>
-        </ng-container>
-    </ng-container>
+    </div>
     <custom-css></custom-css>
 </div>

@@ -1,13 +1,53 @@
-﻿<div class="component-root">
-    <div class="menu-bar">
-        <button class="align-left">first menu</button>
-        <button class="align-right">second menu</button>
-        <button class="align-left">third menu</button>
-        <button class="align-right">fourth menu</button>
+﻿<div class="root-container">
+    <div class="test-menu-bar">
+        <div class="align-right">
+            <button >third menu</button>
+            <button class="secondary" >second menu</button>
+        </div>
+        <div class="align-left">
+            <button>first menu</button>
+            <button >fourth menu</button>
+        </div>
     </div>
     <div>this is the test component</div>
-    <div class="test-button-table">
-        <button>normal</button>
+    <inline-dialog >
+        <div dialogbody class="test-form">
+            <button>normal</button>
+            <button class="small">normal small</button>
+            <button>third</button>
+            <button class="secondary">secondary</button>
+            <button class="secondary small">scondary small</button>
+            <button class="secondary">secondary third</button>
+            <button class="cancel">normal danger</button>
+            <button class="small cancel">small danger</button>
+            <button class="cancel">third danger</button>
+            <button disabled>normal disabled</button>
+            <button class="small" disabled>small disabled</button>
+            <button disabled>third disabled</button>
+            <button class="danger">normal danger</button>
+            <button class="small danger">small danger</button>
+            <button class="danger">third danger</button>
+        </div>
+        <div dialogcommands left>
+            <button (click)="showPopup()">Open Popup Dialog</button>
+            <button class="secondary small">Left Command 2</button>
+        </div>
+        <div dialogcommands centre>
+            <button (click)="showMessage()">Centre 1</button>
+            <button>Centre 2</button>
+        </div>
+        <div dialogcommands right>
+            <button>Save</button>
+            <button>Cancel</button>
+        </div>
+    </inline-dialog>
+</div>
+<popup-message [width]="400" caption="Some test Message" [warning]="true" [error]="true"></popup-message>
+<popup-dialog width="400">
+    <div windowcaption>
+        <div>Test Pop up</div>
+    </div>
+    <div dialogbody>
         <button class="small">normal small</button>
         <button>third</button>
         <button class="secondary">secondary</button>
@@ -23,4 +63,8 @@
         <button class="small danger">small danger</button>
         <button class="danger">third danger</button>
     </div>
-</div>
+    <div dialogcommands>
+        <button>Save</button>
+        <button>Cancel</button>
+    </div>
+</popup-dialog>

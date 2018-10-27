@@ -1,0 +1,28 @@
+﻿@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-page('.occupancy-report');
+
+.date-range-panel {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto 1fr;
+    align-items: flex-end;
+    grid-column-gap: $theme-gutter * 4;
+
+    date-input {
+        &.from-date {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        &.to-date {
+            grid-column: 3;
+            grid-row: 1;
+        }
+    }
+    button {
+        margin-left: $theme-gutter-narrow;
+        margin-right: $theme-gutter;
+        grid-column: 4 / 4;
+        grid-row: 1;
+    }
+}

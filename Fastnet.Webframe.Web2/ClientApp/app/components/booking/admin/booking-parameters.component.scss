@@ -1,15 +1,25 @@
-﻿@import "../_booking.app.scss";
+﻿//@import "../_booking.app.scss";
+@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-page('.booking-parameters');
 
-.booking-parameters {
+/*.booking-parameters {
     padding-left: $page-gutter;
     padding-right: $page-gutter;
-}
-.two-columns {
+}*/
+.parameters-form {
     display: grid;
     grid-template-columns: auto auto;
-    grid-column-gap: $form-gutter;
+    grid-column-gap: $theme-gutter-narrow;
+
     dropdown-input, button {
         align-self: end;
+    }
+
+    .two-columns {
+        display: grid;
+        grid-template-columns: auto auto;
+        grid-column-gap: $theme-gutter-narrow;
     }
 }
 

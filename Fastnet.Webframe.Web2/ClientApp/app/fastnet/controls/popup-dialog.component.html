@@ -1,13 +1,15 @@
 ﻿<div class="popup-dialog" >
-    <div #overlay class="popup-overlay" [ngStyle]="getOverlayStyle()">
-        <div class="dialog-header" [ngClass]="getHeaderClass()" >
-            <ng-content select="[dialogheader]"></ng-content>
+    <div #overlay class="popup-window" [ngStyle]="getOverlayStyle()">
+        <div class="window-caption" [ngClass]="getCaptionClass()" >
+            <ng-content select="[windowcaption]"></ng-content>
         </div>
-        <div class="dialog-body"  [ngStyle]="{'grid-template-columns': gridColumns()}" >
+        <div class="dialog-body"  >
             <ng-content select="[dialogbody]"></ng-content>
         </div>
         <div class="dialog-commands">
-            <ng-content select="[dialogcommandbar]"></ng-content>
+            <ng-content select="[dialogcommands]"></ng-content>
+            <ng-content select="[dialogcommands]"></ng-content>
+            <ng-content select="[dialogcommands]"></ng-content>
         </div>
     </div>
 </div>

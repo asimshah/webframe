@@ -1,18 +1,98 @@
 ﻿<div class="email-templates">
-    <h2>Email Template Editor</h2>
-    <inline-dialog >
-        <ng-container dialogbody>
+    <div class="page-caption">Email Template Editor</div>
+    <inline-dialog>
+        <div dialogbody class="editor-panel">
             <dropdown-input label="Email Template" [(ngModel)]="selectedTemplate" [items]="templateList" (selectionChanged)="onTemplateChanged()"></dropdown-input>
-            <ng-container *ngIf="currentTemplate">
-                <text-input label="Email Subject" [(ngModel)]="currentTemplate.subject"></text-input>
-                <tiny-mce [content]="currentTemplate.body" [options]="tinymceOptions" ></tiny-mce>
-            </ng-container>
-        </ng-container>
-        <div dialogcommandbar>
-            <div class="right">
-                <button >Save Changes</button>
+            <!--<tiny-mce [options]="tinymceOptions" [height]="400"></tiny-mce>-->
+            <div [ngStyle]="{visibility: currentTemplate ? 'visible' : 'collapse'}">
+                <text-input *ngIf="currentTemplate" label="Email Subject" [(ngModel)]="currentTemplate.subject"></text-input>
+                <label for="mce1">Email Body</label>
+                <tiny-mce id="mce1" [options]="tinymceOptions" [height]="400"></tiny-mce>
             </div>
         </div>
+        <div *ngIf="currentTemplate" dialogcommands left>
+            <button class="secondary" (click)="showKeywordsPopup()">Help with Keywords</button>
+        </div>
+        <div *ngIf="currentTemplate" dialogcommands right>
+            <button (click)="onSave()">Save Changes</button>
+            <button class="cancel" (click)="onCancel()">Cancel</button>
+        </div>
     </inline-dialog>
-
+    <popup-message></popup-message>
+    <popup-dialog>
+        <div windowcaption>
+            <div>Template Keywords</div>
+        </div>
+        <div dialogbody>
+            <table class="keyword-table" ngNonBindable>
+                <thead>
+                    <tr>
+                        <th>Keyword</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{hutName}}</td>
+                        <td>The full name of the hut.</td>
+                    </tr>
+                    <tr>
+                        <td>{{bookingSecretaryEmailAddress}}</td>
+                        <td>Email address of the hut Booking Secretary.</td>
+                    </tr>
+                    <tr>
+                        <td>{{memberName}}</td>
+                        <td>Full name of the member making the booking.</td>
+                    </tr>
+                    <tr>
+                        <td>{{memberEmailAddress}}</td>
+                        <td>Email address of the member making the booking.</td>
+                    </tr>
+                    <tr>
+                        <td>{{memberPhoneNumber}}</td>
+                        <td>Phone number of the member making the booking.</td>
+                    </tr>
+                    <tr>
+                        <td>{{reference}}</td>
+                        <td>The booking reference</td>
+                    </tr>
+                    <tr>
+                        <td>{{from}}</td>
+                        <td>The arrival date</td>
+                    </tr>
+                    <tr>
+                        <td>{{to}}</td>
+                        <td>The departure date</td>
+                    </tr>
+                    <tr>
+                        <td>{{numberOfNights}}</td>
+                        <td>The number of nights</td>
+                    </tr>
+                    <tr>
+                        <td>{{description}}</td>
+                        <td>The description of the accomodation.</td>
+                    </tr>
+                    <tr>
+                        <td>{{partySize}}</td>
+                        <td>The number of people in the party.</td>
+                    </tr>
+                    <tr>
+                        <td>{{bookedOn}}</td>
+                        <td>The date on which the booking was made.</td>
+                    </tr>
+                    <tr>
+                        <td>{{cost}}</td>
+                        <td>The cost of the booking.</td>
+                    </tr>
+                    <tr>
+                        <td>{{entryCode}}</td>
+                        <td>The entry code for the hut. Note that this is only available once bookings are within the notification period. Should only be used in the EntryCodeNotification template.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div dialogcommands>
+            <button (click)="onCloseKeywordsPopup()">Close</button>
+        </div>
+    </popup-dialog>
 </div>

@@ -2,15 +2,26 @@
     <div>
         <button (click)="buttonClick()">debug content</button>
     </div>
-    <tiny-mce #ed1 [content]="text" (contentchange)="onEd1Change($event)" ></tiny-mce>
-    <pre>{{text | json}}</pre>
+    <inline-dialog>
+        <div dialogbody>
+            <ng-container>
+                <!--<tiny-mce #ed1 (contentchange)="onEd1Change($event)"></tiny-mce>-->
+                <label>
+                    <span>Email Body</span>
+                    <tiny-mce  [height]="400"></tiny-mce>
+                </label>
+            </ng-container>
+        </div>
+    </inline-dialog>
+
+        <pre>{{text | json}}</pre>
 </div>
 <popup-dialog #modalEditorDialog [width]="400">
     <div dialogheader>
         <div>Modal Editor</div>
     </div>
     <div dialogbody>
-        <tiny-mce #ed2 [content]="modaltext" (contentchange)="onEd2Change($event)" ></tiny-mce>
+        <tiny-mce #ed2  (contentchange)="onEd2Change($event)" ></tiny-mce>
     </div>
     <div dialogcommandbar>
         <div class="centre">

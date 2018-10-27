@@ -1,4 +1,4 @@
-﻿import { Component, ViewChild, ElementRef, AfterViewInit, Input, OnDestroy, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+﻿import { Component, ViewChild, ElementRef, AfterViewInit, Input, OnDestroy, EventEmitter, Output, ViewEncapsulation, OnChanges, SimpleChange, SimpleChanges, DoCheck } from '@angular/core';
 
 import 'tinymce';
 import 'tinymce/themes/modern';
@@ -75,8 +75,6 @@ export class TinyMCEOptions {
     toolbarButtons: TinyMCEToolbarItem[][];
 }
 
-
-
 @Component({
     selector: 'tiny-mce',
     templateUrl: './tinymce.component.html',
@@ -85,7 +83,8 @@ export class TinyMCEOptions {
 })
 export class TinyMCEComponent implements AfterViewInit, OnDestroy {
     @ViewChild('mcetarget') mceTarget: ElementRef;
-    @Input() content: string;
+    @Input() height: number = 300;
+    //@Input() content: string;
     @Input() options: TinyMCEOptions;
     @Output() contentchange = new EventEmitter<string>();
     private editor: Editor;
@@ -94,7 +93,7 @@ export class TinyMCEComponent implements AfterViewInit, OnDestroy {
         tinymce.baseURL = "/tinymce";
         tinymce.init({
             target: this.mceTarget.nativeElement,
-            height: 500,
+            height: this.height,// 500,
             statusbar: false,
             skin_url: '/skins/lightgray',
             theme: 'modern',
@@ -126,17 +125,6 @@ export class TinyMCEComponent implements AfterViewInit, OnDestroy {
                             }
                         }
                     }
-                    //editor.addButton('insertlinks', {
-                    //    //type: 'menubutton',
-                    //    text: 'Links|Images',
-                    //    title: "insert links & images",
-                    //    icon: 'link',
-                    //    menu: [
-                    //        { text: 'Insert link/image ...', onclick: () => { this.dummy('item 1'); } },
-                    //        { text: 'Create a new page and insert a link to it', onclick: () => { this.dummy('item 2'); } },
-                    //        //{ text: 'Insert link & edit new page ...', onclick: () => { this.dummy('item 3'); } },
-                    //    ]
-                    //});
                     editor.on('keyup', () => {
                         console.log(`keyup:`);
                         let x = this.editor.getContent();
@@ -147,13 +135,13 @@ export class TinyMCEComponent implements AfterViewInit, OnDestroy {
                         let x = this.editor.getContent();
                         this.contentchange.emit(x);
                     });
-                    editor.on('init', () => {
-                        //console.log(`init: `);
-                        if (this.content) {
-                            console.log(`init setting: ${this.content}`);
-                            this.editor.setContent(this.content);
-                        }
-                    });
+                    //editor.on('init', () => {
+                    //    //console.log(`init: `);
+                    //    if (this.content) {
+                    //        console.log(`init setting: ${this.content}`);
+                    //        this.editor.setContent(this.content);
+                    //    }
+                    //});
                 }
             }
         });
@@ -163,6 +151,9 @@ export class TinyMCEComponent implements AfterViewInit, OnDestroy {
             this.editor.remove();
         }
     }
+    //ngDoCheck(): void {
+    //    console.log("Docheck()");
+    //}
     getContent(): string {
         return this.editor.getContent();
     }

@@ -1,4 +1,4 @@
-﻿import { Component, Input, forwardRef } from "@angular/core";
+﻿import { Component, Input, forwardRef, ViewChild, ElementRef } from "@angular/core";
 import { NG_VALUE_ACCESSOR } from "@angular/forms";
 //import { ControlBase } from "./controls.component";
 //import { TextInputControl } from "./text-input.component";
@@ -9,11 +9,12 @@ import { isNullorUndefined, InputControlBase, ControlBase } from "./controlbase.
 @Component({
     selector: 'number-input',
     template: `<div class="number-input" [ngClass]="{'not-valid': isInError(), 'disabled' : disabled}" >
-            <label>
-            <span [innerHTML]="label"></span>
-            <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
-            <input #focushere type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" />
+            <label  [for]="controlId" >
+                <span [innerHTML]="label"></span>
+                <span *ngIf="traceReferences" class="trace-text">{{getReference()}}</span>
             </label>
+            <input [id]="controlId" #focushere type="number" [(ngModel)]=value [min]=minNumber [max]=maxNumber (blur)="onBlur()" />
+
             <div *ngIf="isInError()" class="validation-text">
                 <span  class="text-error">{{vr.message}}</span>
             </div>
@@ -33,6 +34,7 @@ import { isNullorUndefined, InputControlBase, ControlBase } from "./controlbase.
 export class NumberInputControl extends InputControlBase {
     @Input() minNumber: number;
     @Input() maxNumber: number;
+    @ViewChild('focushere') element: ElementRef;
     constructor() {
         super();
         this.setReference("number");
@@ -40,32 +42,50 @@ export class NumberInputControl extends InputControlBase {
     }
     private validateNumberAsync(context: ValidationContext, value: any): Promise<ValidationResult> {
         return new Promise<ValidationResult>((resolve) => {
+            let nativeValue = this.element.nativeElement.value;
+            //console.log(`value is ${value}, element value is ${nativeValue} (${typeof nativeValue})`);
+            if (nativeValue.length === 0) {
+                this.element.nativeElement.value = +value;
+            }
             let vr = new ValidationResult();
-            if (!isNullorUndefined(value) && value !== NaN) {
-                let n: number = value;
-                if (this.minNumber && n < this.minNumber) {
-                    vr.valid = false;
-                    vr.message = "This number is too small";
-                } else if (this.maxNumber && n > this.maxNumber) {
-                    vr.valid = false;
-                    vr.message = "This number is too large";
+            if (!isNullorUndefined(value)) {
+                if (value !== NaN) {
+                    let n: number = value;
+                    if (this.minNumber && n < this.minNumber) {
+                        vr.valid = false;
+                        vr.message = "This number is too small";
+                    } else if (this.maxNumber && n > this.maxNumber) {
+                        vr.valid = false;
+                        vr.message = "This number is too large";
+                    }
+                } else {
+                    //console.log(`value is NaN`);
                 }
             }
             resolve(vr);
         });
     }
-    //private validateNumber(cs: ControlState): ControlState {
-    //    let n: number = cs.value;
-        
-    //    if (n !== NaN) {
-    //        if (this.minNumber && n < this.minNumber) {
-    //            cs.validationResult.valid = false;
-    //            cs.validationResult.message = "This number is too small";
-    //        } else if (this.maxNumber && n > this.maxNumber) {
-    //            cs.validationResult.valid = false;
-    //            cs.validationResult.message = "This number is too large";
-    //        }
-    //    }
-    //    return cs;
-    //}
 }
+//    private validateNumberAsyncOld(context: ValidationContext, value: any): Promise<ValidationResult> {
+//        return new Promise<ValidationResult>((resolve) => {
+//            console.log(`value is ${value}`);
+//            let vr = new ValidationResult();
+//            if (!isNullorUndefined(value)) {
+//                if (value !== NaN) {
+//                    let n: number = value;
+//                    if (this.minNumber && n < this.minNumber) {
+//                        vr.valid = false;
+//                        vr.message = "This number is too small";
+//                    } else if (this.maxNumber && n > this.maxNumber) {
+//                        vr.valid = false;
+//                        vr.message = "This number is too large";
+//                    } else {
+//                        console.log(`value is NaN`);
+//                    }
+//                }
+
+//            }//);
+//            resolve(vr));
+//        }
+//    }
+//}

@@ -78,6 +78,9 @@
     <None Remove="ClientApp\app\components\booking\admin\booking-entrycodes.component.ts" />
     <None Remove="ClientApp\app\components\booking\admin\booking-list.component.ts" />
     <None Remove="ClientApp\app\components\booking\admin\booking-parameters.component.ts" />
+    <None Remove="ClientApp\app\components\booking\admin\occupancy.component.html" />
+    <None Remove="ClientApp\app\components\booking\admin\occupancy.component.scss" />
+    <None Remove="ClientApp\app\components\booking\admin\occupancy.component.ts" />
     <None Remove="ClientApp\app\components\booking\booking.module.ts" />
     <None Remove="ClientApp\app\components\booking\booking.routing.ts" />
     <None Remove="ClientApp\app\components\cms\cms.service.ts" />
@@ -364,6 +367,9 @@
     <TypeScriptCompile Include="ClientApp\app\components\booking\admin\booking-list.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\admin\booking-admin.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\admin\booking-admin.service.ts" />
+    <TypeScriptCompile Include="ClientApp\app\components\booking\admin\occupancy.component.scss" />
+    <TypeScriptCompile Include="ClientApp\app\components\booking\admin\occupancy.component.html" />
+    <TypeScriptCompile Include="ClientApp\app\components\booking\admin\occupancy.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.component.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.module.ts" />
     <TypeScriptCompile Include="ClientApp\app\components\booking\booking.routing.ts" />

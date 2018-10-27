@@ -1,4 +1,66 @@
-﻿@import "../_booking.app.scss";
+﻿@import "../../../fastnet/themes/_themes.scss";
+@include theme-buttons;
+@include theme-page('.pricing');
 
+.rule {
+    border-top: 1px solid theme-colour('surface', 'light');
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
 
+.pricing {
+    margin-top: $theme-gutter;
+    padding-left: $theme-gutter;
+    padding-right: $theme-gutter;
 
+    .price-table {
+        table-header {
+            background-color: theme-colour('primary'); // darkblue;
+            color: theme-colour('background');
+            font-weight: bold;
+
+            table-column {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+            }
+        }
+
+        table-body {
+            height: 20vh;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            table-row {
+                padding-top: 0.1em;
+                padding-bottom: 0.1em;
+                border-top: 1px solid theme-colour('surface');
+            }
+
+            table-cell {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+    .new-price-form {
+        //margin-top: 64px;
+        width: 240px;
+        margin-right: auto;
+
+        .heading {
+            font-weight: bold;
+            font-size: smaller;
+        }
+    }
+}

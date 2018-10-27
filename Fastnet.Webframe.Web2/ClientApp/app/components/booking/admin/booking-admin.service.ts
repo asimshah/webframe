@@ -1,7 +1,21 @@
 ﻿import { Injectable } from '@angular/core';
-import { BaseService, ServiceResult } from '../../shared/base.service';
+import { BaseService, ServiceResult, DataResult } from '../../shared/base.service';
 import { Http } from '@angular/http';
 import { Group } from '../../shared/common.types';
+
+export class Price {
+    priceId: number;
+    amount: number;
+    isRolling: boolean;
+    from: Date;
+    fromFormatted: string;
+    to: Date | null;
+    toFormatted: string;
+    constructor() {
+        this.amount = 1;
+        this.from = new Date();
+    }
+}
 
 export enum BookingEmailTemplates {
     RegistrationFailed,
@@ -68,7 +82,7 @@ export class Booking {
     memberPhoneNumber: string;
     from: string;
     to: string;
-    description: string;
+    description: string | null;
     createdOn: string;
     partySize: number;
     totalCost: number;
@@ -90,6 +104,22 @@ export class Booking {
 export class BookingAdminService extends BaseService {
     constructor(http: Http) {
         super(http);
+    }
+    async getPrices(): Promise<Price[]> {
+        let query = `bookingadmin/get/prices`;
+        return this.getData<Price[]>(query);
+    }
+    async addPrice(price: Price) {
+        let query = `bookingadmin/add/price`;
+        return this.postData<Price>(query, price);
+    }
+    async removePrice(price: Price) {
+        let query = `bookingadmin/remove/price`;
+        return this.postData<Price>(query, price);
+    }
+    async editPrice(price: Price) {
+        let query = `bookingadmin/edit/price`;
+        return this.postData<Price>(query, price);
     }
     async saveEmailTemplate(et: EmailTemplate): Promise<ServiceResult> {
         let query = `bookingadmin/save/emailtemplate`;
@@ -125,13 +155,18 @@ export class BookingAdminService extends BaseService {
             }
         });
     }
-    private async postData<T>(query: string, data: T): Promise<ServiceResult> {
+    private async postData<T>(query: string, data?: T | null): Promise<ServiceResult> {
         return new Promise<ServiceResult>(async resolve => {
-            let result = await this.post(query, data);
-            if (result.success) {
+            let dr: DataResult;
+            if (data && data !== null) {
+                dr = await this.post(query, data);
+            } else {
+                dr = await this.post(query);
+            }
+            if (dr.success) {
                 resolve({ success: true, errors: [] });
             } else {
-                let errors = result.message.split("|");
+                let errors = dr.message.split("|");
                 resolve({ success: false, errors: errors });
             }
         });

@@ -23,7 +23,11 @@ $default-colours: (
     'warning' : ( 'base': $mdc-orange-600, 'light': $mdc-orange-500, 'dark': $mdc-orange-900 ),
     'disabled': ('base': $mdc-grey-500, 'light': $mdc-grey-300, 'dark': $mdc-grey-800),
     'primary' : ('base': $mdc-blue-500, 'light': $mdc-blue-300, 'dark': $mdc-blue-800),
-    'accent': ('base': $mdc-blue-A400, 'light': $mdc-blue-A100, 'dark': $mdc-blue-A700), );
+    'accent': ('base': $mdc-cyan-A400, 'light': $mdc-cyan-A100, 'dark': $mdc-cyan-A700)
+);
+$testing-colours : map-merge($default-colours, (
+    'surface' : ('base': $mdc-green-600, 'light': $mdc-green-400, 'dark': $mdc-green-900)
+    ));
 
 $music-colours: map-merge($default-colours, ( 
     'primary': ('base': $mdc-teal-500, 'light': $mdc-teal-300, 'dark': $mdc-teal-800),
@@ -31,13 +35,17 @@ $music-colours: map-merge($default-colours, (
 );
 
 
+
 @function theme-colour($name: 'primary', $variant: 'base' ) {
     $colour: null;
-    $colours: $default-colours;
+    $colours:  $default-colours;
     @if $theme == 'default' {
         $colours: $default-colours;
     } @else if $theme == 'music' {
           $colours: $music-colours;
+      }
+      @else if $theme == 'testing' {
+          $colours: $testing-colours;
       }
     $spectrum: map-get($colours, $name);
     @if $spectrum {

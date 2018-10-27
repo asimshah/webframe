@@ -1,6 +1,8 @@
-$default-text-colour: black;
+//@import "../../fastnet/themes/_themes.scss";
+
+/*$default-text-colour: black;
 $alt-foreground-colour: black;
-$alt-background-colour: white;
+$alt-background-colour: white;*/
 html {
     height: 100%;
     width: 100%;
@@ -16,7 +18,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: $default-text-colour;
+
 }
 .app-container {
     height: 100%;

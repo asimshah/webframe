@@ -28,14 +28,14 @@ export type PopupMessageCloseHandler = (r: PopupMessageResult) => void;
 export class PopupMessageComponent implements OnInit {
     PopupMessageResult: PopupMessageResult;
     @ViewChild('popupdialog') popup: PopupDialogComponent;
-    @Input() width?: number;
+    @Input() width: number = 370;
     @Input() caption: string = "System Message";
     okLabel: string = "OK";
     cancelLabel: string = "Cancel";
     allowCancel: boolean = false;
     messages: string | string[];
-    warning: boolean = false;
-    error: boolean = false;
+    @Input() warning: boolean = false;
+    @Input() error: boolean = false;
     isSingleMessage: boolean = true;
     closeHandler: PopupMessageCloseHandler;
     constructor() {

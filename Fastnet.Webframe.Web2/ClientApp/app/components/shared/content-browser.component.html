@@ -1,5 +1,5 @@
 ﻿<popup-dialog #contentbrowser>
-    <div dialogheader>
+    <div windowcaption>
         <div>{{getCaption()}}</div>
     </div>
     <div dialogbody>
@@ -13,17 +13,15 @@
                         <button title="Show selected directory properties" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.ShowDirectoryProperties)}" (click)="onDirectoryProperties()">Properties</button>
                         <button title="Add a subdirectory to the selected directory" class="small" [ngClass]="{disabled: !canExecute(ContentCommands.AddSubdirectory)}" (click)="onAddDirectory()">Add</button>
                         <popup-dialog #newDirectoryDialog [width]="400">
-                            <div dialogheader>
+                            <div windowcaption>
                                 <div>{{getNewDirectoryCaption()}}</div>
                             </div>
                             <div dialogbody>
                                 <text-input *ngIf="subdirectory" label="Subdirectory Name:" [(ngModel)]="subdirectory.name" [validator]="directoryNameValidatorAsync"></text-input>
                             </div>
-                            <div dialogcommandbar>
-                                <div class="centre">
-                                    <button (click)="onCreateNewDirectory()">OK</button>
-                                    <button class="cancel" (click)="onCancelNewDirectory()">Cancel</button>
-                                </div>
+                            <div dialogcommands>
+                                <button (click)="onCreateNewDirectory()">OK</button>
+                                <button class="cancel" (click)="onCancelNewDirectory()">Cancel</button>
                             </div>
                         </popup-dialog>
                         <directory-properties [existingContent]="content"></directory-properties>
@@ -61,12 +59,12 @@
                                 <img src="{{page.iconUrl}}" />
                                 <img *ngIf="page.landingPage" src="{{page.landingPageIconUrl}}" />
                             </div>
-                            <div  class="selectable" (click)="pageSelected(page)">{{page.url}}</div>
+                            <div class="selectable" (click)="pageSelected(page)">{{page.url}}</div>
                             <div>
                                 <span> {{page.name}}</span>
                                 <span class="page-type"> {{PageType[page.pageType]}}</span>
                             </div>
-                            <span class="fa fa-square" style="color: transparent" ></span>
+                            <span class="fa fa-square" style="color: transparent"></span>
                             <span class="fa fa-square" style="color: transparent"></span>
                             <span class="fa fa-eye view-icon" title="View this page - scaled to 75%" (click)="onViewPage(page)"></span>
                         </ng-container>
@@ -76,7 +74,7 @@
                             <div>
                                 <img src="{{doc.iconUrl}}" />
                             </div>
-                            <div >{{doc.url}}</div>
+                            <div>{{doc.url}}</div>
                             <div>{{doc.name}}</div>
                             <span class="fa fa-square" style="color: transparent"></span>
                             <span class="fa fa-remove delete-icon" title="Delete this document" (click)="onDeleteDocument(doc)"></span>
@@ -89,7 +87,7 @@
                             <div *ngIf="selectmode === true" class="selectable" (click)="documentSelected(doc)">{{doc.url}}</div>
                             <div>{{doc.name}}</div>
                             <span class="fa fa-square" style="color: transparent"></span>
-                            <span  class="fa fa-square" style="color: transparent" ></span>
+                            <span class="fa fa-square" style="color: transparent"></span>
                             <span class="fa fa-square" style="color: transparent"></span>
                         </ng-container>
                     </ng-container>
@@ -98,7 +96,7 @@
                             <div>
                                 <img src="{{image.iconUrl}}" />
                             </div>
-                            <div >{{image.url}}</div>
+                            <div>{{image.url}}</div>
                             <div>
                                 <span>{{image.name}}</span>
                                 <span class="image-size">{{image.width}}w x {{image.height}}h</span>
@@ -111,13 +109,13 @@
                             <div>
                                 <img src="{{image.iconUrl}}" />
                             </div>
-                            <div  class="selectable" (click)="imageSelected(image)">{{image.url}}</div>
+                            <div class="selectable" (click)="imageSelected(image)">{{image.url}}</div>
                             <div>
                                 <span>{{image.name}}</span>
                                 <span class="image-size">{{image.width}}w x {{image.height}}h</span>
                             </div>
                             <span class="fa fa-square" style="color: transparent"></span>
-                            <span class="fa fa-square" style="color: transparent" ></span>
+                            <span class="fa fa-square" style="color: transparent"></span>
                             <span class="fa fa-eye view-icon" title="View this image" (click)="onViewImage(image)"></span>
                         </ng-container>
                     </ng-container>
@@ -137,19 +135,17 @@
             </div>
         </div>
     </div>
-    <div dialogcommandbar>
-        <div class="left">
-            <button [ngClass]="{disabled: !canExecute(ContentCommands.AddNewPage)}" (click)="onAddNewPage()">Add New Page</button>
-            <button [ngClass]="{disabled: !canExecute(ContentCommands.UploadFiles)}" (click)="onUploadFiles()">Upload File(s)</button>
-        </div>
-        <div class="right">
-            <button *ngIf="selectmode === true" [ngClass]="{disabled: !selection}" (click)="onSelect()">Select</button>
-            <button class="cancel" (click)="onClose()">Close</button>
-        </div>
+    <div dialogcommands left>
+        <button [ngClass]="{disabled: !canExecute(ContentCommands.AddNewPage)}" (click)="onAddNewPage()">Add New Page</button>
+        <button [ngClass]="{disabled: !canExecute(ContentCommands.UploadFiles)}" (click)="onUploadFiles()">Upload File(s)</button>
+    </div>
+    <div dialogcommands right>
+        <button *ngIf="selectmode === true" [ngClass]="{disabled: !selection}" (click)="onSelect()">Select</button>
+        <button class="cancel" (click)="onClose()">Close</button>
     </div>
 </popup-dialog>
 <popup-dialog #viewPageDialog [width]="500">
-    <div dialogheader>
+    <div windowcaption>
         <div>{{getPageViewCaption()}}</div>
     </div>
     <div dialogbody>
@@ -157,41 +153,33 @@
             <div *ngIf="pageInnerHtml !== null" [innerHtml]="pageInnerHtml"></div>
         </div>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button class="cancel" (click)="onClosePageViewer()">Close</button>
-        </div>
+    <div dialogcommands>
+        <button class="cancel" (click)="onClosePageViewer()">Close</button>
     </div>
 </popup-dialog>
 <popup-dialog #viewImageDialog [width]="300">
-    <div dialogheader>
-        <div>{{getImageCaption()
-            }}
-        </div>
+    <div windowcaption>
+        <div>{{getImageCaption()}}</div>
     </div>
     <div dialogbody>
         <div class="image-view">
             <img *ngIf="imageOnView" [src]="imageOnView.url" />
         </div>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button class="cancel" (click)="onCloseImageViewer()">Close</button>
-        </div>
+    <div dialogcommands>
+        <button class="cancel" (click)="onCloseImageViewer()">Close</button>
     </div>
 </popup-dialog>
 <popup-dialog #newPageDialog [width]="400">
-    <div dialogheader>
+    <div windowcaption>
         <div>{{getNewPageCaption()}}</div>
     </div>
     <div dialogbody>
         <text-input *ngIf="newPage" label="Page Name:" [(ngModel)]="newPage.name" [validator]="pageNameValidatorAsync"></text-input>
     </div>
-    <div dialogcommandbar>
-        <div class="centre">
-            <button (click)="onCreateNewPage()">OK</button>
-            <button class="cancel" (click)="onCancelNewPage()">Cancel</button>
-        </div>
+    <div dialogcommands>
+        <button (click)="onCreateNewPage()">OK</button>
+        <button class="cancel" (click)="onCancelNewPage()">Cancel</button>
     </div>
 </popup-dialog>
 <upload-dialog #uploadFilesDialog (startUpload)="onStartFileUpload($event)"></upload-dialog>
