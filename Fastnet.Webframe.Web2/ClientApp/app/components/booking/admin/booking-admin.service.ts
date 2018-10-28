@@ -99,11 +99,85 @@ export class Booking {
     organisation: string;
     //memberIsPrivileged: boolean;
 }
+export enum DayStatus {
+    IsClosed,
+    IsFree,
+    IsFull,
+    IsPartBooked,
+    IsNotBookable
+}
+export class OccupationInfo {
+    accomodationId: number;
+    accomodationName: number;
+    bookingId: number | undefined;
+    bookingReference: string;
+}
+export class BookingDescription {
+    bookingReference: string;
+    description: string;
+}
+export class Occupancy {
+    day: Date;
+    dayFormatted: string;
+    status: DayStatus;
+    occupationList: OccupationInfo[] = [];
+    descriptions: BookingDescription[] = [];
+    remark: string;
+}
+//export enum AccomodationType {
+//    Bed,
+//    Room,
+//    Suite, // i.e. a set of rooms
+//    Flat,
+//    Villa,
+//    Hut
+//}
+//export enum AccomodationClass {
+//    Standard,
+//    Superior,
+//    Executive,
+//    Deluxe
+//}
+//export class Accomodation {
+//    accomodationId: number;
+//    type: AccomodationType;
+//    class: AccomodationClass;
+//    name: string;
+//    isBookable: boolean;
+//    isBlocked: boolean;
+//    isAvailableToBook: boolean;
+//    isBooked: boolean;
+//    subAccomodationSeparatelyBookable: boolean;
+//    subAccomodation: Accomodation[];
+//    bookingReference: string;
+//    memberId: string;
+//    memberName: string;
+//    memberEmailAddress: string;
+//    mobilePhoneNumber: string;
+//    allSubAccomodation: Accomodation[];
+//}
+//export class DayInformation {
+//    day: Date;
+//    dayFormatted: string;
+//    status: DayStatus;
+//    statusDescription: string;
+//    hut: Accomodation;
+//}
 
 @Injectable()
 export class BookingAdminService extends BaseService {
+
     constructor(http: Http) {
         super(http);
+    }
+
+    async getOccupancy(from: Date, to: Date): Promise<Occupancy[]> {
+        let fromYear = from.getFullYear();
+        let fromMonth = from.getMonth() + 1;
+        let toYear = to.getFullYear();
+        let toMonth = to.getMonth() + 1;
+        let query = `bookingadmin/get/occupancy/${fromYear}/${fromMonth}/${toYear}/${toMonth}`;
+        return this.getData<Occupancy[]>(query);
     }
     async getPrices(): Promise<Price[]> {
         let query = `bookingadmin/get/prices`;

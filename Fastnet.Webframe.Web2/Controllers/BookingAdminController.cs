@@ -20,13 +20,13 @@ using Microsoft.Extensions.Logging;
 namespace Fastnet.Webframe.Web2.Controllers
 {
     [Route("bookingadmin")]
-    [Authorize(Roles = "Administrators")]
+    //[Authorize(Roles = "Administrators")]
     public class BookingAdminController : BaseController
     {
         private readonly CoreDataContext coreDataContext;
         private readonly BookingDataContext bookingDb;
         public BookingAdminController(ILogger<BookingAdminController> logger, IHostingEnvironment env, UserManager<ApplicationUser> userManager,
-            CoreDataContext coreDataContext, BookingDataContext bookingDb ) : base(logger, env, userManager)
+            CoreDataContext coreDataContext, BookingDataContext bookingDb) : base(logger, env, userManager)
         {
             this.coreDataContext = coreDataContext;
             this.bookingDb = bookingDb;
@@ -37,31 +37,48 @@ namespace Fastnet.Webframe.Web2.Controllers
             return this.coreDataContext;
         }
         [HttpGet("get/occupancy/{fromYear}/{fromMonth}/{toYear}/{toMonth}")]
-        public async Task<IActionResult> GetOccupancy(int fromYear, int fromMonth, int toYear, int toMonth)
+        public IActionResult GetOccupancy(int fromYear, int fromMonth, int toYear, int toMonth)
         {
-            var (Today, StartAt, Until) = GetCalendarSetupInfo();
-            DateTime start = new DateTime(fromYear, fromMonth, 1);
-            DateTime end = new DateTime(toYear, toMonth, DateTime.DaysInMonth(toYear, toMonth));
-            start = StartAt > start ? StartAt : start;
-            end = Until < end ? Until : end;
-            if (end < start)
+            try
             {
-                end = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
+                var (Today, StartAt, Until) = GetCalendarSetupInfo();
+                DateTime start = new DateTime(fromYear, fromMonth, 1);
+                DateTime end = new DateTime(toYear, toMonth, DateTime.DaysInMonth(toYear, toMonth));
+                //start = StartAt > start ? StartAt : start;
+                //end = Until < end ? Until : end;
+                //if (end < start)
+                //{
+                //    end = new DateTime(start.Year, start.Month, DateTime.DaysInMonth(start.Year, start.Month));
+                //}
+                log.Information($"occupancy from {start.ToDefault()} to {end.ToDefault()}");
+                var occupancyList = new List<Occupancy>();
+                GetBlockedDays(occupancyList, start, end);
+                GetBookedDays(occupancyList, start, end);
+                //GetNonBookableDays(occupancyList, start, end);
+                var result = occupancyList.OrderBy(x => x.Day);
+                log.Information($"occupancy list has {occupancyList.Count()} records");
+
+                return SuccessResult(result);
+                //var hut = bookingDb.AccomodationSet.Single(x => x.ParentAccomodation == null);
+                //List<DayInformationDTO> dayList = new List<DayInformationDTO>();
+                //for (DateTime day = start; day <= end; day = day.AddDays(1))
+                //{
+                //    var dto = hut.ToDayInformationDTO(day, coreDataContext);
+
+                //    dayList.Add(dto);
+                //}
             }
-            var hut = await bookingDb.AccomodationSet.SingleAsync(x => x.ParentAccomodation == null);
-            List<DayInformationDTO> dayList = new List<DayInformationDTO>();
-            for (DateTime day = start; day <= end; day = day.AddDays(1))
+            catch (Exception xe)
             {
-                var dto = hut.ToDayInformationDTO(day, coreDataContext);
-                dayList.Add(dto);
+                log.Error(xe);
+                return ExceptionResult(xe);
             }
-            return SuccessResult(dayList);
         }
         public (DateTime Today, DateTime StartAt, DateTime Until) GetCalendarSetupInfo()
         {
             Parameter p = bookingDb.Parameters.Single();
             Period fp = p.ForwardBookingPeriod;
-            DateTime start = BookingGlobals.GetToday();
+            DateTime start = BookingGlobals.GetToday().AddMonths(-12);
             DateTime end;
             switch (fp.PeriodType)
             {
@@ -83,7 +100,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                     //Log.Write(xe2);
                     throw xe2;
             }
-            return (  BookingGlobals.GetToday(), start, end );
+            return (BookingGlobals.GetToday(), start, end);
         }
         [HttpGet("get/prices")]
         //public IEnumerable<pricing> GetPricing(long abodeId)
@@ -93,8 +110,8 @@ namespace Fastnet.Webframe.Web2.Controllers
             {
                 //var backDate = BookingGlobals.GetToday().AddMonths(-1);
                 var bedPrices = await bookingDb.Prices.Include(x => x.Period)//.ToArray()
-                    //.Where(x => x.Type == AccomodationType.Bed && x.Class == AccomodationClass.Standard &&
-                    //     (x.Period.PeriodType == PeriodType.Rolling || x.Period.PeriodType == PeriodType.Fixed && x.Period.EndDate >= backDate))//;
+                                                                             //.Where(x => x.Type == AccomodationType.Bed && x.Class == AccomodationClass.Standard &&
+                                                                             //     (x.Period.PeriodType == PeriodType.Rolling || x.Period.PeriodType == PeriodType.Fixed && x.Period.EndDate >= backDate))//;
                     .OrderByDescending(x => x.Period.StartDate)
                     .ToArrayAsync();
                 //var temp = bedPrices.ToArray();
@@ -117,8 +134,8 @@ namespace Fastnet.Webframe.Web2.Controllers
                 //var backDate = BookingGlobals.GetToday().AddMonths(-1);
                 var dto = Request.FromBody<PriceDTO>();
                 var bedPrices = await bookingDb.Prices.Include(x => x.Period)//.ToArray()
-                    //.Where(x => x.Type == AccomodationType.Bed && x.Class == AccomodationClass.Standard &&
-                    //     (x.Period.PeriodType == PeriodType.Rolling || x.Period.PeriodType == PeriodType.Fixed && x.Period.EndDate >= backDate))//;
+                                                                             //.Where(x => x.Type == AccomodationType.Bed && x.Class == AccomodationClass.Standard &&
+                                                                             //     (x.Period.PeriodType == PeriodType.Rolling || x.Period.PeriodType == PeriodType.Fixed && x.Period.EndDate >= backDate))//;
                     .OrderBy(x => x.Period.StartDate)
                     .ToArrayAsync();
                 var price = bedPrices.Single(x => x.PriceId == dto.PriceId);
@@ -154,7 +171,7 @@ namespace Fastnet.Webframe.Web2.Controllers
                     .OrderBy(x => x.Period.StartDate)
                     .ToListAsync();
                 var existingPrice = bedPrices.SingleOrDefault(x => x.Period.StartDate == dto.From);
-                if(existingPrice != null)
+                if (existingPrice != null)
                 {
                     existingPrice.Period.StartDate = dto.From;
                     existingPrice.Amount = dto.Amount;
@@ -312,7 +329,7 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             var et = await bookingDb.EmailTemplates.SingleOrDefaultAsync(x => x.Template == template);
             var dto = new EmailTemplateDTO { Template = template };
-            if(et == null)
+            if (et == null)
             {
                 dto.Subject = "{{reference}}: " + string.Format("(subject line for {0})", template.ToString());
                 dto.Body = string.Format(@"<div style='margin-bottom: 4px;'>No {0} email template defined</div>", template.ToString());
@@ -421,7 +438,7 @@ namespace Fastnet.Webframe.Web2.Controllers
             var ordered = prices.OrderByDescending(x => x.Period.StartDate);
             DateTime? end = null;
             var pt = PeriodType.Rolling;
-            foreach(var p in ordered)
+            foreach (var p in ordered)
             {
                 p.Period.EndDate = end;
                 p.Period.PeriodType = pt;
@@ -492,6 +509,124 @@ namespace Fastnet.Webframe.Web2.Controllers
     </tr>
 </table>";
             return html;
+        }
+        private void GetBlockedDays(List<Occupancy> list, DateTime start, DateTime end)
+        {
+            var blockedPeriods = bookingDb.Availabilities.Where(x => x.Blocked);
+            foreach (var bp in blockedPeriods)
+            {
+                var sd = new[] { start, bp.Period.StartDate.Value }.Max();
+                var ed = new[] { end, bp.Period.EndDate.Value }.Min();
+                Accomodation a = bp.Accomodation;
+                for (DateTime d = sd; d <= ed; d = d.AddDays(1))
+                {
+                    var occupancy = list.SingleOrDefault(x => x.Day == d);
+                    if (occupancy == null)
+                    {
+                        occupancy = new Occupancy { Day = d, DayFormatted = GetOccupancyDate(d), Status = DayStatus.IsClosed };
+                        occupancy.Remark = bp.Description;
+                        list.Add(occupancy);
+                    }
+                    var info = new OccupationInfo
+                    {
+                        AccomodationId = bp.Accomodation.AccomodationId,
+                        AccomodationName = bp.Accomodation.Name
+                    };
+                    occupancy.OccupationList.Add(info);
+                }
+            }
+        }
+        private void GetNonBookableDays(List<Occupancy> list, DateTime start, DateTime end)
+        {
+            for (DateTime d = start; d <= end; d = d.AddDays(1))
+            {
+                if (d.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    var occupancy = list.SingleOrDefault(x => x.Day == d);
+                    if (occupancy == null)
+                    {
+                        occupancy = new Occupancy { Day = d, DayFormatted = GetOccupancyDate(d), Status = DayStatus.IsNotBookable };
+                        list.Add(occupancy);
+                    }
+                }
+            }
+        }
+        private string GetOccupancyDate(DateTime d)
+        {
+            return $"{d.DayOfWeek.ToString().Substring(0, 3)} " + $"{d.ToDefault()}";
+        }
+        private void GetBookedDays(List<Occupancy> list, DateTime start, DateTime end)
+        {
+            foreach (var booking in bookingDb.Bookings.Where(x => x.From >= start && x.To <= end))
+            {
+                var accomodationList = booking.BookingAccomodations.Select(x => x.Accomodation);
+                for (DateTime d = booking.From; d <= booking.To; d = d.AddDays(1))
+                {
+                    DayStatus status = DayStatus.IsPartBooked;
+                    if (accomodationList.Count() == 1 && accomodationList.First().Type == AccomodationType.Hut)
+                    {
+                        status = DayStatus.IsFull;
+                    }
+                    else
+                    {
+                        var bedcount = accomodationList.Select(x => x.Type == AccomodationType.Bed).Count();
+                        if (bedcount == 12)
+                        {
+                            status = DayStatus.IsFull;
+                        }
+                        else
+                        {
+                            var rooms = accomodationList.Where(x => x.Type == AccomodationType.Room);
+                            var beds = rooms.SelectMany(x => x.SubAccomodation);
+                            if ((beds.Count() + bedcount) >= 12)
+                            {
+                                status = DayStatus.IsFull;
+                            }
+                        }
+                    }
+                    foreach (var a in accomodationList)
+                    {
+                        var occupancy = list.SingleOrDefault(x => x.Day == d);
+                        if (occupancy == null)
+                        {
+                            occupancy = new Occupancy { Day = d, DayFormatted = GetOccupancyDate(d), Status = status };
+                            list.Add(occupancy);
+                        }
+                        var info = new OccupationInfo
+                        {
+                            AccomodationId = a.AccomodationId,
+                            AccomodationName = a.Name,
+                            BookingId = booking.BookingId,
+                            BookingReference = booking.Reference
+                        };
+                        occupancy.OccupationList.Add(info);
+                    }
+
+                }
+            }
+            foreach (var item in list)
+            {
+                switch (item.Status)
+                {
+                    case DayStatus.IsFull:
+                    case DayStatus.IsPartBooked:
+                        SetBookingDescription(item);
+                        break;
+                }
+            }
+        }
+
+        private void SetBookingDescription(Occupancy item)
+        {
+            var bookings = item.OccupationList.Select(x => x.BookingReference)
+                .Distinct()
+                .OrderBy(x => x);
+            foreach (var reference in bookings)
+            {
+                var infoList = item.OccupationList.Where(x => x.BookingReference == reference);
+                var names = infoList.Select(x => x.AccomodationName).ToArray();
+                item.Descriptions.Add(new BookingDescription { BookingReference = reference, Description = $"{string.Join(", ", names)}" });
+            }
         }
     }
 }

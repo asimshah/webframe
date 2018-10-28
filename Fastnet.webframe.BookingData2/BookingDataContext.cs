@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Fastnet.Webframe.BookingData2
 {
@@ -36,6 +39,7 @@ namespace Fastnet.Webframe.BookingData2
             //{
             //    log.Trace($"\t{migration}");
             //}
+            db.Seed();
         }
     }
     public class BookingDbContextFactory : WebDbContextFactory
@@ -50,6 +54,7 @@ namespace Fastnet.Webframe.BookingData2
     }
     public partial class BookingDataContext : WebDbContext // DbContext
     {
+        private ILogger log;
         private CustomisationOptions customisation;
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingAccomodation> BookingAccomodations { get; set; }
@@ -104,6 +109,93 @@ namespace Fastnet.Webframe.BookingData2
                 .HasForeignKey(x => x.Booking_BookingId);
 
             base.OnModelCreating(modelBuilder);
+        }
+        internal void Seed()
+        {
+            log = this.serviceProvider.GetService<ILogger<BookingDataContext>>();
+            log.Information("Seed() started");
+            //AnalysePossibilities();
+        }
+
+        private void AnalysePossibilities()
+        {
+            Dictionary<DateTime, List<(Accomodation, Booking)>> occupancy = new Dictionary<DateTime, List<(Accomodation, Booking)>>();
+            // first lets look at blocked periods
+            // this is kept in a table called Availability (!!)
+            var blockedPeriods = Availabilities.Where(x => x.Blocked);
+            foreach(var bp in blockedPeriods)
+            {
+                var period = bp.Period;
+                switch(period.PeriodType)
+                {
+                    case PeriodType.Fixed:
+                        GetBlockedDays(occupancy, bp);
+                        break;
+                    default:
+                        log.Warning($"Unexpected period type {period.PeriodType.ToString()} for blocked period id {bp.AvailabilityId}");
+                        break;
+                }
+            }
+            // next lets look at bookings
+            foreach(var booking in Bookings)
+            {
+                GetBookingDays(occupancy, booking);
+            }
+            ShowOccupancy(occupancy);
+
+        }
+
+        private void GetBookingDays(Dictionary<DateTime, List<(Accomodation, Booking)>> occupancy, Booking booking)
+        {
+            var accomodationList = booking.BookingAccomodations.Select(x => x.Accomodation);
+            for(DateTime d = booking.From; d <= booking.To; d = d.AddDays(1))
+            {
+                foreach (var a in accomodationList)
+                {
+                    if (!occupancy.ContainsKey(d))
+                    {
+                        occupancy.Add(d, new List<(Accomodation, Booking)>());
+                    }
+                    var list = occupancy[d];
+                    list.Add((a, booking));
+                    //log.Information($"{d.ToDefault()}, booking {booking.Reference}, {a.Name}");
+                }
+            }
+        }
+
+        private void GetBlockedDays(Dictionary<DateTime, List<(Accomodation, Booking)>> occupancy, Availability bp)
+        {
+            Accomodation a = bp.Accomodation;
+            for (DateTime d = bp.Period.StartDate.Value;d <= bp.Period.EndDate.Value ; d = d.AddDays(1))
+            {
+                if(!occupancy.ContainsKey(d))
+                {
+                    occupancy.Add(d, new List<(Accomodation, Booking)>());
+                }
+                var list = occupancy[d];
+                list.Add((a, null));
+                //log.Information($"{d.ToDefault()}, {a.Name} is blocked for \"{bp.Description}\"");
+            }
+        }
+        private void ShowOccupancy(Dictionary<DateTime, List<(Accomodation accomodation, Booking booking)>> occupancy)
+        {
+            try
+            {
+                foreach (var kvp in occupancy)
+                {
+                    //kvp.Value.Select(x => )
+                    var list = string.Join(", ", kvp.Value.Select(x => $"{x.accomodation.Name }" + $"({x.booking?.Reference ?? "Blocked"})")
+                        .ToArray());
+
+                    var descr = $"{kvp.Key.DayOfWeek.ToString()}, {kvp.Key.ToDefault()}: {list}";
+                    log.Information(descr);
+                }
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
         }
     }
 }

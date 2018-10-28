@@ -1,13 +1,22 @@
 ﻿
 import { Component, OnChanges } from '@angular/core';
-import { addMonths, daysInMonth } from '../../../fastnet/core/date.functions';
+import { addMonths, daysInMonth, getDateAsddMMMyy } from '../../../fastnet/core/date.functions';
+import { BookingAdminService, Occupancy, DayStatus } from './booking-admin.service';
 
 @Component({
     selector: 'occupancy',
     templateUrl: './occupancy.component.html',
     styleUrls: ['./occupancy.component.scss'],
 })
-export class OccupancyComponentComponent  {
+export class OccupancyComponentComponent {
+    DayStatus = DayStatus;
+    statusDescription = [
+        "Don Whillans Hut  is closed",
+        "This day free",
+        "This day is fully booked",
+        "This day is part booked",
+        "Saturdays are not separately bookable"
+    ];
     private fromToBusy = false;
     private _from: Date;
     private _to: Date;
@@ -27,7 +36,8 @@ export class OccupancyComponentComponent  {
         this._to = d;
         this.onToChanged();
     }
-    constructor() {
+    rows: Occupancy[] = [];
+    constructor(private adminService: BookingAdminService) {
         let today = new Date();
         this.from = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0);
         this.to = addMonths(this.from, 1);
@@ -53,9 +63,20 @@ export class OccupancyComponentComponent  {
             this.fromToBusy = false;
         }
     }
-    onStart() {
-        this.reportFrom = this.from;
-        this.reportTo = new Date(this.to.getFullYear(), this.to.getMonth(), daysInMonth(this.to));
-        console.log(`occupancy from ${this.reportFrom} to ${this.reportTo}`);
+    async onStart() {
+        this.rows = [];
+        setTimeout(async () => {
+            this.reportFrom = this.from;
+            this.reportTo = new Date(this.to.getFullYear(), this.to.getMonth(), daysInMonth(this.to));
+            console.log(`occupancy from ${this.reportFrom} to ${this.reportTo}`);
+            this.rows = await this.adminService.getOccupancy(this.reportFrom, this.reportTo);
+        }, 0);
+    }
+    getStatusDescription(status: DayStatus): string {
+        //console.log(`getting status ${status}`);
+        return this.statusDescription[status];
+    }
+    getCaption(): string {
+        return `Occupancy from ${getDateAsddMMMyy(this.reportFrom)} to ${getDateAsddMMMyy(this.reportTo)}`;
     }
 }

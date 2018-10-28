@@ -4,6 +4,7 @@ using Fastnet.Webframe.Common2;
 using Fastnet.Webframe.CoreData2;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Fastnet.Webframe.Web2
@@ -47,7 +48,7 @@ namespace Fastnet.Webframe.Web2
                 Today = BookingGlobals.GetToday().ToDefault(),
                 AvailableGroups = availableGroups.Select(g => g.ToDTO()).ToArray(),
                 PrivilegedMembers = null, // will be set up in the client
-                PrivilegedMembersGroupId = string.IsNullOrWhiteSpace(p.PrivilegedMembers) ? 0 :  availableGroups.Single(x => x.Name == p.PrivilegedMembers).GroupId
+                PrivilegedMembersGroupId = string.IsNullOrWhiteSpace(p.PrivilegedMembers) ? 0 : availableGroups.Single(x => x.Name == p.PrivilegedMembers).GroupId
             };
         }
         public static BookingDTO ToDTO(this Booking b, DWHMember member)
@@ -81,112 +82,147 @@ namespace Fastnet.Webframe.Web2
                 Organisation = member.Organisation
             };
         }
-        public static DayInformationDTO ToDayInformationDTO(this Accomodation a, DateTime day, CoreDataContext core)
-        {
-            DayInformationDTO dto = new DayInformationDTO
-            {
-                Day = day,
-                Hut = a.ToDTO(day)
-            };
-            if(dto.Hut.IsBlocked)
-            {
-                dto.Status = DayStatus.IsClosed;
-            }
-            else
-            {
-                var all = AllAccomodation(dto.Hut);
-                int totalAvailableToBook = all.Sum(y => y.IsAvailableToBook ? 1 : 0);
-                int totalBookable = all.Sum(y => y.IsBookable ? 1 : 0);
-                if (totalAvailableToBook == 0)
-                {
-                    dto.Status = DayStatus.IsFull;
-                }
-                else if (totalAvailableToBook == totalBookable)
-                {
-                    dto.Status = DayStatus.IsFree;
-                }
-                else
-                {
-                    dto.Status = DayStatus.IsPartBooked;
-                }
-                if(dto.Status == DayStatus.IsFree && dto.Day.DayOfWeek == DayOfWeek.Saturday)
-                {
-                    dto.Status = DayStatus.IsNotBookable;
-                }
-                switch (dto.Status)
-                {
-                    case DayStatus.IsClosed:
-                        dto.StatusDescription = "Don Whillans Hut  is closed on this day";
-                        break;
-                    case DayStatus.IsFree:
-                        dto.StatusDescription = "This day free";
-                        break;
-                    case DayStatus.IsFull:
-                        dto.StatusDescription = "This day is fully booked";
-                        break;
-                    case DayStatus.IsPartBooked:
-                        dto.StatusDescription = "This day is part booked";
-                        break;
-                    case DayStatus.IsNotBookable:
-                        dto.StatusDescription = "Saturdays are not separately bookable";
-                        break;
-                }
-                foreach(var item in all)
-                {
-                    if(item.IsBooked)
-                    {
-                        var member = core.DWHMembers.Find(item.MemberId);
-                        item.MemberName = member.Fullname;
-                        item.MemberEmailAddress = member.EmailAddress;
-                        item.MobilePhoneNumber = member.PhoneNumber;
-                    }
-                }
-            }
-            return dto;
-        }
-        public static AccomodationDTO ToDTO(this Accomodation a, DateTime day)
-            {
-            AccomodationDTO dto = new AccomodationDTO
-            {
-                AccomodationId = a.AccomodationId,
-                Type = a.Type,
-                Class = a.Class,
-                Name = a.Name,
-                IsBookable = a.Bookable,
-                SubAccomodationSeparatelyBookable = a.SubAccomodationSeparatelyBookable,
-                IsBlocked = a.Availabilities.Where(x => x.Blocked).ToArray().Any(x => x.Period.Includes(day)),
-                SubAccomodation = a.SubAccomodation.Select(x => x.ToDTO(day))
-            };
-            var bookings = a.BookingAccomodations.Select(x => x.Booking)
-                .Where(b => day >= b.From && day <= b.To); //todo: allow for cancelled bookings
-            dto.IsBooked = bookings.Count() > 0;
-            if (dto.IsBooked)
-            {
-                if (bookings.Count() > 1)
-                {
-                    throw new Exception($"{a.Name} booked multiple times on {day.ToDefault()}");
-                }
-                var booking = bookings.First();
-                dto.BookingReference = booking.Reference;
-                dto.MemberId = booking.MemberId;
-            }
-            if(!dto.IsBlocked && !dto.IsBooked)
-            {
-                dto.IsAvailableToBook = dto.IsBookable && !dto.AllSubAccomodation.Any(x => x.IsBooked);
-                //if(dto.SubAccomodationSeparatelyBookable)
-                //{
+        //public static DayInformationDTO ToDayInformationDTO(this Accomodation a, DateTime day, CoreDataContext core)
+        //{
+        //    Debug.WriteLine($"day information for {day.ToDefault()}, {a.Name}");
+        //    DayInformationDTO dto = new DayInformationDTO
+        //    {
+        //        Day = day,
+        //        DayFormatted = day.ToDefault(),
+        //        Hut = a.ToDTO(day)
+        //    };
+        //    if (dto.Hut.IsBlocked)
+        //    {
+        //        dto.Status = DayStatus.IsClosed;
+        //    }
+        //    else
+        //    {
+        //        if(dto.Hut.IsBooked)
+        //        {
+        //            dto.Status = DayStatus.IsFull;
+        //        }
+        //        else 
+        //        {
+        //            if(dto.Hut.SubAccomodation.All(x => x.IsBooked || x.IsBlocked))
+        //            {
+        //                dto.Status = DayStatus.IsFull;
+        //            }
+        //            else if(dto.Hut.SubAccomodation.SelectMany(x => x.SubAccomodation).All(x => x.IsBooked || x.IsBlocked))
+        //            {
+        //                dto.Status = DayStatus.IsFull;
+        //            } else
+        //            {
+        //                if(dto.Hut.SubAccomodation.All(x => !x.IsBooked && !x.IsBlocked)
+        //                    && dto.Hut.SubAccomodation.SelectMany(x => x.SubAccomodation).All(x => !x.IsBooked && !x.IsBlocked))
+        //                {
+        //                    dto.Status = DayStatus.IsFree;
+        //                }
+        //                else
+        //                {
+        //                    dto.Status = DayStatus.IsPartBooked;
+        //                }
+        //            }
+        //        }
+        //        if (dto.Status == DayStatus.IsFree && dto.Day.DayOfWeek == DayOfWeek.Saturday)
+        //        {
+        //            dto.Status = DayStatus.IsNotBookable;
+        //        }
+        //        //var all = AllAccomodation(dto.Hut);
+        //        //int totalAvailableToBook = all.Sum(y => y.IsAvailableToBook ? 1 : 0);
+        //        //int totalBookable = all.Sum(y => y.IsBookable ? 1 : 0);
 
-                //}
-            }
-            return dto;
-        }
-        private static IEnumerable<AccomodationDTO> AllAccomodation(AccomodationDTO hut)
-        {
-            List<AccomodationDTO> all = new List<AccomodationDTO>();
-            all.Add(hut);
-            all.AddRange(hut.AllSubAccomodation);
-            return all;
-        }
+        //        //if (totalAvailableToBook == 0)
+        //        //{
+        //        //    dto.Status = DayStatus.IsFull;
+        //        //}
+        //        //else if (totalAvailableToBook == totalBookable)
+        //        //{
+        //        //    dto.Status = DayStatus.IsFree;
+        //        //}
+        //        //else
+        //        //{
+        //        //    dto.Status = DayStatus.IsPartBooked;
+        //        //}
+        //        //if (dto.Status == DayStatus.IsFree && dto.Day.DayOfWeek == DayOfWeek.Saturday)
+        //        //{
+        //        //    dto.Status = DayStatus.IsNotBookable;
+        //        //}
+        //        //switch (dto.Status)
+        //        //{
+        //        //    case DayStatus.IsClosed:
+        //        //        dto.StatusDescription = "Don Whillans Hut  is closed on this day";
+        //        //        break;
+        //        //    case DayStatus.IsFree:
+        //        //        dto.StatusDescription = "This day free";
+        //        //        break;
+        //        //    case DayStatus.IsFull:
+        //        //        dto.StatusDescription = "This day is fully booked";
+        //        //        break;
+        //        //    case DayStatus.IsPartBooked:
+        //        //        dto.StatusDescription = "This day is part booked";
+        //        //        break;
+        //        //    case DayStatus.IsNotBookable:
+        //        //        dto.StatusDescription = "Saturdays are not separately bookable";
+        //        //        break;
+        //        //}
+        //        //foreach (var item in dto.Hut.SubAccomodation.Union(dto.Hut.SubAccomodation.SelectMany(x => x.SubAccomodation)))
+        //        //{
+        //        //    if (item.IsBooked)
+        //        //    {
+        //        //        var member = core.DWHMembers.Find(item.MemberId);
+        //        //        item.MemberName = member.Fullname;
+        //        //        item.MemberEmailAddress = member.EmailAddress;
+        //        //        item.MobilePhoneNumber = member.PhoneNumber;
+        //        //    }
+        //        //}
+        //    }
+        //    return dto;
+        //}
+        //public static AccomodationDTO ToDTO(this Accomodation a, DateTime day)
+        //{
+        //    Debug.WriteLine($"dto for {a.Name}, for {day.ToDefault()}");
+        //    AccomodationDTO dto = new AccomodationDTO
+        //    {
+        //        AccomodationId = a.AccomodationId,
+        //        Type = a.Type,
+        //        Class = a.Class,
+        //        Name = a.Name,
+        //        IsBookable = a.Bookable,
+        //        SubAccomodationSeparatelyBookable = a.SubAccomodationSeparatelyBookable,
+        //        IsBlocked = a.Availabilities.Where(x => x.Blocked).ToArray().Any(x => x.Period.Includes(day)),
+        //        SubAccomodation = a.SubAccomodation.Select(x => x.ToDTO(day))
+        //    };
+        //    var bookings = a.BookingAccomodations.Select(x => x.Booking)
+        //        .Where(b => day >= b.From && day <= b.To); //todo: allow for cancelled bookings
+        //    dto.IsBooked = bookings.Count() > 0;
+        //    if (dto.IsBooked)
+        //    {
+        //        if (bookings.Count() > 1)
+        //        {
+        //            throw new Exception($"{a.Name} booked multiple times on {day.ToDefault()}");
+        //        }
+        //        var booking = bookings.First();
+        //        dto.BookingReference = booking.Reference;
+        //        dto.MemberId = booking.MemberId;
+        //    }
+        //    //if (!dto.IsBlocked && !dto.IsBooked)
+        //    //{
+        //    //    var descendents = dto.SubAccomodation.SelectMany(x => x.SubAccomodation);
+        //    //    dto.IsAvailableToBook = dto.IsBookable && !dto.AllSubAccomodation.Any(x => x.IsBooked);
+        //    //    //if(dto.SubAccomodationSeparatelyBookable)
+        //    //    //{
+
+        //    //    //}
+        //    //}
+        //    return dto;
+        //}
+        //private static IEnumerable<AccomodationDTO> AllAccomodation(AccomodationDTO hut)
+        //{
+        //    List<AccomodationDTO> all = new List<AccomodationDTO>();
+        //    all.Add(hut);
+        //    all.AddRange(hut.AllSubAccomodation);
+        //    return all;
+        //}
     }
     public class BookingDTO
     {
@@ -249,43 +285,68 @@ namespace Fastnet.Webframe.Web2
         public string FromFormatted { get; internal set; }
         public string ToFormatted { get; internal set; }
     }
-    public class AccomodationDTO
+
+    //public class AccomodationDTO
+    //{
+    //    public long AccomodationId { get; set; }
+    //    public AccomodationType Type { get; set; }
+    //    public AccomodationClass Class { get; set; }
+    //    public string Name { get; set; }
+    //    public bool IsBookable { get; set; }
+    //    public bool IsBlocked { get; set; }
+    //    public bool IsPartFree
+    //    {
+    //        get
+    //        {
+    //            return getPartFree();
+    //        }
+    //    }
+    //    public bool IsBooked { get; set; }
+    //    public bool SubAccomodationSeparatelyBookable { get; set; }
+    //    public IEnumerable<AccomodationDTO> SubAccomodation { get; set; }
+    //    public string BookingReference { get; set; }
+    //    public string MemberId { get; set; }
+    //    public string MemberName { get; set; }
+    //    public string MemberEmailAddress { get; set; }
+    //    public string MobilePhoneNumber { get; set; }
+    //    private bool getPartFree()
+    //    {
+    //        // returns to if any subaccomodation is free (not blocked and not booked
+    //        var free = !IsBlocked && !IsBooked;
+    //        if(free)
+    //        {
+    //            free = SubAccomodation.Any(x => x.getPartFree());
+    //        }
+    //        return free;
+    //    }
+    //}
+    //public class DayInformationDTO
+    //{
+    //    public DateTime Day { get; set; }
+    //    public string DayFormatted { get; set; }
+    //    public DayStatus Status { get; set; }
+    //    public string StatusDescription { get; set; }
+    //    public AccomodationDTO Hut { get; set; }
+    //}
+    public class OccupationInfo
     {
-        public long AccomodationId { get;  set; }
-        public AccomodationType Type { get;  set; }
-        public AccomodationClass Class { get;  set; }
-        public string Name { get; set; }
-        public bool IsBookable { get; set; }
-        public bool IsBlocked { get; set; }
-        public bool IsAvailableToBook { get; set; }
-        public bool IsBooked { get; set; }
-        public bool SubAccomodationSeparatelyBookable { get; set; }
-        public IEnumerable<AccomodationDTO> SubAccomodation { get; set; }
+        public long AccomodationId { get; set; }
+        public string AccomodationName { get; set; }
+        public long? BookingId { get; set; }
         public string BookingReference { get; set; }
-        public string MemberId { get; set; }
-        public string MemberName { get; set; }
-        public string MemberEmailAddress { get; set; }
-        public string MobilePhoneNumber { get; set; }
-        public IEnumerable<AccomodationDTO> AllSubAccomodation
-        {
-            get
-            {
-                foreach(var child in SubAccomodation)
-                {
-                    yield return child;
-                    foreach(var subchild in child.AllSubAccomodation)
-                    {
-                        yield return subchild;
-                    }
-                }
-            }
-        }
     }
-    public class DayInformationDTO
+    public class BookingDescription
+    {
+        public string BookingReference { get; set; }
+        public string Description { get; set; }
+    }
+    public class Occupancy
     {
         public DateTime Day { get; set; }
-        public DayStatus Status { get; set; }
-        public string StatusDescription { get; set; }
-        public AccomodationDTO Hut { get; set; }
+        public string DayFormatted { get; set; }
+        public DayStatus Status { get; set; } = DayStatus.IsFree;
+        public List<OccupationInfo> OccupationList { get; set; } = new List<OccupationInfo>();
+        public List<BookingDescription> Descriptions { get; set; } = new List<BookingDescription>();
+        public string Remark { get; set; }
     }
 }

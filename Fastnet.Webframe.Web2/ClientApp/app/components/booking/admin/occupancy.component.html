@@ -5,4 +5,26 @@
         <date-input class="to-date" label="To" [showInputBox]="false" [showDaySelection]="false" [(ngModel)]="to" ></date-input>
         <button (click)="onStart()">Start</button>
     </div>
+    <scrollable-table *ngIf="rows && rows.length > 0" class="occupancy-table" [caption]="getCaption()">
+        <table-header>
+            <table-column width="120px">Date</table-column>
+            <table-column width="170px">Status</table-column>
+            <table-column width="530px">Details</table-column>
+        </table-header>
+        <table-body>
+            <table-row *ngFor="let row of rows">
+                <table-cell>{{row.dayFormatted}}</table-cell>
+                <table-cell>{{getStatusDescription(row.status)}}</table-cell>
+                <table-cell>
+                    <div *ngIf="row.status === DayStatus.IsClosed">{{row.remark}}</div>
+                    <div *ngIf="row.status === DayStatus.IsFull || row.status === DayStatus.IsPartBooked">
+                        <div *ngFor="let d of row.descriptions" class="booking-description">
+                            <span>{{d.bookingReference}}</span>
+                            <span>{{d.description}}</span>
+                        </div>
+                    </div>
+                </table-cell>
+            </table-row>
+        </table-body>
+    </scrollable-table>
 </div>

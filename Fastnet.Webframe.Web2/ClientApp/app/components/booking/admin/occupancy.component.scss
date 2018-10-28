@@ -2,27 +2,73 @@
 @include theme-buttons;
 @include theme-page('.occupancy-report');
 
-.date-range-panel {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto 1fr;
-    align-items: flex-end;
-    grid-column-gap: $theme-gutter * 4;
+.occupancy-report {
+    .date-range-panel {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto 1fr;
+        align-items: flex-end;
+        grid-column-gap: $theme-gutter * 4;
 
-    date-input {
-        &.from-date {
-            grid-column: 1;
-            grid-row: 1;
+        date-input {
+            &.from-date {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            &.to-date {
+                grid-column: 3;
+                grid-row: 1;
+            }
         }
 
-        &.to-date {
-            grid-column: 3;
+        button {
+            margin-left: $theme-gutter-narrow;
+            margin-right: $theme-gutter;
+            grid-column: 4 / 4;
             grid-row: 1;
         }
     }
-    button {
-        margin-left: $theme-gutter-narrow;
-        margin-right: $theme-gutter;
-        grid-column: 4 / 4;
-        grid-row: 1;
+
+    .occupancy-table {
+        font-size: 11px;
+
+        table-header {
+            background-color: theme-colour('primary'); // darkblue;
+            color: theme-colour('background');
+            font-weight: bold;
+
+            table-column {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+            }
+        }
+
+        table-body {
+            height: 60vh;
+            overflow-y: scroll;
+            overflow-x: hidden;
+
+            table-row {
+                padding-top: 0.1em;
+                padding-bottom: 0.1em;
+                border-top: 1px solid theme-colour('surface');
+            }
+
+            table-cell {
+                &.centre-align {
+                    text-align: center;
+                }
+
+                &.right-align {
+                    text-align: right;
+                }
+            }
+        }
     }
+
 }
