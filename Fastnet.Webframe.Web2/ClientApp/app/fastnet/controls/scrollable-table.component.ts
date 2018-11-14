@@ -78,12 +78,7 @@ export class ScrollableTableBodyComponent implements AfterContentChecked {
     constructor() {
 
     }
-    //ngAfterContentInit() {
-    //    if (this.rows) {
-    //        let rowlist = this.rows.toArray();
-    //        console.log(`ngAfterContentInit: ${rowlist.length} rows found`);
-    //    }
-    //}
+
     ngAfterContentChecked() {
         if (this.rows) {
             let rowlist = this.rows.toArray();
@@ -94,7 +89,7 @@ export class ScrollableTableBodyComponent implements AfterContentChecked {
                     this.rows.forEach((r) => {
                         if (r.columnWidths === "") {
                             r.columnWidths = this.columnWidths;
-                            console.log(`set row widths to ${r.columnWidths}`);
+                            //console.log(`set row widths to ${r.columnWidths}`);
                         }
                     });
                     this.readySource.next(true);
@@ -143,7 +138,7 @@ export class ScrollableTableComponent implements OnDestroy, AfterContentInit/*, 
     }
     ngAfterContentInit() {
         if (this.header) {
-            console.log(`ngAfterContentInit: header found`);
+            //console.log(`ngAfterContentInit: header found`);
             this.columnWidths = this.header.getColumnsWidths();
             this.header.columnWidths = this.columnWidths;
         }
@@ -152,7 +147,7 @@ export class ScrollableTableComponent implements OnDestroy, AfterContentInit/*, 
                 .subscribe((r) => {
                     this.ready = r;
                 });
-            console.log(`ngAfterContentInit: body found`);
+            //console.log(`ngAfterContentInit: body found`);
             this.body.columnWidths = this.columnWidths;
         }
     }

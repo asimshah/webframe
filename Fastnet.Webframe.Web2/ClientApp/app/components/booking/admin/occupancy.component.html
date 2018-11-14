@@ -7,12 +7,14 @@
     </div>
     <scrollable-table *ngIf="rows && rows.length > 0" class="occupancy-table" [caption]="getCaption()">
         <table-header>
+            <table-column width="24px"></table-column>
             <table-column width="120px">Date</table-column>
             <table-column width="170px">Status</table-column>
             <table-column width="530px">Details</table-column>
         </table-header>
         <table-body>
             <table-row *ngFor="let row of rows">
+                <table-cell><span class="fa fa-circle" [ngClass]="DayStatus[row.status]"></span></table-cell>
                 <table-cell>{{row.dayFormatted}}</table-cell>
                 <table-cell>{{getStatusDescription(row.status)}}</table-cell>
                 <table-cell>

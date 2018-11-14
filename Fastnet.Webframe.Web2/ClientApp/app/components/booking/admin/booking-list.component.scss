@@ -36,6 +36,9 @@
                 padding-top: 0.1em;
                 padding-bottom: 0.1em;
                 border-top: 1px solid theme-colour('surface');
+                &.WaitingApproval {
+                    color: $mdc-red-500;
+                }
             }
 
             table-cell {

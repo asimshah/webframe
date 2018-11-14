@@ -15,7 +15,7 @@ export class OccupancyComponentComponent {
         "This day free",
         "This day is fully booked",
         "This day is part booked",
-        "Saturdays are not separately bookable"
+        "Not separately bookable"
     ];
     private fromToBusy = false;
     private _from: Date;
@@ -46,9 +46,12 @@ export class OccupancyComponentComponent {
     onFromChanged() {
         if (!this.fromToBusy) {
             this.fromToBusy = true;
-            let t1 = addMonths(this.from, 1);
-            if (!this.to || this.to.valueOf() < t1.valueOf()) {
-                this.to = t1;
+            //let t1 = addMonths(this.from, 1);
+            //if (!this.to || this.to.valueOf() < t1.valueOf()) {
+            //    this.to = t1;
+            //}
+            if (!this.to || this.to.valueOf() < this.from.valueOf()) {
+                this.to = this.from;
             }
             this.fromToBusy = false;
         }
@@ -56,9 +59,12 @@ export class OccupancyComponentComponent {
     onToChanged() {
         if (!this.fromToBusy) {
             this.fromToBusy = true;
-            let t1 = addMonths(this.to, -1);
-            if (!this.from || this.from.valueOf() > t1.valueOf()) {
-                this.from = t1;
+            //let t1 = addMonths(this.to, -1);
+            //if (!this.from || this.from.valueOf() > t1.valueOf()) {
+            //    this.from = t1;
+            //}
+            if (!this.from || this.from.valueOf() > this.to.valueOf()) {
+                this.from = this.to;
             }
             this.fromToBusy = false;
         }

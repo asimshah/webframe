@@ -36,8 +36,8 @@ namespace Fastnet.Webframe.Web2.Controllers
         {
             return this.coreDataContext;
         }
-        [HttpGet("get/occupancy/{fromYear}/{fromMonth}/{toYear}/{toMonth}")]
-        public IActionResult GetOccupancy(int fromYear, int fromMonth, int toYear, int toMonth)
+        [HttpGet("get/occupancy/{fromYear}/{fromMonth}/{toYear}/{toMonth}/{free?}")]
+        public IActionResult GetOccupancy(int fromYear, int fromMonth, int toYear, int toMonth, bool free = true)
         {
             try
             {
@@ -54,6 +54,10 @@ namespace Fastnet.Webframe.Web2.Controllers
                 var occupancyList = new List<Occupancy>();
                 GetBlockedDays(occupancyList, start, end);
                 GetBookedDays(occupancyList, start, end);
+                if(free)
+                {
+                    GetFreeDays(occupancyList, start, end);
+                }
                 //GetNonBookableDays(occupancyList, start, end);
                 var result = occupancyList.OrderBy(x => x.Day);
                 log.Information($"occupancy list has {occupancyList.Count()} records");
@@ -74,6 +78,8 @@ namespace Fastnet.Webframe.Web2.Controllers
                 return ExceptionResult(xe);
             }
         }
+
+
         public (DateTime Today, DateTime StartAt, DateTime Until) GetCalendarSetupInfo()
         {
             Parameter p = bookingDb.Parameters.Single();
@@ -616,6 +622,18 @@ namespace Fastnet.Webframe.Web2.Controllers
             }
         }
 
+        private void GetFreeDays(List<Occupancy> list, DateTime start, DateTime end)
+        {
+            for (DateTime d = start; d <= end; d = d.AddDays(1))
+            {
+                var occupancy = list.SingleOrDefault(x => x.Day == d);
+                if (occupancy == null)
+                {
+                    occupancy = new Occupancy { Day = d, DayFormatted = GetOccupancyDate(d), Status = d.DayOfWeek == DayOfWeek.Saturday ? DayStatus.IsNotBookable : DayStatus.IsFree };
+                    list.Add(occupancy);
+                }
+            }
+        }
         private void SetBookingDescription(Occupancy item)
         {
             var bookings = item.OccupationList.Select(x => x.BookingReference)

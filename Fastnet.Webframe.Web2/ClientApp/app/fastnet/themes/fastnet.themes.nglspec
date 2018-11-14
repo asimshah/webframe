@@ -1,0 +1,11 @@
+{
+  "Id": "fastnet.themes",
+  "Version": "1.0.1",
+  "TargetDirectory": "app\\fastnet\\themes",
+  "Files": [
+    "**/*.ts",
+    "**/*.html",
+    "**/*.css",
+    "**/*.scss"
+  ]
+}

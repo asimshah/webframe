@@ -1,6 +1,6 @@
 {
   "Id": "fastnet.core",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "TargetDirectory": "app\\fastnet\\core",
   "Files": [
     "**/*.ts",
